@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Tooltip() {\n  return (\n    <div>Tooltip Component</div>\n  );\n}\n

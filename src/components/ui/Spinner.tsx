@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Spinner() {\n  return (\n    <div>Spinner Component</div>\n  );\n}\n

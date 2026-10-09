@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function ErrorState() {\n  return (\n    <div>ErrorState Component</div>\n  );\n}\n

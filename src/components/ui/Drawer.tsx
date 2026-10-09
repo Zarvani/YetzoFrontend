@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Drawer() {\n  return (\n    <div>Drawer Component</div>\n  );\n}\n

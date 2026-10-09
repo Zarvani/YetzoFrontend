@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Tabs() {\n  return (\n    <div>Tabs Component</div>\n  );\n}\n

@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Skeleton() {\n  return (\n    <div>Skeleton Component</div>\n  );\n}\n

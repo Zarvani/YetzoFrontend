@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Switch() {\n  return (\n    <div>Switch Component</div>\n  );\n}\n

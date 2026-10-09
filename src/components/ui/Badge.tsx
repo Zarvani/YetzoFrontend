@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Badge() {\n  return (\n    <div>Badge Component</div>\n  );\n}\n

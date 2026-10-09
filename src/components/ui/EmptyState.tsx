@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function EmptyState() {\n  return (\n    <div>EmptyState Component</div>\n  );\n}\n

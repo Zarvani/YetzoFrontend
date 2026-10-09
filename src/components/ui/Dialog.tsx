@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Dialog() {\n  return (\n    <div>Dialog Component</div>\n  );\n}\n

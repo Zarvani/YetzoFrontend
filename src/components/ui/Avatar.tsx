@@ -1,0 +1,1 @@
+import * as React from "react";\n\nexport function Avatar() {\n  return (\n    <div>Avatar Component</div>\n  );\n}\n
