@@ -1,112 +1,110 @@
-import * as React from "react"
-import { Header } from "@/components/layout/Header"
-import { ShieldCheck, TrendingUp, Clock, CheckCircle2, DollarSign } from "lucide-react"
+'use client';
 
-export default function PartnerOnboardingPage() {
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { apiClient } from '@/lib/apiClient';
+
+export default function PartnerPage() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Real Django API Integration via Proxy
+  useEffect(() => {
+    const fetchRealData = async () => {
+      try {
+        const payload = await apiClient('/system/ping/');
+        setData(payload);
+      } catch (err: any) {
+        setError(err.message || "Failed to connect to backend via apiClient");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchRealData();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Header />
-      
-      {/* Hero */}
-      <div className="bg-[#0F172A] text-white pt-32 pb-24 px-4 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#2563EB] opacity-20 blur-[100px] rounded-full pointer-events-none"></div>
-        
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          <div>
-            <div className="inline-block bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-[13px] font-bold text-cyan-300 uppercase tracking-wider mb-6 border border-white/20">
-              Join Yetzo Partners
-            </div>
-            <h1 className="text-[48px] md:text-[56px] font-bold leading-[1.1] mb-6">
-              Be your own boss. <br /> Earn more every day.
-            </h1>
-            <p className="text-[18px] text-slate-300 mb-10 max-w-lg leading-relaxed">
-              Join thousands of professionals earning reliable income on their own schedule. Yetzo provides the customers, the technology, and the support.
-            </p>
-            
-            <div className="flex gap-6">
-              <div>
-                <p className="text-[32px] font-bold text-white leading-none">₹50k+</p>
-                <p className="text-[13px] text-slate-400 mt-2 font-medium">Average Monthly Earnings</p>
-              </div>
-              <div className="w-px bg-slate-700"></div>
-              <div>
-                <p className="text-[32px] font-bold text-white leading-none">200k+</p>
-                <p className="text-[13px] text-slate-400 mt-2 font-medium">Customers Waiting</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Signup Card */}
-          <div className="bg-white rounded-[24px] p-8 shadow-2xl text-slate-900 w-full max-w-md mx-auto lg:ml-auto">
-            <h2 className="text-[24px] font-bold mb-2">Apply as a Professional</h2>
-            <p className="text-[14px] text-slate-500 mb-8">Enter your details and our team will call you within 24 hours.</p>
-            
-            <form className="space-y-4">
-              <div>
-                <label className="text-[12px] font-bold text-slate-600 uppercase">Full Name</label>
-                <input type="text" className="w-full mt-1 bg-slate-50 border border-slate-200 rounded-[10px] p-3 text-[14px] focus:outline-none focus:border-[#2563EB]" placeholder="E.g. Rahul Kumar" />
-              </div>
-              <div>
-                <label className="text-[12px] font-bold text-slate-600 uppercase">Mobile Number</label>
-                <div className="flex mt-1">
-                  <span className="bg-slate-100 border border-slate-200 border-r-0 rounded-l-[10px] px-4 flex items-center text-[14px] font-bold text-slate-700">+91</span>
-                  <input type="tel" className="w-full bg-slate-50 border border-slate-200 rounded-r-[10px] p-3 text-[14px] focus:outline-none focus:border-[#2563EB]" placeholder="99999 99999" />
-                </div>
-              </div>
-              <div>
-                <label className="text-[12px] font-bold text-slate-600 uppercase">Primary Skill</label>
-                <select className="w-full mt-1 bg-slate-50 border border-slate-200 rounded-[10px] p-3 text-[14px] focus:outline-none focus:border-[#2563EB]">
-                  <option>AC Technician</option>
-                  <option>Electrician</option>
-                  <option>Plumber</option>
-                  <option>Cleaner</option>
-                  <option>Appliance Repair</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-[12px] font-bold text-slate-600 uppercase">City</label>
-                <input type="text" className="w-full mt-1 bg-slate-50 border border-slate-200 rounded-[10px] p-3 text-[14px] focus:outline-none focus:border-[#2563EB]" placeholder="E.g. Agra" />
-              </div>
-              
-              <button type="button" className="w-full mt-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white py-4 rounded-[12px] text-[15px] font-bold transition-colors">
-                Submit Application
-              </button>
-            </form>
-          </div>
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      {/* Header */}
+      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <h1 className="text-xl font-bold text-slate-900">Partner</h1>
         </div>
-      </div>
-      
-      {/* Benefits */}
-      <div className="py-24 px-4 max-w-[1200px] mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-[32px] font-bold text-slate-900">Why partner with Yetzo?</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="text-center">
-            <div className="h-16 w-16 bg-blue-50 rounded-[16px] flex items-center justify-center mx-auto mb-6">
-              <DollarSign className="h-8 w-8 text-[#2563EB]" />
-            </div>
-            <h3 className="text-[18px] font-bold text-slate-900 mb-3">Guaranteed High Earnings</h3>
-            <p className="text-[14px] text-slate-600 leading-relaxed">Keep more of what you earn with low commission rates. Get tips directly, and receive your money automatically every Monday.</p>
-          </div>
-          <div className="text-center">
-            <div className="h-16 w-16 bg-blue-50 rounded-[16px] flex items-center justify-center mx-auto mb-6">
-              <Clock className="h-8 w-8 text-[#2563EB]" />
-            </div>
-            <h3 className="text-[18px] font-bold text-slate-900 mb-3">Flexible Schedule</h3>
-            <p className="text-[14px] text-slate-600 leading-relaxed">You choose when you want to work. Go online with the tap of a button, and offline when you need a break.</p>
-          </div>
-          <div className="text-center">
-            <div className="h-16 w-16 bg-blue-50 rounded-[16px] flex items-center justify-center mx-auto mb-6">
-              <TrendingUp className="h-8 w-8 text-[#2563EB]" />
-            </div>
-            <h3 className="text-[18px] font-bold text-slate-900 mb-3">Free Training & Upskilling</h3>
-            <p className="text-[14px] text-slate-600 leading-relaxed">Access the Yetzo Training Center to learn new skills, get certified, and unlock higher-paying premium categories.</p>
-          </div>
-        </div>
-      </div>
+      </header>
 
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
+          
+          {/* Top Decorative Gradient */}
+          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+          
+          <div className="p-8">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">Partner</h2>
+                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
+              </div>
+            </div>
+
+            {isLoading ? (
+              <div className="space-y-4 animate-pulse">
+                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+              </div>
+            ) : error ? (
+                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <div className="w-full">
+                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
+                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
+                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
+                  </div>
+                </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                  <div className="w-full overflow-x-auto">
+                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
+                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
+                      {JSON.stringify(data, null, 2)}
+                    </pre>
+                  </div>
+                </div>
+
+                <p className="text-slate-600 leading-relaxed">
+                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
+                </p>
+
+                <button 
+                  onClick={() => router.push('/')}
+                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
     </div>
-  )
+  );
 }

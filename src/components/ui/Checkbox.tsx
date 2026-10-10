@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function Checkbox() {\n  return (\n    <div>Checkbox Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function Checkbox() {
+  return (
+    <div>Checkbox Component</div>
+  );
+}

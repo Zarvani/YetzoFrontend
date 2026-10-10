@@ -3,9 +3,10 @@ import { cookies } from 'next/headers';
 
 const DJANGO_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
-async function handleProxy(req: NextRequest, { params }: { params: { path: string[] } }) {
+async function handleProxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
-    const path = params.path.join('/');
+    const resolvedParams = await params;
+    const path = resolvedParams.path.join('/');
     const searchParams = req.nextUrl.searchParams.toString();
     const queryString = searchParams ? `?${searchParams}` : '';
     const targetUrl = `${DJANGO_API_URL}/${path}/${queryString}`;

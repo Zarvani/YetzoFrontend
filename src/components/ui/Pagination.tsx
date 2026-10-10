@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function Pagination() {\n  return (\n    <div>Pagination Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function Pagination() {
+  return (
+    <div>Pagination Component</div>
+  );
+}

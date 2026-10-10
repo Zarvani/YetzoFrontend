@@ -12,10 +12,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "default", isLoading, children, ...props }, ref) => {
     
     const variants = {
-      primary: "bg-[#2563EB] text-white hover:bg-[#1D4ED8] shadow-sm",
-      secondary: "bg-white text-[#0F172A] border border-[#CBD5E1] hover:bg-slate-50",
-      ghost: "bg-transparent text-[#2563EB] hover:bg-slate-50",
-      danger: "bg-[#DC2626] text-white hover:bg-red-700 shadow-sm",
+      primary: "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-[1px]",
+      secondary: "bg-white/80 backdrop-blur-md text-slate-800 border border-slate-200/50 hover:bg-white shadow-sm hover:shadow",
+      ghost: "bg-transparent text-slate-600 hover:text-slate-900 hover:bg-slate-100/50",
+      danger: "bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 shadow-[0_4px_14px_0_rgba(225,29,72,0.39)] hover:shadow-[0_6px_20px_rgba(225,29,72,0.23)] hover:-translate-y-[1px]",
     };
 
     const sizes = {
@@ -30,7 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={isLoading || props.disabled}
         className={cn(
-          "inline-flex items-center justify-center rounded-[8px] font-semibold transition-all duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
+          "inline-flex items-center justify-center rounded-xl font-bold transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]",
           variants[variant],
           sizes[size],
           className

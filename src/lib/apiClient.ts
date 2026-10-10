@@ -1,4 +1,4 @@
-const BASE_URL = "/api/proxy";
+const BASE_URL = "/api/proxy/v1";
 
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -13,7 +13,9 @@ type RequestOptions = {
  * A clean, standard fetch wrapper for Yetzo API calls.
  */
 export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const url = `${BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  // Strip '/v1' prefix if it was passed manually to prevent '/v1/v1/' duplication
+  const cleanEndpoint = endpoint.startsWith('/v1/') ? endpoint.replace('/v1/', '/') : endpoint;
+  const url = `${BASE_URL}${cleanEndpoint.startsWith('/') ? cleanEndpoint : `/${cleanEndpoint}`}`;
   
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -40,7 +42,13 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
       return {} as T;
     }
 
-    const data = await response.json();
+    const text = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { message: `Non-JSON Response (${response.status}): ` + text.substring(0, 100) };
+    }
 
     if (!response.ok) {
       throw new Error(data.message || data.detail || `API Error: ${response.status}`);

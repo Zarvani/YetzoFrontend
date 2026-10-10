@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function Badge() {\n  return (\n    <div>Badge Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function Badge() {
+  return (
+    <div>Badge Component</div>
+  );
+}

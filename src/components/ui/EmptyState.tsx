@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function EmptyState() {\n  return (\n    <div>EmptyState Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function EmptyState() {
+  return (
+    <div>EmptyState Component</div>
+  );
+}

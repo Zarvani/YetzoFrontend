@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function Spinner() {\n  return (\n    <div>Spinner Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function Spinner() {
+  return (
+    <div>Spinner Component</div>
+  );
+}

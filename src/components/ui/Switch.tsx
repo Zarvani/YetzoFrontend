@@ -1,1 +1,7 @@
-import * as React from "react";\n\nexport function Switch() {\n  return (\n    <div>Switch Component</div>\n  );\n}\n
+import * as React from "react";
+
+export function Switch() {
+  return (
+    <div>Switch Component</div>
+  );
+}
