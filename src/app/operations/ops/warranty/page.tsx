@@ -1,110 +1,203 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  ShieldCheck, AlertTriangle, CheckCircle2, Clock, 
+  ExternalLink, User, Wrench, RefreshCw, XCircle 
+} from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function WarrantyPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+export default function OperationsWarrantyClaimsPage() {
+  const [claims, setClaims] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedClaim, setSelectedClaim] = useState<any>(null);
 
-  // Real Django API Integration via Proxy
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    fetchClaims();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Warranty</h1>
-        </div>
-      </header>
+  const fetchClaims = async () => {
+    try {
+      setLoading(true);
+      const res: any = await apiClient('reviews/warranty/claims/');
+      const list = res?.data || (Array.isArray(res) ? res : []);
+      setClaims(list);
+    } catch (e) {
+      console.warn('Warranty claims fetch note:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Warranty</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
+  const handleUpdateStatus = async (claimId: string, newStatus: string) => {
+    try {
+      await apiClient(`reviews/warranty/claims/${claimId}/`, {
+        method: 'PATCH',
+        body: { status: newStatus },
+      });
+      fetchClaims();
+      setSelectedClaim(null);
+    } catch (e: any) {
+      alert(e?.message || 'Status update failed');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] p-6 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+        <div>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-6 h-6 text-emerald-600" />
+            <h1 className="text-xl font-bold text-slate-900">Urban Company 30-Day Warranty Claims</h1>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Review customer rework requests, inspect evidence photos, and authorize senior technician dispatch.
+          </p>
+        </div>
+
+        <button
+          onClick={fetchClaims}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Refresh Claims
+        </button>
+      </div>
+
+      {/* Claims List Table */}
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th className="text-left p-4">Claim ID</th>
+                <th className="text-left p-4">Booking Ref</th>
+                <th className="text-left p-4">Issue Category</th>
+                <th className="text-left p-4">Customer Notes</th>
+                <th className="text-left p-4">Preferred Slot</th>
+                <th className="text-left p-4">Status</th>
+                <th className="text-right p-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {claims.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-slate-500">
+                    No active 30-day warranty claims currently registered.
+                  </td>
+                </tr>
+              ) : (
+                claims.map((claim) => (
+                  <tr key={claim.id || claim.claim_id} className="hover:bg-slate-50/60 transition">
+                    <td className="p-4 font-mono font-bold text-slate-900">
+                      #{claim.claim_id || (claim.id ? claim.id.slice(0, 8) : 'WC-001')}
+                    </td>
+                    <td className="p-4 font-mono text-emerald-700 font-bold">
+                      {claim.booking_reference || claim.booking_id?.slice(0, 8)}
+                    </td>
+                    <td className="p-4">
+                      <span className="font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded">
+                        {claim.issue_type}
+                      </span>
+                    </td>
+                    <td className="p-4 text-slate-600 max-w-xs truncate">
+                      {claim.description}
+                    </td>
+                    <td className="p-4 text-slate-600">
+                      {claim.preferred_date || 'ASAP'} ({claim.preferred_time_slot || 'Morning'})
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`font-bold px-2 py-0.5 rounded ${
+                          claim.status === 'APPROVED'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : claim.status === 'REWORK_SCHEDULED'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {claim.status || 'PENDING'}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right space-x-2">
+                      <button
+                        onClick={() => setSelectedClaim(claim)}
+                        className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition"
+                      >
+                        Review
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Claim Detail & Approval Modal */}
+      {selectedClaim && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="text-base font-bold text-slate-900">
+                Warranty Claim #{selectedClaim.claim_id || selectedClaim.id?.slice(0, 8)}
+              </h3>
+              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                Urban Company 30-Day Guarantee
+              </span>
             </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+            <div className="space-y-3 text-xs">
+              <div>
+                <span className="text-slate-500 font-bold block mb-0.5">Issue Classification:</span>
+                <span className="font-bold text-slate-900">{selectedClaim.issue_type}</span>
               </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
 
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
+              <div>
+                <span className="text-slate-500 font-bold block mb-0.5">Customer Description:</span>
+                <p className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed">
+                  {selectedClaim.description}
                 </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
               </div>
-            )}
+
+              {selectedClaim.evidence_photo_url && (
+                <div>
+                  <span className="text-slate-500 font-bold block mb-0.5">Photographic Evidence:</span>
+                  <a
+                    href={selectedClaim.evidence_photo_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 text-emerald-600 font-bold hover:underline"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    View High-Resolution Evidence Photo
+                  </a>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-4 border-t border-slate-100 flex justify-end gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => setSelectedClaim(null)}
+                className="px-4 py-2 border border-slate-300 rounded-xl text-slate-700 font-semibold hover:bg-slate-50"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => handleUpdateStatus(selectedClaim.id, 'APPROVED')}
+                className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition"
+              >
+                Approve Free Re-work & Dispatch Pro
+              </button>
+            </div>
           </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }

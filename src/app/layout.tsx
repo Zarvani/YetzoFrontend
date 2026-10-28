@@ -1,15 +1,24 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat, Sarabun } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const sarabun = Sarabun({
+  variable: "--font-sarabun",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Yetzo | Instant Services • Instant Shopping",
-  description: "Trusted professionals for every home need. Book verified experts in minutes.",
+  title: "Yetzo | Instant House Help in 15 Minutes",
+  description: "India's premier on-demand house help platform. Verified maids, cooks, cleaning, and domestic chores dispatched in 15 minutes.",
 };
 
 export default function RootLayout({
@@ -20,9 +29,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${sarabun.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans text-slate-900 bg-slate-50">{children}</body>
+      <body className="min-h-full flex flex-col font-body text-slate-900 bg-[#FAFAFA] selection:bg-emerald-100 selection:text-emerald-900">
+        {children}
+      </body>
     </html>
   );
 }

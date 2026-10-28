@@ -1,67 +1,91 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@/lib/apiClient';
 
-export default function PartnerProfileScreen() {
+export default function ProfessionalProfilePage() {
   const router = useRouter();
-  const [isOnline, setIsOnline] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiClient('auth/me/')
+      .then((res: any) => setUser(res.data?.user || null))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    router.push('/auth/login');
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-24">
+    <div className="min-h-screen bg-slate-100 flex flex-col font-sans pb-24">
       {/* Header */}
-      <header className="bg-slate-900 text-white px-4 py-5 flex items-center justify-between sticky top-0 z-50 shadow-md">
-        <div>
-           <h1 className="text-lg font-bold">Partner Profile</h1>
-           <p className="text-xs text-slate-400 mt-0.5">Partner Portal</p>
-        </div>
-        <div className="flex items-center gap-2 bg-slate-800 rounded-full px-3 py-1.5 border border-slate-700">
-           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
-           <span className="text-xs font-bold">{isOnline ? 'Online' : 'Offline'}</span>
-        </div>
+      <header className="bg-slate-900 border-b border-slate-800 px-4 py-5 sticky top-0 z-50 shadow-sm flex items-center justify-between">
+        <h1 className="text-xl font-black text-white">Professional Profile</h1>
       </header>
 
-      <main className="max-w-xl mx-auto p-4 mt-4 space-y-6">
-        {/* Job Card Example */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
-           <div className="absolute top-0 right-0 bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-bl-xl">New Request</div>
-           <h3 className="font-bold text-slate-900 text-lg mb-1">Deep House Cleaning</h3>
-           <p className="text-sm text-slate-500 mb-4">Andheri West, Mumbai • 5.2 km away</p>
-           
-           <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl mb-4 border border-slate-100">
-             <div>
-               <p className="text-xs text-slate-500 font-medium">Est. Payout</p>
-               <p className="font-black text-slate-900 text-lg">₹850</p>
-             </div>
-             <div className="text-right">
-               <p className="text-xs text-slate-500 font-medium">Time</p>
-               <p className="font-bold text-slate-900">Today, 2:00 PM</p>
-             </div>
-           </div>
-
-           <div className="flex gap-3">
-             <button className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-3 rounded-xl hover:bg-slate-50">Decline</button>
-             <button className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/20">Accept Job</button>
-           </div>
+      <main className="p-4 space-y-6">
+        {/* Profile Card */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md shadow-blue-200">
+            {loading ? '...' : user?.first_name?.[0]?.toUpperCase() || 'P'}
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-black text-slate-900 mb-1">
+              {loading ? 'Loading...' : user ? `${user.first_name} ${user.last_name || ''}` : 'Professional'}
+            </h2>
+            <p className="text-sm font-medium text-slate-500 mb-0.5">{user?.phone || 'No phone number'}</p>
+            <p className="text-sm font-medium text-slate-500">{user?.email || 'No email added'}</p>
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="bg-yellow-100 text-yellow-700 text-xs font-black px-2 py-1 rounded">★ {user?.professional_profile?.rating || 'New'}</span>
+              <span className="bg-slate-100 text-slate-700 text-xs font-bold px-2 py-1 rounded">{user?.professional_profile?.status || 'ACTIVE'}</span>
+            </div>
+          </div>
         </div>
+
+        {/* Menu Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: '📄', label: 'My Documents', path: '/professional/pro/documents' },
+            { icon: '⚙️', label: 'Skills & Services', path: '/professional/pro/skills' },
+            { icon: '📊', label: 'Performance', path: '/professional/pro/performance' },
+            { icon: '🏦', label: 'Bank Details', path: '/professional/pro/payouts' },
+            { icon: '📞', label: 'Partner Support', path: '/professional/pro/support' },
+            { icon: '🗓️', label: 'Availability', path: '/professional/pro/availability' },
+          ].map(item => (
+            <button key={item.label} onClick={() => router.push(item.path)} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3 hover:border-blue-300 transition-colors text-left group">
+              <span className="text-2xl group-hover:scale-110 transition-transform origin-bottom-left">{item.icon}</span>
+              <span className="font-bold text-slate-800 text-sm">{item.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Logout */}
+        <button onClick={handleLogout} className="w-full bg-red-50 text-red-600 font-bold py-4 rounded-2xl border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Logout
+        </button>
       </main>
 
-      {/* Partner Bottom Nav */}
-      <nav className="fixed bottom-0 w-full bg-white border-t border-slate-200 pb-safe z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="max-w-xl mx-auto flex justify-around p-2">
-          <button onClick={() => router.push('/professional/pro')} className="flex flex-col items-center p-2 text-blue-600">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-            <span className="text-[10px] font-bold">Jobs</span>
-          </button>
-          <button onClick={() => router.push('/professional/pro/earnings')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span className="text-[10px] font-bold">Earnings</span>
-          </button>
-          <button onClick={() => router.push('/professional/pro/profile')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span className="text-[10px] font-bold">Profile</span>
-          </button>
-        </div>
+      {/* Bottom Pro Nav */}
+      <nav className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 h-16 flex justify-around items-center z-50 pb-safe">
+        {[
+          { label: 'Home', icon: 'M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z', path: '/professional/pro', active: false },
+          { label: 'Calendar', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', path: '/professional/pro/calendar', active: false },
+          { label: 'Earnings', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z', path: '/professional/pro/earnings', active: false },
+          { label: 'Profile', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', path: '/professional/pro/profile', active: true },
+        ].map((item, idx) => (
+          <div key={idx} onClick={() => router.push(item.path)} className={`flex flex-col items-center cursor-pointer ${item.active ? 'text-blue-600' : 'text-slate-400 hover:text-slate-600'}`}>
+            <svg className="w-6 h-6 mb-1" fill={item.active ? "currentColor" : "none"} stroke={!item.active ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d={item.icon}></path>
+            </svg>
+            <span className="text-[10px] font-bold">{item.label}</span>
+          </div>
+        ))}
       </nav>
     </div>
   );

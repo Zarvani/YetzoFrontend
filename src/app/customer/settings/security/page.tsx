@@ -2,109 +2,192 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, ShieldCheck, Key, Lock, Smartphone, Check, AlertCircle, Save, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function SecurityPage() {
+export default function SecuritySettingsPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  // Real Django API Integration via Proxy
-  useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/users/settings/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
-  }, []);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [requireBookingPin, setRequireBookingPin] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match.');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+      setPasswordError(null);
+
+      await apiClient('auth/me/', {
+        method: 'PATCH',
+        body: {
+          password: newPassword,
+        },
+      });
+
+      setPasswordSuccess(true);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => setPasswordSuccess(false), 4000);
+    } catch (err: any) {
+      setPasswordError(err?.message || 'Failed to update password.');
+    } finally {
+      setChangingPassword(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Security</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Settings
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">Security & Credentials</h1>
+              <p className="text-xs text-slate-500">Protect your Yetzo account and booking payment authority.</p>
+            </div>
+          </div>
+
+          {/* 2FA & PIN Toggles */}
+          <div className="space-y-4">
+            <div className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg shrink-0 mt-0.5">
+                  <Smartphone className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block">Two-Factor Authentication (2FA)</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Require a high-security OTP sent to your verified mobile number on every new login.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Security</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/users/settings/</code></p>
-              </div>
+
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={twoFactorEnabled}
+                  onChange={(e) => setTwoFactorEnabled(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+              </label>
             </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+            <div className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-50 text-blue-700 rounded-lg shrink-0 mt-0.5">
+                  <Key className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-900 block">Wallet & Booking Payment PIN</span>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Ask for a 4-digit security PIN before deducting funds from your Yetzo Wallet balance.
+                  </p>
+                </div>
               </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
 
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
+              <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                <input
+                  type="checkbox"
+                  checked={requireBookingPin}
+                  onChange={(e) => setRequireBookingPin(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+              </label>
+            </div>
+          </div>
 
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
+          {/* Update Password Form */}
+          <form onSubmit={handlePasswordChange} className="pt-6 border-t border-slate-100 space-y-4 text-xs">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5" /> Change Account Password
+            </h2>
+
+            {passwordError && (
+              <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{passwordError}</span>
               </div>
             )}
-          </div>
+
+            {passwordSuccess && (
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 flex items-center gap-2">
+                <Check className="w-4 h-4 shrink-0" />
+                <span>Password updated successfully!</span>
+              </div>
+            )}
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">New Password *</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Confirm New Password *</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat new password"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={changingPassword || !newPassword}
+              className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {changingPassword ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Updating Password...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>Update Account Password</span>
+                </>
+              )}
+            </button>
+          </form>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

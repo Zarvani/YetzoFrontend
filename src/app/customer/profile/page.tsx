@@ -1,117 +1,102 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
-import { motion } from 'framer-motion';
 
-export default function MyAccountScreen() {
+export default function ProfilePage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await apiClient<any>('me/');
-        setUser(res?.user || res);
-      } catch (err) {
-        console.error("Failed to load profile", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUser();
+    apiClient('auth/me/')
+      .then((res: any) => setUser(res.data?.user || null))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    router.push('/auth/login');
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center sticky top-0 z-50">
-        <button onClick={() => router.back()} className="mr-4 text-slate-600 hover:text-slate-900">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        </button>
-        <h1 className="text-lg font-bold text-slate-900">My Account</h1>
+      <header className="bg-white px-4 py-5 sticky top-0 z-50 shadow-sm flex items-center justify-between">
+        <h1 className="text-xl font-black text-slate-900">Profile</h1>
       </header>
 
-      <main className="max-w-xl mx-auto p-4 space-y-6">
-        {isLoading ? (
-           <div className="animate-pulse space-y-4">
-             <div className="h-32 bg-slate-200 rounded-3xl w-full"></div>
-             <div className="h-64 bg-slate-200 rounded-3xl w-full"></div>
-           </div>
-        ) : (
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-            
-            {/* User Info Card */}
-            <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center gap-5">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black">
-                {user?.first_name?.charAt(0) || 'Y'}
-              </div>
-              <div>
-                <h2 className="text-2xl font-black text-slate-900">{user?.first_name || 'Customer'} {user?.last_name || ''}</h2>
-                <p className="text-slate-500 font-medium">{user?.phone_number || user?.email || '+91 99999 99999'}</p>
-              </div>
-            </div>
+      <main className="px-4 py-6 space-y-6">
+        {/* Profile Card */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center gap-5">
+          <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center text-white text-3xl font-black shadow-md shadow-blue-200">
+            {loading ? '...' : user?.first_name?.[0]?.toUpperCase() || 'U'}
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-black text-slate-900 mb-1">
+              {loading ? 'Loading...' : user ? `${user.first_name} ${user.last_name || ''}` : 'Guest User'}
+            </h2>
+            <p className="text-sm font-medium text-slate-500 mb-0.5">{user?.phone || 'No phone number'}</p>
+            <p className="text-sm font-medium text-slate-500">{user?.email || 'No email added'}</p>
+          </div>
+          <button className="text-blue-600 p-2 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          </button>
+        </div>
 
-            {/* Navigation Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              <button onClick={() => router.push('/customer/wallet')} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-left hover:border-blue-500 transition-colors group">
-                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                </div>
-                <h3 className="font-bold text-slate-900">Wallet & Payments</h3>
-                <p className="text-xs text-slate-500 mt-1">Manage balances</p>
-              </button>
-
-              <button onClick={() => router.push('/customer/addresses')} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-left hover:border-blue-500 transition-colors group">
-                <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </div>
-                <h3 className="font-bold text-slate-900">Saved Addresses</h3>
-                <p className="text-xs text-slate-500 mt-1">Home, Office, etc.</p>
-              </button>
-
-              <button onClick={() => router.push('/customer/notifications')} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-left hover:border-blue-500 transition-colors group">
-                <div className="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                </div>
-                <h3 className="font-bold text-slate-900">Notifications</h3>
-                <p className="text-xs text-slate-500 mt-1">Updates & alerts</p>
-              </button>
-
-              <button onClick={() => router.push('/customer/support')} className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-left hover:border-blue-500 transition-colors group">
-                <div className="w-10 h-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-                <h3 className="font-bold text-slate-900">Help & Support</h3>
-                <p className="text-xs text-slate-500 mt-1">Raise a ticket</p>
-              </button>
-            </div>
-
-            <button className="w-full bg-slate-100 text-slate-700 font-bold py-4 rounded-2xl hover:bg-red-50 hover:text-red-600 transition-colors">
-              Log Out
+        {/* Menu Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { icon: '📍', label: 'My Addresses', path: '/customer/addresses' },
+            { icon: '💳', label: 'Yetzo Wallet', path: '/customer/wallet' },
+            { icon: '🌟', label: 'Memberships', path: '/customer/membership' },
+            { icon: '🎁', label: 'Refer & Earn', path: '/customer/referrals' },
+            { icon: '📞', label: 'Help Center', path: '/customer/support' },
+            { icon: '⚙️', label: 'Settings', path: '/customer/settings' },
+          ].map(item => (
+            <button key={item.label} onClick={() => router.push(item.path)} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-3 hover:border-blue-300 transition-colors text-left group">
+              <span className="text-2xl group-hover:scale-110 transition-transform origin-bottom-left">{item.icon}</span>
+              <span className="font-bold text-slate-800 text-sm">{item.label}</span>
             </button>
-          </motion.div>
-        )}
+          ))}
+        </div>
+
+        {/* Support Card */}
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 text-white relative overflow-hidden shadow-lg">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10" />
+          <div className="relative z-10">
+            <h3 className="font-black text-lg mb-1">Need help?</h3>
+            <p className="text-slate-300 text-sm mb-4 font-medium max-w-[200px]">Our support team is available 24/7 to assist you.</p>
+            <button onClick={() => router.push('/customer/support')} className="bg-white text-slate-900 font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-slate-100 transition-colors">
+              Contact Support
+            </button>
+          </div>
+        </div>
+
+        {/* Logout */}
+        <button onClick={handleLogout} className="w-full bg-red-50 text-red-600 font-bold py-4 rounded-2xl border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Logout
+        </button>
+        
+        <p className="text-center text-xs font-bold text-slate-400">Yetzo v1.0.0</p>
       </main>
 
       {/* Bottom Nav */}
-      <nav className="fixed bottom-0 w-full bg-white border-t border-slate-200 pb-safe z-50">
-        <div className="max-w-xl mx-auto flex justify-around p-2">
-          <button onClick={() => router.push('/customer/home')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span className="text-[10px] font-bold">Home</span>
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex z-50">
+        {[
+          { label:'Home', icon:'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', path:'/customer/home', active:false },
+          { label:'Bookings', icon:'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', path:'/customer/bookings', active:false },
+          { label:'Cart', icon:'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', path:'/customer/cart', active:false },
+          { label:'Profile', icon:'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', path:'/customer/profile', active:true },
+        ].map(n => (
+          <button key={n.label} onClick={() => router.push(n.path)} className={`flex-1 flex flex-col items-center py-3 gap-1 ${n.active ? 'text-blue-600' : 'text-slate-400'}`}>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={n.icon}/></svg>
+            <span className="text-xs font-bold">{n.label}</span>
           </button>
-          <button onClick={() => router.push('/customer/bookings')} className="flex flex-col items-center p-2 text-blue-600">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-            <span className="text-[10px] font-bold">Bookings</span>
-          </button>
-          <button onClick={() => router.push('/customer/account')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span className="text-[10px] font-bold">Account</span>
-          </button>
-        </div>
+        ))}
       </nav>
     </div>
   );

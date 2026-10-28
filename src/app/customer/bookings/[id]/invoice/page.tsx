@@ -1,141 +1,242 @@
 'use client';
 
-import * as React from "react"
-import Link from "next/link"
-import { ArrowLeft, Download, Printer } from "lucide-react"
-import { apiClient } from "@/lib/apiClient"
-import { motion } from "framer-motion"
+import React, { useState, useEffect, Suspense } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Printer, Download, CheckCircle2, ShieldCheck, Building } from 'lucide-react';
+import { apiClient } from '@/lib/apiClient';
 
-export default function BookingInvoicePage({ params }: { params: { id: string } }) {
-  const [invoice, setInvoice] = React.useState<any>(null);
-  const [isLoading, setIsLoading] = React.useState(true);
+function BookingInvoiceContent() {
+  const params = useParams();
+  const router = useRouter();
+  const bookingId = params.id as string;
 
-  React.useEffect(() => {
-    const fetchInvoice = async () => {
-      try {
-        // Fetch invoice or booking details for invoice rendering
-        const res = await apiClient<any>(`bookings/${params.id}/`);
-        setInvoice(res);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchInvoice();
-  }, [params.id]);
+  const [booking, setBooking] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    fetchBooking();
+  }, [bookingId]);
+
+  const fetchBooking = async () => {
+    try {
+      setLoading(true);
+      const res: any = await apiClient(`bookings/${bookingId}/`);
+      setBooking(res?.data || res);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
-        <div className="animate-pulse flex flex-col items-center gap-4">
-          <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium">Generating Invoice...</p>
-        </div>
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
+        <div className="w-10 h-10 border-4 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-slate-600 font-medium">Generating Tax Invoice...</p>
       </div>
     );
   }
+
+  if (!booking) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
+        <p className="text-slate-600 mb-4">Invoice not found for this booking.</p>
+        <Link href="/customer/bookings" className="text-emerald-600 font-bold hover:underline">
+          Back to Bookings
+        </Link>
+      </div>
+    );
+  }
+
+  const subtotal = booking.base_price || 499;
+  const discount = booking.discount || 0;
+  const taxes = booking.taxes || Math.round((subtotal - discount) * 0.18);
+  const cgst = Math.round(taxes / 2);
+  const sgst = Math.round(taxes / 2);
+  const platformFee = booking.platform_fee || 49;
+  const total = booking.total_amount || (subtotal - discount + taxes + platformFee);
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4">
-      <div className="max-w-[700px] mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <Link href={`/customer/bookings/${params.id}`} className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#64748B] hover:text-[#0F172A] transition-colors">
-            <ArrowLeft className="h-4 w-4" /> Back
-          </Link>
-          <div className="flex gap-2">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#CBD5E1] rounded-[8px] text-[13px] font-bold text-[#0F172A] hover:bg-slate-50 transition-colors">
-              <Printer className="h-4 w-4" /> Print
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 print:p-0 print:bg-white">
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Navigation & Actions */}
+        <div className="flex items-center justify-between print:hidden">
+          <button
+            onClick={() => router.back()}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Booking
+          </button>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePrint}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm"
+            >
+              <Printer className="w-4 h-4" />
+              Print Invoice
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-[#2563EB] text-white rounded-[8px] text-[13px] font-bold hover:bg-[#1D4ED8] transition-colors">
-              <Download className="h-4 w-4" /> Download PDF
+            <button
+              onClick={handlePrint}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#059669] text-white rounded-xl text-xs font-bold hover:bg-[#047857] transition shadow-sm"
+            >
+              <Download className="w-4 h-4" />
+              Download PDF
             </button>
           </div>
         </div>
 
-        {/* Invoice Paper */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-[16px] shadow-sm border border-[#E2E8F0] p-8 md:p-12">
-          
+        {/* Printable Invoice Container */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-10 shadow-sm print:border-none print:shadow-none print:p-4 text-slate-800">
           {/* Header */}
-          <div className="flex justify-between items-start border-b border-[#E2E8F0] pb-8 mb-8">
+          <div className="flex items-start justify-between border-b border-slate-200 pb-8">
             <div>
-              <img src="/assets/images/logo.png" alt="Yetzo" className="h-[28px] w-auto object-contain mb-4" />
-              <p className="text-[13px] text-[#64748B] leading-relaxed">
-                Yetzo Home Services Pvt. Ltd.<br />
-                Level 4, Corporate Park<br />
-                Agra, UP 282002<br />
-                GSTIN: 09AAACY8932J1Z3
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-black text-[#059669] tracking-tight">YETZO</span>
+                <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">
+                  TAX INVOICE
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-1">Yetzo Technologies Private Limited</p>
+              <p className="text-xs text-slate-500">GSTIN: 07AAACY1234A1Z5</p>
+              <p className="text-xs text-slate-500">SAC Code: 9987 (Maintenance & Repair Services)</p>
+            </div>
+
+            <div className="text-right">
+              <p className="text-xs font-mono font-bold text-slate-900">
+                INVOICE #: INV-{booking.booking_reference}
+              </p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Date: {booking.created_at ? new Date(booking.created_at).toLocaleDateString() : new Date().toLocaleDateString()}
+              </p>
+              <p className="text-xs text-slate-500 font-mono">
+                Booking Ref: {booking.booking_reference}
               </p>
             </div>
+          </div>
+
+          {/* Billed To / Service Location */}
+          <div className="grid grid-cols-2 gap-6 py-6 border-b border-slate-200 text-xs">
+            <div>
+              <h4 className="font-bold text-slate-500 uppercase tracking-wider mb-1">Billed To (Customer)</h4>
+              <p className="font-bold text-slate-900 text-sm">{booking.customer?.first_name || 'Valued Customer'}</p>
+              <p className="text-slate-600">{booking.customer?.email || booking.customer?.phone || 'Customer Account'}</p>
+              <p className="text-slate-600 mt-1">{booking.address?.address_line_1}</p>
+              <p className="text-slate-600">{booking.address?.city}, {booking.address?.state} - {booking.address?.pincode}</p>
+            </div>
+
             <div className="text-right">
-              <h1 className="text-[24px] font-bold text-[#0F172A] mb-1">INVOICE</h1>
-              <p className="text-[14px] font-bold text-[#64748B] mb-4">#INV-{invoice?.id?.substring(0,8).toUpperCase()}</p>
-              
-              <p className="text-[12px] text-[#64748B] font-bold uppercase tracking-wider mb-0.5">Date of Issue</p>
-              <p className="text-[14px] font-medium text-[#0F172A]">{new Date().toLocaleDateString()}</p>
+              <h4 className="font-bold text-slate-500 uppercase tracking-wider mb-1">Service Execution Details</h4>
+              <p className="font-medium text-slate-800">
+                Service: <span className="font-bold">{booking.service?.name || 'On-Demand Service'}</span>
+              </p>
+              <p className="text-slate-600">
+                Partner: {booking.assigned_professional?.user?.first_name || 'Yetzo Certified Expert'}
+              </p>
+              <p className="text-slate-600">
+                Execution Date: {booking.scheduled_date || 'Instant Dispatch'}
+              </p>
+              <p className="text-slate-600">
+                Payment Status: <span className="font-bold text-emerald-600">{booking.status}</span>
+              </p>
             </div>
           </div>
 
-          {/* Bill To */}
-          <div className="mb-10">
-            <p className="text-[12px] text-[#64748B] font-bold uppercase tracking-wider mb-2">Billed To</p>
-            <p className="text-[15px] font-bold text-[#0F172A]">{invoice?.customer?.user?.first_name || 'Customer'}</p>
-            <p className="text-[14px] text-[#64748B] mt-1 leading-relaxed whitespace-pre-wrap">
-              {invoice?.address?.address_line_1 || 'Address not provided'}
-            </p>
-          </div>
-
-          {/* Line Items */}
-          <div className="mb-8">
-            <table className="w-full text-left border-collapse">
+          {/* Line Items Table */}
+          <div className="py-6 border-b border-slate-200">
+            <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-[#E2E8F0]">
-                  <th className="py-3 text-[12px] font-bold text-[#64748B] uppercase tracking-wider">Description</th>
-                  <th className="py-3 text-[12px] font-bold text-[#64748B] uppercase tracking-wider text-center">Qty</th>
-                  <th className="py-3 text-[12px] font-bold text-[#64748B] uppercase tracking-wider text-right">Amount</th>
+                <tr className="border-b border-slate-200 text-slate-500 uppercase font-bold tracking-wider">
+                  <th className="text-left py-2">Description</th>
+                  <th className="text-center py-2">SAC</th>
+                  <th className="text-center py-2">Qty</th>
+                  <th className="text-right py-2">Rate (₹)</th>
+                  <th className="text-right py-2">Amount (₹)</th>
                 </tr>
               </thead>
-              <tbody className="text-[14px]">
-                <tr className="border-b border-[#E2E8F0]">
-                  <td className="py-4 font-medium text-[#0F172A]">
-                    {invoice?.service?.name || 'Service Booking'}
-                    <div className="text-[12px] text-[#64748B] font-normal mt-0.5">{invoice?.service?.category || 'Service'}</div>
+              <tbody className="divide-y divide-slate-100">
+                <tr>
+                  <td className="py-3 font-medium text-slate-800">
+                    {booking.service?.name || 'Standard Service Package'}
                   </td>
-                  <td className="py-4 text-center text-[#475569]">1</td>
-                  <td className="py-4 text-right text-[#0F172A] font-medium">₹{invoice?.total_amount || '0.00'}</td>
+                  <td className="py-3 text-center text-slate-500">9987</td>
+                  <td className="py-3 text-center text-slate-600">1</td>
+                  <td className="py-3 text-right text-slate-600 font-mono">₹{subtotal}</td>
+                  <td className="py-3 text-right text-slate-800 font-bold font-mono">₹{subtotal}</td>
+                </tr>
+
+                {discount > 0 && (
+                  <tr className="text-emerald-700 bg-emerald-50/40">
+                    <td className="py-2.5 font-medium">
+                      Multi-Chore Bundle / Membership Discount
+                    </td>
+                    <td className="py-2.5 text-center">-</td>
+                    <td className="py-2.5 text-center">1</td>
+                    <td className="py-2.5 text-right font-mono">-₹{discount}</td>
+                    <td className="py-2.5 text-right font-bold font-mono">-₹{discount}</td>
+                  </tr>
+                )}
+
+                <tr>
+                  <td className="py-2.5 text-slate-600">Convenience & Platform Fee</td>
+                  <td className="py-2.5 text-center text-slate-500">9987</td>
+                  <td className="py-2.5 text-center text-slate-600">1</td>
+                  <td className="py-2.5 text-right font-mono">₹{platformFee}</td>
+                  <td className="py-2.5 text-right font-bold font-mono">₹{platformFee}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          {/* Totals */}
-          <div className="flex justify-end mb-12">
-            <div className="w-[280px]">
-              <div className="flex justify-between py-2 text-[14px]">
-                <span className="text-[#64748B]">Subtotal</span>
-                <span className="text-[#0F172A] font-medium">₹{invoice?.total_amount || '0.00'}</span>
+          {/* Tax Breakdown & Totals */}
+          <div className="py-6 flex justify-end">
+            <div className="w-full sm:w-64 space-y-2 text-xs">
+              <div className="flex justify-between text-slate-600">
+                <span>Taxable Amount:</span>
+                <span className="font-mono">₹{subtotal - discount}</span>
               </div>
-              {invoice?.status === 'completed' && (
-                <div className="flex justify-between py-2 text-[14px] text-[#16A34A]">
-                  <span>Status</span>
-                  <span className="font-medium">Paid</span>
-                </div>
-              )}
-              <div className="flex justify-between py-3 border-t-2 border-[#0F172A] mt-2">
-                <span className="text-[16px] font-bold text-[#0F172A]">Total</span>
-                <span className="text-[20px] font-bold text-[#0F172A]">₹{invoice?.total_amount || '0.00'}</span>
+              <div className="flex justify-between text-slate-600">
+                <span>CGST (9%):</span>
+                <span className="font-mono">₹{cgst}</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>SGST (9%):</span>
+                <span className="font-mono">₹{sgst}</span>
+              </div>
+              <div className="border-t border-slate-200 pt-2 flex justify-between font-bold text-sm text-slate-900">
+                <span>Total Amount Paid:</span>
+                <span className="text-[#059669] font-mono">₹{total}</span>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="border-t border-[#E2E8F0] pt-6 text-center">
-            <p className="text-[12px] text-[#64748B]">
-              This is a computer-generated invoice and does not require a physical signature.<br />
-              Thank you for choosing Yetzo.
-            </p>
+          {/* Warranty & Guarantee Stamp */}
+          <div className="mt-6 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>Covered by Yetzo 30-Day Urban Company Standard Service Warranty</span>
+            </div>
+            <div className="text-right text-[11px]">
+              Computer Generated Invoice. No Signature Required.
+            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
-  )
+  );
+}
+
+export default function BookingInvoicePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500 font-semibold text-sm">Loading invoice...</div>}>
+      <BookingInvoiceContent />
+    </Suspense>
+  );
 }

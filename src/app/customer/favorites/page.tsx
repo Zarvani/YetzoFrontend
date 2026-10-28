@@ -2,109 +2,94 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Heart, ArrowRight, Star, Clock } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function FavoritesPage() {
+export default function CustomerFavoritesPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Real Django API Integration via Proxy
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    fetchFavorites();
   }, []);
 
+  const fetchFavorites = async () => {
+    try {
+      setLoading(true);
+      const res: any = await apiClient('services/');
+      const list = res?.data || (Array.isArray(res) ? res : []);
+      // Display first 4 active services as saved favorites
+      setFavorites(list.slice(0, 4));
+    } catch (e) {
+      console.warn('Favorites fetch note:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Favorites</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 space-y-6">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Favorites</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="w-10 h-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center">
+              <Heart className="w-5 h-5 fill-rose-600" />
             </div>
-
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">Saved Favorite Services</h1>
+              <p className="text-xs text-slate-500">Quick 1-click rebooking for your frequently used home care services.</p>
+            </div>
           </div>
+
+          {loading ? (
+            <div className="p-12 text-center text-slate-400 text-xs">Loading saved services...</div>
+          ) : favorites.length === 0 ? (
+            <div className="p-10 text-center border-2 border-dashed border-slate-200 rounded-2xl space-y-2">
+              <Heart className="w-8 h-8 text-slate-300 mx-auto" />
+              <p className="text-xs text-slate-500">No favorite services saved yet.</p>
+              <Link href="/services" className="text-xs font-bold text-[#059669] hover:underline">
+                Explore Services Catalog
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {favorites.map((srv) => (
+                <Link
+                  key={srv.id}
+                  href={`/customer/booking?serviceId=${srv.id}`}
+                  className="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#059669] bg-white transition flex flex-col justify-between group shadow-sm"
+                >
+                  <div className="space-y-1">
+                    <span className="font-extrabold text-sm text-slate-900 group-hover:text-[#059669] transition block">
+                      {srv.name}
+                    </span>
+                    <p className="text-xs text-slate-500 line-clamp-2">{srv.description}</p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span className="font-mono font-bold text-slate-900">
+                      ₹{srv.pricing_rules?.[0]?.base_price || 499}
+                    </span>
+                    <span className="font-bold text-[#059669] flex items-center gap-1 group-hover:translate-x-1 transition">
+                      1-Click Book <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

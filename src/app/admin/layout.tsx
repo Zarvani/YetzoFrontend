@@ -1,83 +1,117 @@
+'use client';
+
 import * as React from "react"
 import Link from "next/link"
-import { Users, Briefcase, Map, ShieldAlert, BarChart3, Settings, Search, Bell } from "lucide-react"
+import { 
+  BarChart3, 
+  Users, 
+  Briefcase, 
+  CreditCard, 
+  Tag, 
+  ShieldCheck, 
+  Settings, 
+  Bell, 
+  Activity, 
+  Map
+} from "lucide-react"
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const sidebarLinks = [
-    { name: "Overview", href: "/admin", icon: BarChart3 },
-    { name: "Live Dispatch", href: "/admin/dispatch", icon: Map },
-    { name: "Bookings", href: "/admin/bookings", icon: Briefcase },
-    { name: "Professionals", href: "/admin/professionals", icon: Users },
-    { name: "Fraud & Audit", href: "/admin/audit", icon: ShieldAlert },
-    { name: "Settings", href: "/admin/settings", icon: Settings },
-  ]
-
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 text-slate-900">
-      {/* Heavy Admin Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col bg-[#0F172A] text-slate-300 shrink-0">
-        <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-[#0B2D8F]">
-          <Link href="/admin" className="text-[20px] font-bold tracking-tight text-white flex items-center gap-2">
-            YETZO <span className="text-[10px] bg-white text-[#0B2D8F] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">Admin</span>
+    <div className="min-h-screen bg-[#F1F5F9] flex">
+      {/* Sidebar - Dark Navy Command Center */}
+      <aside className="w-[260px] bg-[#0F172A] text-slate-300 flex-shrink-0 flex flex-col hidden md:flex h-screen sticky top-0 overflow-y-auto custom-scrollbar">
+        <div className="p-6 border-b border-slate-800/50 mb-4 bg-[#0B1221]">
+          <Link href="/admin" className="flex items-center gap-2">
+            <span className="text-[22px] font-bold text-white tracking-tight">YETZO <span className="text-[#06B6D4]">ADMIN</span></span>
           </Link>
         </div>
         
-        <div className="flex-1 overflow-y-auto py-6">
-          <nav className="flex flex-col gap-1 px-3">
-            {sidebarLinks.map((link) => {
-              const Icon = link.icon
-              return (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  className="flex items-center gap-3 px-3 py-2 rounded-md text-[14px] font-medium hover:bg-slate-800 hover:text-white transition-colors"
-                >
-                  <Icon className="h-5 w-5 opacity-80" />
-                  {link.name}
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
+        <nav className="flex-1 px-4 space-y-1 pb-8">
+          <Link href="/admin" className="flex items-center gap-3 px-3 py-2.5 bg-[#1E293B] text-white rounded-[8px] font-medium transition-colors">
+            <BarChart3 className="h-5 w-5 text-[#06B6D4]" /> Dashboard
+          </Link>
+          
+          <div className="pt-4 mt-4 border-t border-slate-800/50 mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">Live Ops</div>
+          
+          <Link href="/operations/ops/dispatch" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Activity className="h-5 w-5" /> Live Dispatch
+            <span className="ml-auto bg-[#DC2626] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+          </Link>
+          <Link href="/admin/zones" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Map className="h-5 w-5" /> Heatmap & Zones
+          </Link>
+          
+          <div className="pt-4 mt-4 border-t border-slate-800/50 mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">Management</div>
+          
+          <Link href="/admin/bookings" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Briefcase className="h-5 w-5" /> Bookings
+          </Link>
+          <Link href="/operations/ops/professionals" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Users className="h-5 w-5" /> Professionals
+          </Link>
+          <Link href="/admin/customers" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Users className="h-5 w-5" /> Customers
+          </Link>
+          <Link href="/admin/services" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Tag className="h-5 w-5" /> Service Catalog
+          </Link>
+          <Link href="/admin/coupons" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Tag className="h-5 w-5" /> Coupons & Promos
+          </Link>
+          <Link href="/admin/payments" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <CreditCard className="h-5 w-5" /> Finance & Payouts
+          </Link>
+          
+          <div className="pt-4 mt-4 border-t border-slate-800/50 mb-2 px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">Security & System</div>
+          
+          <Link href="/admin/roles" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <ShieldCheck className="h-5 w-5" /> Roles & Perms
+          </Link>
+          <Link href="/admin/audit-logs" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <ShieldCheck className="h-5 w-5" /> Audit Logs
+          </Link>
+          <Link href="/admin/settings" className="flex items-center gap-3 px-3 py-2.5 hover:bg-[#1E293B] hover:text-white rounded-[8px] font-medium transition-colors">
+            <Settings className="h-5 w-5" /> System Settings
+          </Link>
+        </nav>
       </aside>
 
-      {/* Main Admin Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* Main Area */}
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-[#F1F5F9]">
         {/* Top Header */}
-        <header className="h-16 flex items-center justify-between px-6 bg-white border-b border-slate-200 shrink-0">
-          <div className="flex items-center w-full max-w-md">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <header className="bg-white border-b border-[#E2E8F0] h-[72px] flex items-center justify-between px-8 shrink-0 sticky top-0 z-40">
+          <div className="flex-1">
+            <div className="relative max-w-md hidden lg:block">
               <input 
                 type="text" 
-                placeholder="Search bookings, professionals, or customers..." 
-                className="w-full pl-10 pr-4 py-2 bg-slate-100 border-transparent rounded-md text-sm focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                placeholder="Search bookings, users, or professionals (CMD+K)" 
+                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] px-4 py-2 rounded-[8px] text-[14px] focus:outline-none focus:border-[#2563EB] transition-colors"
               />
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-500 hover:text-slate-700">
+          <div className="flex items-center gap-6">
+            <button className="relative text-[#64748B] hover:text-[#0F172A] transition-colors">
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 border-2 border-white"></span>
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-[#DC2626] border-2 border-white rounded-full"></span>
             </button>
-            <div className="h-8 w-8 rounded-full bg-[#0B2D8F] text-white flex items-center justify-center text-sm font-bold">
-              AD
+            <div className="flex items-center gap-3 border-l border-[#E2E8F0] pl-6">
+              <div className="text-right hidden sm:block">
+                <p className="text-[14px] font-bold text-[#0F172A]">Super Admin</p>
+                <p className="text-[12px] text-[#64748B]">System Control</p>
+              </div>
+              <div className="h-9 w-9 rounded-[8px] bg-[#0F172A] text-white flex items-center justify-center text-[14px] font-bold">
+                SA
+              </div>
             </div>
           </div>
         </header>
-        
-        {/* Scrollable Dashboard Area */}
-        <main className="flex-1 overflow-auto p-8">
-          <div className="max-w-[1600px] mx-auto">
-            {children}
-          </div>
-        </main>
-      </div>
+
+        {/* Content */}
+        <div className="p-8">
+          {children}
+        </div>
+      </main>
     </div>
   )
 }

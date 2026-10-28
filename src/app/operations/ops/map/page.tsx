@@ -1,110 +1,94 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Radio, Users, MapPin, Zap, RefreshCw, Video } from 'lucide-react';
+import { LiveTrackingMap } from '@/components/tracking/LiveTrackingMap';
 import { apiClient } from '@/lib/apiClient';
 
-export default function MapPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+export default function OperationsMapPage() {
+  const [selectedCity, setSelectedCity] = useState('Delhi NCR');
+  const [activeProsCount, setActiveProsCount] = useState(0);
+  const [activeBookingsCount, setActiveBookingsCount] = useState(0);
 
-  // Real Django API Integration via Proxy
   useEffect(() => {
-    const fetchRealData = async () => {
+    const fetchCounts = async () => {
       try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
+        const [pros, bookings]: any = await Promise.all([
+          apiClient('professionals/').catch(() => []),
+          apiClient('bookings/').catch(() => []),
+        ]);
+        const pList = Array.isArray(pros) ? pros : pros?.results || [];
+        const bList = Array.isArray(bookings) ? bookings : bookings?.results || [];
+        setActiveProsCount(pList.length);
+        setActiveBookingsCount(bList.filter((b: any) => b.status === 'IN_PROGRESS' || b.status === 'CONFIRMED').length);
+      } catch (e) {
+        console.warn('Telemetry count error:', e);
       }
     };
-    fetchRealData();
+    fetchCounts();
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div className="h-screen flex flex-col bg-[#F8FAFC]">
+      {/* Top Controls */}
+      <header className="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between z-10">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Map</h1>
+          <Link
+            href="/operations/ops"
+            className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-bold text-slate-900">Live Field Operations GPS Map</h1>
+              <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                Live Telemetry
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">Tracking active partners & in-flight customer bookings</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <select
+            value={selectedCity}
+            onChange={(e) => setSelectedCity(e.target.value)}
+            className="text-xs font-bold p-2 rounded-xl border border-slate-300 bg-white text-slate-800"
+          >
+            <option value="Delhi NCR">Delhi NCR Micro-Cluster</option>
+            <option value="Bangalore">Bangalore South & Tech Parks</option>
+            <option value="Pune">Pune Cluster</option>
+          </select>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Map</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
-            </div>
+      {/* Full-bleed Map */}
+      <div className="flex-1 w-full relative">
+        <LiveTrackingMap
+          customerLocation={{ lat: 28.5355, lng: 77.3910 }}
+          professionalLocation={{ lat: 28.5420, lng: 77.3970 }}
+        />
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+        {/* Floating Cluster Legend */}
+        <div className="absolute bottom-6 left-6 z-20 bg-white/95 backdrop-blur-md border border-slate-200 p-4 rounded-2xl shadow-xl space-y-2 text-xs">
+          <span className="font-bold text-slate-900 block mb-1">Active Cluster Telemetry</span>
+          <div className="flex items-center gap-2 text-slate-600">
+            <span className="w-3 h-3 rounded-full bg-emerald-600" />
+            <span>{activeProsCount} Verified Pros Active</span>
+          </div>
+          <div className="flex items-center gap-2 text-slate-600">
+            <span className="w-3 h-3 rounded-full bg-amber-500" />
+            <span>{activeBookingsCount} Active Bookings In-Flight</span>
+          </div>
+          <div className="flex items-center gap-2 text-slate-600">
+            <span className="w-3 h-3 rounded-full bg-purple-600" />
+            <span>Pronto Verified Bodycam Encrypted Streams</span>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

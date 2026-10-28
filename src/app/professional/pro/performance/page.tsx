@@ -1,74 +1,118 @@
-import * as React from "react"
-import { Card, CardContent } from "@/components/ui/Card"
-import { Star, ThumbsUp, MessageSquare, AlertCircle } from "lucide-react"
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Award, ArrowLeft, Star, TrendingUp, CheckCircle2, ShieldCheck, Zap, Video, Loader2 } from 'lucide-react';
+import { apiClient } from '@/lib/apiClient';
 
 export default function ProfessionalPerformancePage() {
+  const router = useRouter();
+
+  const [pro, setPro] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPerformance = async () => {
+      try {
+        setLoading(true);
+        const data: any = await apiClient('professionals/me/').catch(() => null);
+        setPro(data);
+      } catch (e) {
+        console.warn('Performance fetch error:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPerformance();
+  }, []);
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-[28px] font-bold text-[#0F172A] tracking-tight">Performance metrics</h1>
-          <p className="text-[15px] text-[#475569] mt-1">See how customers rate your service.</p>
-        </div>
-      </div>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Jobs
+        </button>
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card className="border-[#2563EB] bg-blue-50/50">
-          <CardContent className="p-6 text-center">
-            <Star className="h-10 w-10 text-[#F59E0B] mx-auto mb-3" />
-            <p className="text-[14px] font-semibold text-[#0F172A] uppercase tracking-wider mb-1">Average Rating</p>
-            <h2 className="text-[40px] font-bold text-[#0F172A]">4.88</h2>
-            <p className="text-[13px] text-slate-500 mt-2">Based on 142 reviews</p>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-slate-200">
-          <CardContent className="p-6 text-center">
-            <ThumbsUp className="h-10 w-10 text-[#16A34A] mx-auto mb-3" />
-            <p className="text-[14px] font-semibold text-[#0F172A] uppercase tracking-wider mb-1">Acceptance Rate</p>
-            <h2 className="text-[40px] font-bold text-[#0F172A]">94%</h2>
-            <p className="text-[13px] text-green-600 font-medium mt-2">Excellent standing</p>
-          </CardContent>
-        </Card>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-amber-50 text-amber-700 rounded-xl">
+                <Award className="w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-slate-900">Partner Scorecard & Ranking</h1>
+                <p className="text-xs text-slate-500">Tier status, dispatch priority weight, and quality metrics.</p>
+              </div>
+            </div>
 
-        <Card className="border-slate-200">
-          <CardContent className="p-6 text-center">
-            <AlertCircle className="h-10 w-10 text-orange-500 mx-auto mb-3" />
-            <p className="text-[14px] font-semibold text-[#0F172A] uppercase tracking-wider mb-1">Cancellation Rate</p>
-            <h2 className="text-[40px] font-bold text-[#0F172A]">2.1%</h2>
-            <p className="text-[13px] text-slate-500 mt-2">Target: Below 5%</p>
-          </CardContent>
-        </Card>
-      </div>
+            <span className="px-3 py-1 bg-amber-100 text-amber-900 font-black text-xs rounded-full border border-amber-200">
+              Diamond Elite Tier
+            </span>
+          </div>
 
-      <div className="mt-4">
-        <h2 className="text-[20px] font-bold text-[#0F172A] mb-4 border-b border-slate-200 pb-2">Recent Customer Reviews</h2>
-        <div className="flex flex-col gap-4">
-          {[
-            { name: "Anjali Sharma", date: "Oct 5, 2026", rating: 5, comment: "Rahul was very professional and fixed the AC leak within 20 minutes. Highly recommended." },
-            { name: "Vikram S.", date: "Oct 2, 2026", rating: 5, comment: "Arrived exactly on time. Cleaned up after the work was done." },
-            { name: "Neha G.", date: "Sep 28, 2026", rating: 4, comment: "Good service, but the spare part took a bit long to procure." },
-          ].map((review, i) => (
-            <Card key={i} className="border-slate-200">
-              <CardContent className="p-5">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-bold text-[#0F172A]">{review.name}</h4>
-                    <span className="text-[12px] text-slate-500">{review.date}</span>
-                  </div>
-                  <div className="flex text-[#F59E0B]">
-                    {[...Array(review.rating)].map((_, j) => <Star key={j} className="h-4 w-4 fill-current" />)}
-                  </div>
-                </div>
-                <p className="text-[14px] text-slate-700 mt-2 flex items-start gap-2">
-                  <MessageSquare className="h-4 w-4 text-slate-400 mt-0.5 shrink-0" />
-                  "{review.comment}"
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+          {/* Metric Cards */}
+          <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Customer Rating</span>
+              <div className="text-2xl font-black text-amber-600 flex items-center gap-1">
+                <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+                <span>{pro?.rating || '4.92'}</span>
+              </div>
+              <p className="text-[11px] text-slate-500">Top 3% of technicians in cluster</p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">15m Arrival SLA</span>
+              <div className="text-2xl font-black text-emerald-600">
+                98.4%
+              </div>
+              <p className="text-[11px] text-slate-500">Average ETA: 12.2 mins</p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Job Acceptance</span>
+              <div className="text-2xl font-black text-slate-900">
+                97.1%
+              </div>
+              <p className="text-[11px] text-slate-500">Accepted within 30 seconds</p>
+            </div>
+
+            <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Pronto Cam Compliance</span>
+              <div className="text-2xl font-black text-purple-600">
+                100%
+              </div>
+              <p className="text-[11px] text-slate-500">Zero protocol infractions</p>
+            </div>
+          </div>
+
+          {/* Weekly Incentive Eligibility */}
+          <div className="p-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl shadow space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-xs uppercase tracking-wider">Weekly Excellence Bonus</span>
+              <span className="text-sm font-black bg-white/20 px-2.5 py-0.5 rounded-full">₹3,000 Extra</span>
+            </div>
+            <p className="text-xs text-white/90">
+              Complete 25 5-star jobs this week to claim your direct bank bonus. You are currently at 19/25.
+            </p>
+            <div className="w-full h-2 bg-white/30 rounded-full overflow-hidden">
+              <div className="w-[76%] h-full bg-white rounded-full" />
+            </div>
+          </div>
+
+          <div className="pt-2 flex justify-between items-center text-xs text-slate-500">
+            <span>Next Tier Evaluation: Monday 06:00 AM</span>
+            <Link href="/professional/pro/reviews" className="text-[#059669] font-bold hover:underline">
+              View Customer Reviews →
+            </Link>
+          </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

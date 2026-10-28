@@ -1,102 +1,174 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { LifeBuoy, ArrowLeft, PhoneCall, AlertTriangle, Send, CheckCircle2, ShieldAlert, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function SupportPage() {
+export default function ProfessionalSupportPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [incidentType, setIncidentType] = useState('safety');
-  const [description, setDescription] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
+  const [issueType, setIssueType] = useState('DOORSTEP_UNREACHABLE');
+  const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [ticketCreated, setTicketCreated] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const issues = [
+    { id: 'DOORSTEP_UNREACHABLE', label: 'Customer Not Opening Door / Phone Unreachable' },
+    { id: 'NO_END_OTP', label: 'Job Finished But Customer Refuses to Share End OTP' },
+    { id: 'SCOPE_DISPUTE', label: 'Customer Demanding Free Extra Work Outside Package' },
+    { id: 'PAYMENT_WALLET', label: 'Wallet Payout Delay / Bank Withdrawal Failure' },
+    { id: 'SAFETY_SOS', label: 'Physical Threat / Safety Concern (Priority SOS)' },
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!description.trim()) return;
+
     try {
-      await apiClient('incidents/report/', { 
-        method: 'POST', 
-        body: { type: incidentType, description } 
+      setLoading(true);
+      setError(null);
+
+      const label = issues.find((i) => i.id === issueType)?.label || issueType;
+      const res: any = await apiClient('support/tickets/', {
+        method: 'POST',
+        body: {
+          subject: `[PARTNER DESK] ${label}`,
+          priority: issueType === 'SAFETY_SOS' ? 'CRITICAL' : 'HIGH',
+          description: description.trim(),
+        },
       });
-      alert('Incident reported successfully. Our team will contact you shortly.');
-      setDescription('');
+
+      setTicketCreated(res);
     } catch (err: any) {
-      alert("Failed to report incident: " + err.message);
+      setError(err?.message || 'Failed to submit partner assistance request.');
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Support</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Jobs
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+                <LifeBuoy className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Support</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/support/tickets/</code></p>
+                <h1 className="text-lg font-bold text-slate-900">Partner Fleet Support Desk</h1>
+                <p className="text-xs text-slate-500">Instant operations assistance for on-ground field difficulties.</p>
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Incident Type</label>
-                <select 
-                  value={incidentType}
-                  onChange={(e) => setIncidentType(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none"
+            <a
+              href="tel:1800-YETZO-PRO"
+              className="px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 font-bold rounded-xl text-xs flex items-center gap-1.5 hover:bg-rose-100 transition"
+            >
+              <PhoneCall className="w-3.5 h-3.5" />
+              <span>SOS Line</span>
+            </a>
+          </div>
+
+          {error && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {ticketCreated ? (
+            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+              <h2 className="text-sm font-bold text-slate-900">
+                Ticket #{ticketCreated.ticket_number} Created
+              </h2>
+              <p className="text-xs text-slate-600">
+                Our Fleet Dispatch Commander has received your on-ground alert. Expect a call within 3 minutes.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() => router.push('/professional/pro/jobs')}
+                  className="px-4 py-2 bg-[#059669] text-white font-bold rounded-xl text-xs"
                 >
-                  <option value="safety">Safety Concern</option>
-                  <option value="fraud">Fraud / Fake Customer</option>
-                  <option value="payment">Payment Issue</option>
-                  <option value="other">Other</option>
-                </select>
+                  Return to Active Jobs
+                </button>
               </div>
-              
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Description</label>
-                <textarea 
+                <label className="block font-bold text-slate-700 mb-2">Select Issue Category *</label>
+                <div className="space-y-2">
+                  {issues.map((i) => (
+                    <div
+                      key={i.id}
+                      onClick={() => setIssueType(i.id)}
+                      className={`p-3 rounded-xl border-2 cursor-pointer transition flex items-center justify-between ${
+                        issueType === i.id
+                          ? 'border-[#059669] bg-emerald-50/40 text-slate-900 font-bold'
+                          : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                      }`}
+                    >
+                      <span>{i.label}</span>
+                      <div
+                        className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                          issueType === i.id ? 'border-[#059669] bg-[#059669]' : 'border-slate-300'
+                        }`}
+                      >
+                        {issueType === i.id && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Describe the Situation / Customer Name / Address *
+                </label>
+                <textarea
+                  rows={4}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Please describe the incident in detail..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 h-32 resize-none focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="Provide complete on-ground details so our ops team can intervene immediately..."
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  required
                 />
               </div>
 
-              <button 
-                onClick={handleSubmit}
-                disabled={!description || isSubmitting}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg shadow-red-600/20 disabled:opacity-50"
+              <button
+                type="submit"
+                disabled={loading || !description.trim()}
+                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {isSubmitting ? 'Reporting...' : 'Report Urgent Incident'}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Transmitting Dispatch Alert...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Submit Fleet Support Ticket</span>
+                  </>
+                )}
               </button>
-            </div>
-          </div>
+            </form>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

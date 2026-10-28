@@ -1,110 +1,204 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft, Tag, Check, AlertCircle, Percent, Sparkles, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
+import { useBookingStore } from '@/store/useBookingStore';
 
-export default function CouponPage() {
+interface CouponItem {
+  id: string;
+  code: string;
+  discount_type: 'PERCENTAGE' | 'FLAT';
+  discount_value: number;
+  min_order_value?: number;
+  max_discount_amount?: number;
+  description?: string;
+  valid_until?: string;
+}
+
+function CouponPageContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
+  const [coupons, setCoupons] = useState<CouponItem[]>([]);
+  const [inputCode, setInputCode] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Real Django API Integration via Proxy
   useEffect(() => {
-    const fetchRealData = async () => {
+    const fetchCoupons = async () => {
       try {
-        const payload = await apiClient('/bookings/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
+        setLoading(true);
+        const data = await apiClient<any>('admin-core/coupons/');
+        const list = Array.isArray(data) ? data : data?.results || [];
+        setCoupons(list);
+      } catch (err) {
+        console.warn('Could not fetch coupons list', err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-    fetchRealData();
+    fetchCoupons();
   }, []);
 
+  const handleApply = async (codeToApply: string) => {
+    if (!codeToApply.trim()) return;
+    try {
+      setApplying(true);
+      setError(null);
+      setSuccessMsg(null);
+
+      const res = await apiClient<any>('admin-core/coupons/apply/', {
+        method: 'POST',
+        body: { code: codeToApply.trim().toUpperCase() },
+      });
+
+      setAppliedCoupon(res.code || codeToApply.toUpperCase());
+      setSuccessMsg(`Coupon ${res.code || codeToApply} applied successfully!`);
+
+      sessionStorage.setItem('applied_coupon', JSON.stringify(res));
+      useBookingStore.getState().setCoupon(res);
+
+      setTimeout(() => {
+        router.back();
+      }, 1000);
+    } catch (err: any) {
+      setError(err?.message || 'Invalid or expired coupon code.');
+    } finally {
+      setApplying(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Coupon</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Checkout
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Coupon</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/bookings/</code></p>
-              </div>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <Tag className="w-6 h-6" />
             </div>
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">Apply Promo Code</h1>
+              <p className="text-xs text-slate-500">Save extra on your home services with active Yetzo vouchers.</p>
+            </div>
+          </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+          {error && (
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+              <Check className="w-4 h-4 shrink-0" />
+              <span>{successMsg}</span>
+            </div>
+          )}
+
+          {/* Coupon Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleApply(inputCode);
+            }}
+            className="flex gap-2"
+          >
+            <input
+              type="text"
+              value={inputCode}
+              onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+              placeholder="ENTER PROMO CODE"
+              className="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-xs font-bold uppercase tracking-wider text-slate-900 placeholder:normal-case placeholder:font-normal"
+            />
+            <button
+              type="submit"
+              disabled={applying || !inputCode.trim()}
+              className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold rounded-xl transition disabled:opacity-50 flex items-center gap-2"
+            >
+              {applying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
+            </button>
+          </form>
+
+          {/* Available Coupons List */}
+          <div className="space-y-4 pt-2">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              Available Offers
+            </h2>
+
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2].map((i) => (
+                  <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />
+                ))}
               </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
+            ) : coupons.length === 0 ? (
+              <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                <Tag className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-xs font-medium text-slate-500">No public promotional coupons currently active.</p>
+                <p className="text-[11px] text-slate-400 mt-1">Check back later or enter your partner referral code above.</p>
+              </div>
             ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
+              <div className="space-y-3">
+                {coupons.map((coupon) => (
+                  <div
+                    key={coupon.id}
+                    className="p-4 border border-slate-200 hover:border-emerald-300 rounded-2xl transition bg-gradient-to-r from-white to-slate-50 flex items-center justify-between gap-4"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 bg-emerald-100 text-emerald-900 font-extrabold text-xs rounded-lg tracking-wider border border-emerald-200">
+                          {coupon.code}
+                        </span>
+                        <span className="text-xs font-bold text-slate-900">
+                          {coupon.discount_type === 'PERCENTAGE'
+                            ? `${coupon.discount_value}% OFF`
+                            : `₹${coupon.discount_value} FLAT OFF`}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500">
+                        {coupon.description || (coupon.min_order_value ? `On orders above ₹${coupon.min_order_value}` : 'Valid on all services')}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleApply(coupon.code)}
+                      disabled={applying || appliedCoupon === coupon.code}
+                      className={`px-4 py-2 text-xs font-bold rounded-xl transition ${
+                        appliedCoupon === coupon.code
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-slate-900 hover:bg-slate-800 text-white'
+                      }`}
+                    >
+                      {appliedCoupon === coupon.code ? 'Applied' : 'Apply'}
+                    </button>
                   </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
+                ))}
               </div>
             )}
           </div>
         </div>
-      </main>
+      </div>
     </div>
+  );
+}
+
+export default function CouponPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500 font-semibold text-sm">Loading...</div>}>
+      <CouponPageContent />
+    </Suspense>
   );
 }

@@ -22,6 +22,17 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     ...options.headers,
   };
 
+  if (!headers["Authorization"]) {
+    if (options.token) {
+      headers["Authorization"] = `Bearer ${options.token}`;
+    } else if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("access_token");
+      if (storedToken) {
+        headers["Authorization"] = `Bearer ${storedToken}`;
+      }
+    }
+  }
+
   // Token is now injected securely by the Next.js /api/proxy route via HttpOnly cookies
   const fetchConfig: RequestInit = {
     method: options.method || "GET",
@@ -31,7 +42,7 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
   };
 
   if (options.body && options.method !== "GET") {
-    fetchConfig.body = JSON.stringify(options.body);
+    fetchConfig.body = typeof options.body === "string" ? options.body : JSON.stringify(options.body);
   }
 
   try {

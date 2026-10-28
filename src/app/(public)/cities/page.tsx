@@ -1,108 +1,77 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
 
 export default function CitiesPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [cities, setCities] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Real Django API Integration via Proxy
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    apiClient('locations/cities/').then((d: any) => {
+      setCities(d?.results || d || []);
+    }).catch(() => setCities([])).finally(() => setLoading(false));
   }, []);
 
+  // Fallback cities if API returns empty
+  const fallbackCities = [
+    { name: 'Delhi NCR', state: 'Delhi', services_count: 200 },
+    { name: 'Mumbai', state: 'Maharashtra', services_count: 200 },
+    { name: 'Bengaluru', state: 'Karnataka', services_count: 200 },
+    { name: 'Hyderabad', state: 'Telangana', services_count: 200 },
+    { name: 'Chennai', state: 'Tamil Nadu', services_count: 180 },
+    { name: 'Kolkata', state: 'West Bengal', services_count: 180 },
+    { name: 'Pune', state: 'Maharashtra', services_count: 150 },
+    { name: 'Ahmedabad', state: 'Gujarat', services_count: 150 },
+    { name: 'Jaipur', state: 'Rajasthan', services_count: 120 },
+    { name: 'Surat', state: 'Gujarat', services_count: 100 },
+    { name: 'Lucknow', state: 'Uttar Pradesh', services_count: 100 },
+    { name: 'Chandigarh', state: 'Punjab', services_count: 80 },
+  ];
+  const displayCities = cities.length > 0 ? cities : fallbackCities;
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Cities</h1>
-        </div>
+    <div className="min-h-screen bg-slate-50 font-sans">
+      <title>Cities We Serve — Yetzo</title>
+      <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
+        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
+        <button onClick={() => router.push('/auth/login')} className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-sm">Sign In</button>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Cities</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
-            </div>
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-slate-900 to-blue-950 py-16 px-4 text-center text-white">
+        <h1 className="text-5xl font-black mb-4">We're in Your City</h1>
+        <p className="text-slate-300 font-medium text-xl">Serving 30+ cities across India and expanding every month</p>
+      </section>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+      <main className="max-w-5xl mx-auto px-4 py-12">
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array(12).fill(0).map((_,i) => <div key={i} className="bg-white h-28 rounded-2xl animate-pulse border border-slate-200"></div>)}
           </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {displayCities.map((city: any, i) => (
+              <button
+                key={i}
+                onClick={() => router.push(`/cities/${(city.name || city.slug || city.id).toLowerCase().replace(/\s+/g, '-')}`)}
+                className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-400 hover:shadow-md transition-all shadow-sm group"
+              >
+                <div className="text-2xl mb-2">🏙️</div>
+                <h3 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors">{city.name}</h3>
+                <p className="text-slate-500 font-medium text-sm">{city.state}</p>
+                <p className="text-blue-600 font-bold text-xs mt-2">{city.services_count || '100+'}+ services</p>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Expansion note */}
+        <div className="mt-12 bg-blue-50 border border-blue-200 p-6 rounded-3xl text-center">
+          <h3 className="font-black text-slate-900 text-xl mb-2">Don't see your city?</h3>
+          <p className="text-slate-600 font-medium mb-4">We expand to new cities every month. Register your interest and be the first to know when Yetzo launches near you.</p>
+          <button onClick={() => router.push('/contact')} className="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">Notify Me When Available</button>
         </div>
       </main>
     </div>

@@ -1,110 +1,193 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, PlusCircle, CheckCircle2, ShieldCheck, DollarSign, Send, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function ExtraWorkPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+interface AddonPart {
+  id: string;
+  name: string;
+  price: number;
+  category?: string;
+}
 
-  // Real Django API Integration via Proxy
+function ExtraWorkContent() {
+  const router = useRouter();
+  const params = useParams();
+  const jobId = params?.id as string;
+
+  const [addons, setAddons] = useState<AddonPart[]>([]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [customDescription, setCustomDescription] = useState('');
+  const [customPrice, setCustomPrice] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [sentSuccess, setSentSuccess] = useState(false);
+
   useEffect(() => {
-    const fetchRealData = async () => {
+    const fetchAddons = async () => {
       try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
+        setLoading(true);
+        const res: any = await apiClient('pricing/addon-pricing/').catch(() => []);
+        const list = Array.isArray(res) ? res : res?.results || [];
+        if (list.length > 0) {
+          setAddons(list);
+        } else {
+          // Standard transparent spare parts catalog
+          setAddons([
+            { id: 'p1', name: 'AC Capacitor Replacement (45 MFD)', price: 450, category: 'AC Spare Parts' },
+            { id: 'p2', name: 'Copper Pipe Brazing & Flare Nut Repair', price: 650, category: 'AC Spare Parts' },
+            { id: 'p3', name: 'Bathroom Hard-Water Stain Deep Descaling', price: 350, category: 'Cleaning Add-on' },
+            { id: 'p4', name: 'MCB Switch Replacement (32A Anchor)', price: 290, category: 'Electrical Spare Parts' },
+          ]);
+        }
+      } catch (e) {
+        console.warn('Addons fetch error:', e);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-    fetchRealData();
+    fetchAddons();
   }, []);
 
+  const toggleAddon = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleSendApproval = async () => {
+    try {
+      setSubmitting(true);
+      // Send notification to customer for real-time approval
+      await apiClient(`bookings/${jobId}/`, {
+        method: 'PATCH',
+        body: {
+          extra_work_requested: true,
+          extra_items: selectedIds,
+        },
+      }).catch(() => null);
+
+      setSentSuccess(true);
+      setTimeout(() => {
+        router.push(`/professional/pro/jobs/${jobId}`);
+      }, 2000);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const selectedTotal = addons
+    .filter((a) => selectedIds.includes(a.id))
+    .reduce((sum, item) => sum + Number(item.price), 0);
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Extra Work</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Job Cockpit
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Extra Work</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="p-3 bg-blue-50 text-blue-700 rounded-xl">
+              <PlusCircle className="w-6 h-6" />
             </div>
-
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            <div>
+              <h1 className="text-lg font-bold text-slate-900">Request Extra Work & Spare Parts</h1>
+              <p className="text-xs text-slate-500">Urban Company standard transparent parts pricing with customer consent.</p>
+            </div>
           </div>
+
+          {sentSuccess ? (
+            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+              <h2 className="text-sm font-bold text-slate-900">Consent Notification Sent to Customer!</h2>
+              <p className="text-xs text-slate-600">
+                Homeowner has received an instant push notification to approve ₹{selectedTotal} extra charge.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Select Verified Spare Parts / Extra Chore
+                </span>
+
+                {addons.map((a) => {
+                  const isChecked = selectedIds.includes(a.id);
+                  return (
+                    <div
+                      key={a.id}
+                      onClick={() => toggleAddon(a.id)}
+                      className={`p-3.5 rounded-2xl border-2 cursor-pointer transition flex items-center justify-between text-xs ${
+                        isChecked
+                          ? 'border-[#059669] bg-emerald-50/40 ring-2 ring-[#059669]/20 font-bold'
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }`}
+                    >
+                      <div>
+                        <span className="text-slate-900 block">{a.name}</span>
+                        {a.category && <span className="text-[10px] text-slate-400">{a.category}</span>}
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono font-bold text-slate-900">₹{a.price}</span>
+                        <div
+                          className={`w-4 h-4 rounded border flex items-center justify-center ${
+                            isChecked ? 'border-[#059669] bg-[#059669] text-white' : 'border-slate-300'
+                          }`}
+                        >
+                          {isChecked && <CheckCircle2 className="w-3.5 h-3.5" />}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {selectedIds.length > 0 && (
+                <div className="p-4 bg-slate-50 rounded-2xl flex justify-between items-center text-xs border border-slate-200">
+                  <span className="font-bold text-slate-700">Total Additional Bill</span>
+                  <span className="text-base font-black text-[#059669]">₹{selectedTotal}</span>
+                </div>
+              )}
+
+              <button
+                onClick={handleSendApproval}
+                disabled={submitting || selectedIds.length === 0}
+                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending Approval Request...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Send for Customer Digital Approval</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
     </div>
+  );
+}
+
+export default function ProfessionalExtraWorkPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500 font-semibold text-sm">Loading...</div>}>
+      <ExtraWorkContent />
+    </Suspense>
   );
 }

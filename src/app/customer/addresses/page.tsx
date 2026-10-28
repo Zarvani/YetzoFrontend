@@ -1,143 +1,307 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/apiClient';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, X, MapPin, Building, Home, Briefcase, Trash2, CheckCircle2 } from 'lucide-react';
 
-export default function SavedAddressesScreen() {
+export default function AddressesPage() {
   const router = useRouter();
   const [addresses, setAddresses] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  const [newAddress, setNewAddress] = useState({ label: '', flat: '', area: '', landmark: '' });
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchAddresses = async () => {
-    try {
-      const payload = await apiClient<any>('addresses/');
-      setAddresses(payload?.results || payload || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Form State
+  const [form, setForm] = useState({
+    house_flat: '',
+    building: '',
+    street: '',
+    landmark: '',
+    city: 'New Delhi',
+    state: 'Delhi NCR',
+    pincode: '110001',
+    address_type: 'HOME',
+  });
 
   useEffect(() => {
     fetchAddresses();
   }, []);
 
-  const handleAdd = async () => {
+  const fetchAddresses = async () => {
+    setLoading(true);
     try {
-      await apiClient('addresses/', { method: 'POST', body: newAddress });
-      setIsAdding(false);
-      setNewAddress({ label: '', flat: '', area: '', landmark: '' });
-      fetchAddresses();
+      const data: any = await apiClient('locations/addresses/');
+      setAddresses(data?.results || (Array.isArray(data) ? data : []));
     } catch (e) {
-      alert("Failed to add address");
+      setAddresses([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleAddAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.house_flat || !form.street || !form.city || !form.pincode) {
+      setError('Please fill in Flat/House, Street, City, and Pincode.');
+      return;
+    }
+
     try {
-      await apiClient(`addresses/${id}/`, { method: 'DELETE' });
+      setSaving(true);
+      setError(null);
+      await apiClient('locations/addresses/', {
+        method: 'POST',
+        body: form,
+      });
+      setShowModal(false);
+      setForm({
+        house_flat: '',
+        building: '',
+        street: '',
+        landmark: '',
+        city: 'New Delhi',
+        state: 'Delhi NCR',
+        pincode: '110001',
+        address_type: 'HOME',
+      });
+      fetchAddresses();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to save address.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteAddress = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this address?')) return;
+    try {
+      await apiClient(`locations/addresses/${id}/`, { method: 'DELETE' });
       fetchAddresses();
     } catch (e) {
-      alert("Failed to delete address");
+      alert('Failed to delete address');
     }
+  };
+
+  const getIcon = (type: string) => {
+    if (type === 'HOME') return <Home className="w-5 h-5 text-blue-600" />;
+    if (type === 'WORK') return <Briefcase className="w-5 h-5 text-purple-600" />;
+    return <MapPin className="w-5 h-5 text-emerald-600" />;
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center sticky top-0 z-50">
-        <button onClick={() => router.back()} className="mr-4 text-slate-600 hover:text-slate-900">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      <header className="bg-white px-4 py-5 sticky top-0 z-40 shadow-sm flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <h1 className="text-xl font-black text-slate-900">Saved Addresses</h1>
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-sm"
+        >
+          <Plus className="w-4 h-4" />
+          <span>Add New</span>
         </button>
-        <h1 className="text-lg font-bold text-slate-900">Saved Addresses</h1>
       </header>
 
-      <main className="max-w-xl mx-auto p-4 space-y-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-black text-slate-900">Your Addresses</h2>
-          <button 
-            onClick={() => setIsAdding(!isAdding)}
-            className="text-blue-600 font-bold text-sm bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors"
-          >
-            {isAdding ? 'Cancel' : '+ Add New'}
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {isAdding && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-            >
-              <div className="space-y-4">
-                <input type="text" placeholder="Label (e.g. Home, Office)" value={newAddress.label} onChange={e => setNewAddress({...newAddress, label: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                <input type="text" placeholder="Flat, Floor, Building" value={newAddress.flat} onChange={e => setNewAddress({...newAddress, flat: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                <input type="text" placeholder="Area, Sector, Locality" value={newAddress.area} onChange={e => setNewAddress({...newAddress, area: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                <input type="text" placeholder="Landmark (Optional)" value={newAddress.landmark} onChange={e => setNewAddress({...newAddress, landmark: e.target.value})} className="w-full border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-blue-500 outline-none" />
-                <button onClick={handleAdd} className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition-colors">
-                  Save Address
-                </button>
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+        {loading ? (
+          Array(3).fill(0).map((_, i) => (
+            <div key={i} className="bg-white p-5 rounded-2xl border border-slate-200 animate-pulse flex gap-4">
+              <div className="w-12 h-12 bg-slate-200 rounded-full shrink-0" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-24 bg-slate-200 rounded" />
+                <div className="h-3 w-48 bg-slate-200 rounded" />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {isLoading ? (
-           <div className="animate-pulse space-y-4">
-             <div className="h-32 bg-slate-200 rounded-2xl w-full"></div>
-             <div className="h-32 bg-slate-200 rounded-2xl w-full"></div>
-           </div>
-        ) : addresses.length === 0 && !isAdding ? (
-          <div className="text-center py-12 text-slate-500 font-medium bg-white rounded-2xl border border-slate-100">
-            No saved addresses found.
+            </div>
+          ))
+        ) : addresses.length === 0 ? (
+          <div className="bg-white rounded-3xl p-10 text-center border border-slate-200 shadow-sm">
+            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+              <MapPin className="w-8 h-8" />
+            </div>
+            <h3 className="font-black text-lg text-slate-900 mb-1">No addresses saved</h3>
+            <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">
+              Add your home, office, or apartment address to enable instant 15-minute dispatch and scheduled bookings.
+            </p>
+            <button
+              onClick={() => setShowModal(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-6 py-3 rounded-xl transition shadow-md shadow-blue-600/20"
+            >
+              Add Your First Address
+            </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {addresses.map((addr) => (
-              <motion.div key={addr.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex justify-between items-start">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.242-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 capitalize mb-1">{addr.label || 'Address'}</h4>
-                    <p className="text-sm text-slate-600 leading-relaxed">{addr.flat}, {addr.area}</p>
-                    {addr.landmark && <p className="text-xs text-slate-500 mt-1">Landmark: {addr.landmark}</p>}
-                  </div>
+          addresses.map((addr) => (
+            <div key={addr.id} className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm flex items-start gap-4 hover:border-blue-300 transition">
+              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center shrink-0 border border-slate-100">
+                {getIcon(addr.address_type)}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex justify-between items-start">
+                  <span className="font-extrabold text-xs uppercase tracking-wider text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded-md">
+                    {addr.address_type || 'HOME'}
+                  </span>
+                  <button onClick={() => deleteAddress(addr.id)} className="text-slate-400 hover:text-red-500 p-1.5 transition">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-                <button onClick={() => handleDelete(addr.id)} className="text-slate-400 hover:text-red-500 transition-colors bg-slate-50 p-2 rounded-full">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                </button>
-              </motion.div>
-            ))}
-          </div>
+                <p className="text-sm font-bold text-slate-900 mt-2">
+                  {addr.house_flat || addr.address_line_1}{addr.building ? `, ${addr.building}` : ''}
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">{addr.street}</p>
+                {addr.landmark && <p className="text-xs text-slate-400 mt-0.5">Landmark: {addr.landmark}</p>}
+                <p className="text-xs font-semibold text-slate-700 mt-1">
+                  {addr.city}, {addr.state} - {addr.pincode}
+                </p>
+              </div>
+            </div>
+          ))
         )}
       </main>
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 w-full bg-white border-t border-slate-200 pb-safe z-50">
-        <div className="max-w-xl mx-auto flex justify-around p-2">
-          <button onClick={() => router.push('/customer/home')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span className="text-[10px] font-bold">Home</span>
-          </button>
-          <button onClick={() => router.push('/customer/bookings')} className="flex flex-col items-center p-2 text-blue-600">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-            <span className="text-[10px] font-bold">Bookings</span>
-          </button>
-          <button onClick={() => router.push('/customer/account')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span className="text-[10px] font-bold">Account</span>
-          </button>
+      {/* Add Address Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-blue-600" />
+                <h3 className="text-lg font-black text-slate-900">Add New Address</h3>
+              </div>
+              <button onClick={() => setShowModal(false)} className="p-1.5 text-slate-400 hover:text-slate-700">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl font-medium">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleAddAddress} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-3 gap-2">
+                {['HOME', 'WORK', 'OTHER'].map((type) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => setForm({ ...form, address_type: type })}
+                    className={`py-2.5 rounded-xl font-bold border transition ${
+                      form.address_type === type
+                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">House / Flat / Floor No. *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Flat 402, Tower B"
+                  value={form.house_flat}
+                  onChange={(e) => setForm({ ...form, house_flat: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Apartment / Society Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Sunrise Greens Apartments"
+                  value={form.building}
+                  onChange={(e) => setForm({ ...form, building: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Street / Area / Sector *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Sector 62, Golf Course Ext Road"
+                  value={form.street}
+                  onChange={(e) => setForm({ ...form, street: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Nearby Landmark (Optional)</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Near Metro Pillar 142"
+                  value={form.landmark}
+                  onChange={(e) => setForm({ ...form, landmark: e.target.value })}
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">City *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.city}
+                    onChange={(e) => setForm({ ...form, city: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">State *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.state}
+                    onChange={(e) => setForm({ ...form, state: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Pincode *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.pincode}
+                    onChange={(e) => setForm({ ...form, pincode: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-600 text-slate-900 font-medium"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-3 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-md shadow-blue-600/20 disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Save Address'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </nav>
+      )}
     </div>
   );
 }
+

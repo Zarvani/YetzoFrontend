@@ -1,68 +1,212 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ShieldCheck, User, Phone, MapPin, Wrench, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 
-export default function PartnerRegistrationScreen() {
+export default function ProfessionalRegisterPage() {
   const router = useRouter();
-  const [isOnline, setIsOnline] = useState(true);
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('Delhi NCR');
+  const [trade, setTrade] = useState('AC & Appliance Repair');
+  const [experience, setExperience] = useState('3-5 Years');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phone || phone.length < 10) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const formattedPhone = phone.startsWith('+91') ? phone : `+91${phone}`;
+
+      const res = await fetch('/api/proxy/v1/auth/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          phone: formattedPhone,
+          password: 'PartnerDefaultSecurePass123!',
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (data.data?.access) {
+          localStorage.setItem('access_token', data.data.access);
+          localStorage.setItem('refresh_token', data.data.refresh);
+        }
+        router.push('/professional/pro/onboarding');
+      } else {
+        router.push('/professional/pro/onboarding');
+      }
+    } catch (err: any) {
+      router.push('/professional/pro/onboarding');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-24">
-      {/* Header */}
-      <header className="bg-slate-900 text-white px-4 py-5 flex items-center justify-between sticky top-0 z-50 shadow-md">
-        <div>
-           <h1 className="text-lg font-bold">Partner Registration</h1>
-           <p className="text-xs text-slate-400 mt-0.5">Partner Portal</p>
-        </div>
-        <div className="flex items-center gap-2 bg-slate-800 rounded-full px-3 py-1.5 border border-slate-700">
-           <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400' : 'bg-red-400'}`}></div>
-           <span className="text-xs font-bold">{isOnline ? 'Online' : 'Offline'}</span>
-        </div>
+    <div className="min-h-screen bg-slate-900 text-white flex flex-col font-sans">
+      <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur-md z-50">
+        <Link href="/" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-[#059669] rounded-lg flex items-center justify-center text-white font-black">Y</div>
+          <span className="font-black text-xl tracking-tight text-white">Yetzo Partner Network</span>
+        </Link>
+        <Link
+          href="/professional/pro/login"
+          className="text-xs font-bold text-slate-400 hover:text-white"
+        >
+          Sign In
+        </Link>
       </header>
 
-      <main className="max-w-xl mx-auto p-4 mt-4 space-y-6">
-        {/* Job Card Example */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 relative overflow-hidden">
-           <div className="absolute top-0 right-0 bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-bl-xl">New Request</div>
-           <h3 className="font-bold text-slate-900 text-lg mb-1">Deep House Cleaning</h3>
-           <p className="text-sm text-slate-500 mb-4">Andheri West, Mumbai • 5.2 km away</p>
-           
-           <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl mb-4 border border-slate-100">
-             <div>
-               <p className="text-xs text-slate-500 font-medium">Est. Payout</p>
-               <p className="font-black text-slate-900 text-lg">₹850</p>
-             </div>
-             <div className="text-right">
-               <p className="text-xs text-slate-500 font-medium">Time</p>
-               <p className="font-bold text-slate-900">Today, 2:00 PM</p>
-             </div>
-           </div>
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-lg bg-slate-800/80 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
+          <div className="mb-6">
+            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
+              Join Our Verified Fleet
+            </span>
+            <h1 className="text-2xl font-black text-white mb-1">Partner Onboarding Application</h1>
+            <p className="text-xs text-slate-400 font-medium">
+              Join 5,000+ top technicians earning high daily payouts with transparent Urban Company & Pronto rate cards.
+            </p>
+          </div>
 
-           <div className="flex gap-3">
-             <button className="flex-1 bg-white border-2 border-slate-200 text-slate-700 font-bold py-3 rounded-xl hover:bg-slate-50">Decline</button>
-             <button className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-600/20">Accept Job</button>
-           </div>
+          {error && (
+            <div className="bg-rose-500/10 text-rose-300 p-3.5 rounded-2xl mb-5 text-xs font-semibold flex items-center gap-2 border border-rose-500/20">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleRegister} className="space-y-4 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block font-bold text-slate-300 mb-1">First Name *</label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Ramesh"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-300 mb-1">Last Name</label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Kumar"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-300 mb-1">Mobile Number (For Job Dispatches) *</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">+91</span>
+                <input
+                  type="tel"
+                  maxLength={10}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+                  placeholder="9876543210"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block font-bold text-slate-300 mb-1">Operational City *</label>
+                <select
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                >
+                  <option value="Delhi NCR">Delhi NCR</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-300 mb-1">Primary Skill / Trade *</label>
+                <select
+                  value={trade}
+                  onChange={(e) => setTrade(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                >
+                  <option value="AC & Appliance Repair">AC & Appliance Repair</option>
+                  <option value="Deep Home Cleaning">Deep Home Cleaning</option>
+                  <option value="Electrician">Electrician</option>
+                  <option value="Plumber">Plumber</option>
+                  <option value="Carpenter">Carpenter</option>
+                  <option value="Home Painting">Home Painting</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-300 mb-1">Hands-on Trade Experience</label>
+              <select
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+              >
+                <option value="1-2 Years">1-2 Years</option>
+                <option value="3-5 Years">3-5 Years (Recommended)</option>
+                <option value="5-10 Years">5-10 Years (Senior Master)</option>
+                <option value="10+ Years">10+ Years (Master Certified)</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || phone.length < 10}
+              className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Submitting Application...</span>
+                </>
+              ) : (
+                <>
+                  <span>Submit & Start Verification</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center text-xs font-medium text-slate-400">
+            Already registered?{' '}
+            <Link href="/professional/pro/login" className="text-emerald-400 font-bold hover:underline">
+              Partner Sign In
+            </Link>
+          </div>
         </div>
       </main>
-
-      {/* Partner Bottom Nav */}
-      <nav className="fixed bottom-0 w-full bg-white border-t border-slate-200 pb-safe z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="max-w-xl mx-auto flex justify-around p-2">
-          <button onClick={() => router.push('/professional/pro')} className="flex flex-col items-center p-2 text-blue-600">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-            <span className="text-[10px] font-bold">Jobs</span>
-          </button>
-          <button onClick={() => router.push('/professional/pro/earnings')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span className="text-[10px] font-bold">Earnings</span>
-          </button>
-          <button onClick={() => router.push('/professional/pro/profile')} className="flex flex-col items-center p-2 text-slate-400 hover:text-slate-900">
-            <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span className="text-[10px] font-bold">Profile</span>
-          </button>
-        </div>
-      </nav>
     </div>
   );
 }

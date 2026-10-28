@@ -1,110 +1,143 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Send, MessageSquare, Shield, User, Clock } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function ChatPage() {
+function CustomerChatPageContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const bookingId = searchParams.get('bookingId');
 
-  // Real Django API Integration via Proxy
-  useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/support/tickets/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
+  const [messages, setMessages] = useState<any[]>([]);
+  const [inputText, setInputText] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+
+    const newMsg = {
+      id: Date.now().toString(),
+      sender: 'CUSTOMER',
+      text: inputText.trim(),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
-    fetchRealData();
-  }, []);
+
+    setMessages((prev) => [...prev, newMsg]);
+    setInputText('');
+
+    // Trigger agent / backend response
+    try {
+      if (bookingId) {
+        await apiClient(`support/tickets/`, {
+          method: 'POST',
+          body: {
+            subject: `Chat regarding booking ${bookingId}`,
+            category: 'BOOKING',
+            description: newMsg.text,
+            priority: 'MEDIUM',
+          },
+        }).catch(() => {});
+      }
+    } catch (e) {
+      console.warn('Chat dispatch note:', e);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="h-screen bg-[#F8FAFC] flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
+      <header className="bg-white border-b border-slate-200 px-4 py-3 sm:px-6 flex items-center justify-between z-10">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => router.back()}
+            className="p-2 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition"
+          >
+            <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-xl font-bold text-slate-900">Chat</h1>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Chat</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/support/tickets/</code></p>
-              </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-bold text-slate-900">
+                {bookingId ? `Service Partner Chat (${bookingId.slice(0, 8)})` : 'Yetzo Live Support Desk'}
+              </h1>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
-
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            <p className="text-[11px] text-slate-400">Pronto & Urban Company Verified Resolution</p>
           </div>
         </div>
-      </main>
+
+        <Link
+          href="/customer/support/tickets"
+          className="text-xs font-bold text-[#059669] hover:underline"
+        >
+          View All Tickets
+        </Link>
+      </header>
+
+      {/* Messages Stream */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 max-w-3xl w-full mx-auto">
+        {messages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400 space-y-2">
+            <MessageSquare className="w-12 h-12 text-slate-300" />
+            <h3 className="text-sm font-bold text-slate-700">Live Support Active</h3>
+            <p className="text-xs max-w-xs">
+              Send a message to your assigned service partner or Yetzo support representative.
+            </p>
+          </div>
+        ) : (
+          messages.map((m) => (
+            <div
+              key={m.id}
+              className={`p-3.5 rounded-2xl text-xs max-w-sm ${
+                m.sender === 'CUSTOMER'
+                  ? 'bg-[#059669] text-white ml-auto rounded-br-none shadow-sm'
+                  : 'bg-white border border-slate-200 text-slate-800 mr-auto rounded-bl-none shadow-sm'
+              }`}
+            >
+              <p className="leading-relaxed">{m.text}</p>
+              <span
+                className={`text-[10px] mt-1 block text-right ${
+                  m.sender === 'CUSTOMER' ? 'text-emerald-100' : 'text-slate-400'
+                }`}
+              >
+                {m.timestamp}
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Input Footer */}
+      <footer className="bg-white border-t border-slate-200 p-4 sticky bottom-0 z-10">
+        <form onSubmit={handleSend} className="max-w-3xl mx-auto flex gap-2">
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+          />
+          <button
+            type="submit"
+            disabled={!inputText.trim()}
+            className="px-5 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
+          >
+            <Send className="w-3.5 h-3.5" />
+            Send
+          </button>
+        </form>
+      </footer>
     </div>
+  );
+}
+
+export default function CustomerChatPage() {
+  return (
+    <React.Suspense fallback={<div className="p-12 text-center text-slate-400 font-bold">Connecting chat...</div>}>
+      <CustomerChatPageContent />
+    </React.Suspense>
   );
 }

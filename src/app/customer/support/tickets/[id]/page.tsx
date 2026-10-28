@@ -1,110 +1,186 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  ArrowLeft, Send, CheckCircle2, AlertCircle, 
+  User, ShieldCheck, Clock, MessageSquare 
+} from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function TicketsDetailPage() {
+function TicketDetailPageContent() {
+  const params = useParams();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const ticketId = params.id as string;
 
-  // Real Django API Integration via Proxy
+  const [ticket, setTicket] = useState<any>(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [replyText, setReplyText] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/support/tickets/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
-  }, []);
+    fetchTicketAndMessages();
+  }, [ticketId]);
+
+  const fetchTicketAndMessages = async () => {
+    try {
+      setLoading(true);
+      const [ticketRes, msgsRes]: any = await Promise.all([
+        apiClient(`support/tickets/${ticketId}/`).catch(() => null),
+        apiClient(`support/tickets/${ticketId}/messages/`).catch(() => ({ data: [] })),
+      ]);
+
+      setTicket(ticketRes?.data || ticketRes);
+      const mList = msgsRes?.data || (Array.isArray(msgsRes) ? msgsRes : []);
+      setMessages(mList);
+    } catch (e) {
+      console.warn('Ticket detail fetch error:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!replyText.trim()) return;
+
+    try {
+      setSending(true);
+      await apiClient(`support/tickets/${ticketId}/messages/`, {
+        method: 'POST',
+        body: { message: replyText.trim() },
+      });
+      setReplyText('');
+      fetchTicketAndMessages();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to send message');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
+        <div className="w-8 h-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-xs text-slate-500">Loading ticket thread...</p>
+      </div>
+    );
+  }
+
+  if (!ticket) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
+        <AlertCircle className="w-12 h-12 text-rose-500 mb-2" />
+        <h2 className="text-lg font-bold text-slate-900">Ticket Not Found</h2>
+        <p className="text-xs text-slate-500 mb-4">The requested ticket does not exist or was closed.</p>
+        <Link href="/customer/support/tickets" className="text-xs font-bold text-[#059669] hover:underline">
+          Back to Tickets
+        </Link>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Tickets Detail</h1>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-3xl mx-auto space-y-6">
+        {/* Top Back */}
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to All Tickets
+        </button>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Tickets Detail</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/support/tickets/</code></p>
-              </div>
-            </div>
+        {/* Ticket Header Card */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-xs font-bold text-slate-500">
+              #{ticket.ticket_number || ticket.id.slice(0, 8)}
+            </span>
+            <span
+              className={`text-xs font-bold px-2.5 py-0.5 rounded ${
+                ticket.status === 'RESOLVED'
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : 'bg-amber-100 text-amber-800'
+              }`}
+            >
+              {ticket.status}
+            </span>
+          </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
+          <h1 className="text-xl font-bold text-slate-900">{ticket.subject}</h1>
+          <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed">
+            {ticket.description}
+          </p>
 
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+          <div className="flex items-center gap-4 text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <span>Category: <strong className="text-slate-800">{ticket.category}</strong></span>
+            <span>Priority: <strong className="text-slate-800">{ticket.priority}</strong></span>
           </div>
         </div>
-      </main>
+
+        {/* Message Thread */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+            Discussion & Agent Responses
+          </h2>
+
+          <div className="space-y-3 min-h-[200px]">
+            {messages.length === 0 ? (
+              <div className="p-8 text-center text-slate-400 text-xs">
+                An operations support agent will review your ticket shortly.
+              </div>
+            ) : (
+              messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`p-3.5 rounded-2xl text-xs max-w-md ${
+                    msg.is_agent
+                      ? 'bg-slate-100 text-slate-800 mr-auto'
+                      : 'bg-emerald-50 text-emerald-950 border border-emerald-200 ml-auto'
+                  }`}
+                >
+                  <div className="font-bold text-[11px] mb-1 text-slate-600">
+                    {msg.is_agent ? 'Yetzo Support Specialist' : 'You'}
+                  </div>
+                  <p className="leading-relaxed">{msg.message}</p>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Reply Box */}
+          <form onSubmit={handleSendMessage} className="pt-3 border-t border-slate-100 flex gap-2">
+            <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Type your reply to the support agent..."
+              className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+            />
+            <button
+              type="submit"
+              disabled={sending || !replyText.trim()}
+              className="px-5 py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl font-bold text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
+  );
+}
+
+export default function TicketDetailPage() {
+  return (
+    <React.Suspense fallback={<div className="p-12 text-center text-slate-400 font-bold">Loading ticket...</div>}>
+      <TicketDetailPageContent />
+    </React.Suspense>
   );
 }

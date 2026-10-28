@@ -1,110 +1,228 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  HelpCircle, Plus, MessageSquare, Clock, 
+  CheckCircle2, AlertCircle, ChevronRight, ShieldCheck 
+} from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function TicketsPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
+export default function CustomerTicketsPage() {
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Real Django API Integration via Proxy
+  // Form State
+  const [subject, setSubject] = useState('');
+  const [category, setCategory] = useState('BOOKING');
+  const [description, setDescription] = useState('');
+
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/support/tickets/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    fetchTickets();
   }, []);
 
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      const res: any = await apiClient('support/tickets/');
+      const list = res?.data || (Array.isArray(res) ? res : []);
+      setTickets(list);
+    } catch (e: any) {
+      console.warn('Tickets fetch note:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateTicket = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subject.trim() || !description.trim()) return;
+
+    try {
+      setCreating(true);
+      setError(null);
+
+      await apiClient('support/tickets/', {
+        method: 'POST',
+        body: {
+          subject: subject.trim(),
+          category: category,
+          description: description.trim(),
+          priority: 'MEDIUM',
+        },
+      });
+
+      setShowCreateModal(false);
+      setSubject('');
+      setDescription('');
+      fetchTickets();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to open support ticket. Please check input.');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Tickets</h1>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Tickets</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/support/tickets/</code></p>
-              </div>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <HelpCircle className="w-6 h-6 text-[#059669]" />
+              <h1 className="text-xl font-bold text-slate-900">Yetzo Customer Care & Support</h1>
             </div>
-
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            <p className="text-xs text-slate-500 mt-1">
+              Urban Company grade resolution. 24/7 priority ticket tracking and escalation desk.
+            </p>
           </div>
+
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#059669] text-white rounded-xl text-xs font-bold hover:bg-[#047857] shadow transition"
+          >
+            <Plus className="w-4 h-4" />
+            Open New Ticket
+          </button>
         </div>
-      </main>
+
+        {error && (
+          <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Tickets List */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+            Your Support Requests ({tickets.length})
+          </h2>
+
+          {loading ? (
+            <div className="p-12 text-center text-slate-400">Loading support tickets...</div>
+          ) : tickets.length === 0 ? (
+            <div className="p-10 text-center border-2 border-dashed border-slate-200 rounded-xl space-y-3">
+              <MessageSquare className="w-10 h-10 text-slate-300 mx-auto" />
+              <p className="text-xs text-slate-600 font-medium">You have no active support tickets.</p>
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition"
+              >
+                Raise an Issue
+              </button>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-100">
+              {tickets.map((t) => (
+                <Link
+                  key={t.id}
+                  href={`/customer/support/tickets/${t.id}`}
+                  className="py-4 flex items-center justify-between group hover:bg-slate-50/60 transition p-2 rounded-xl"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-xs text-slate-900">
+                        #{t.ticket_number || t.id.slice(0, 8)}
+                      </span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                        {t.category}
+                      </span>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          t.status === 'RESOLVED'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : 'bg-amber-100 text-amber-800'
+                        }`}
+                      >
+                        {t.status}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#059669] transition">
+                      {t.subject}
+                    </h3>
+                    <p className="text-xs text-slate-500 line-clamp-1">{t.description}</p>
+                  </div>
+
+                  <ChevronRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Create Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+              <h3 className="text-base font-bold text-slate-900">Open Support Ticket</h3>
+
+              <form onSubmit={handleCreateTicket} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Issue Category *</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] bg-white text-slate-900"
+                  >
+                    <option value="BOOKING">Booking Issue</option>
+                    <option value="PAYMENT">Payment / Escrow / Refund</option>
+                    <option value="PROFESSIONAL">Technician / Behavior Issue</option>
+                    <option value="WARRANTY">30-Day Warranty Inquiry</option>
+                    <option value="SAFETY">Safety Concern</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Subject *</label>
+                  <input
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="Brief summary of issue"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Detailed Description *</label>
+                  <textarea
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe what occurred, any technician details, etc."
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                    required
+                  />
+                </div>
+
+                <div className="pt-2 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="px-4 py-2 border border-slate-300 rounded-xl text-slate-700 font-semibold hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={creating}
+                    className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+                  >
+                    {creating ? 'Submitting...' : 'Submit Ticket'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

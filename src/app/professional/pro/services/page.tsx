@@ -2,109 +2,151 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Wrench, ArrowLeft, Check, Clock, DollarSign, ArrowRight, Loader2, Save } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function ServicesPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+interface ServiceItem {
+  id: string;
+  name: string;
+  base_price: number;
+  duration_minutes: number;
+  category?: { name: string };
+}
 
-  // Real Django API Integration via Proxy
+export default function ProfessionalServicesPage() {
+  const router = useRouter();
+
+  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [activeServices, setActiveServices] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
-    const fetchRealData = async () => {
+    const fetchServices = async () => {
       try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
+        setLoading(true);
+        const res: any = await apiClient('services/');
+        const list = Array.isArray(res) ? res : res?.results || [];
+        setServices(list);
+
+        const initial: Record<string, boolean> = {};
+        list.forEach((s: any) => {
+          initial[s.id] = true;
+        });
+        setActiveServices(initial);
+      } catch (err) {
+        console.warn('Failed to load services:', err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
-    fetchRealData();
+    fetchServices();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Services</h1>
-        </div>
-      </header>
+  const toggleService = (id: string) => {
+    setActiveServices((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+  const handleSave = () => {
+    router.push('/professional/pro/training');
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Skills
+        </button>
+
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+                <Wrench className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-slate-900">Services</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
+                <h1 className="text-lg font-bold text-slate-900">Service Rate Cards & 80% Payouts</h1>
+                <p className="text-xs text-slate-500">Toggle individual jobs and review your net earnings per chore.</p>
               </div>
             </div>
+          </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
+          {loading ? (
+            <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
+              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              Loading service rate cards...
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {services.map((svc) => {
+                const isEnabled = activeServices[svc.id] !== false;
+                const customerPrice = Number(svc.base_price || 499);
+                const partnerPayout = Math.round(customerPrice * 0.8);
+
+                return (
+                  <div
+                    key={svc.id}
+                    className={`p-4 rounded-2xl border transition flex items-center justify-between gap-4 ${
+                      isEnabled ? 'border-slate-200 bg-white' : 'border-slate-100 bg-slate-50 opacity-60'
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-slate-900">{svc.name}</span>
+                        {svc.category?.name && (
+                          <span className="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                            {svc.category.name}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-1">
+                        <span className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {svc.duration_minutes || 45} mins
+                        </span>
+                        <span>•</span>
+                        <span>Customer Rate: ₹{customerPrice}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <span className="text-[10px] uppercase font-bold text-slate-400 block">Your Payout (80%)</span>
+                        <span className="text-sm font-black text-[#059669]">₹{partnerPayout}</span>
+                      </div>
+
+                      <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={isEnabled}
+                          onChange={() => toggleService(svc.id)}
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                      </label>
+                    </div>
                   </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
+                );
+              })}
+            </div>
+          )}
 
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+          <div className="pt-2 border-t border-slate-100">
+            <button
+              onClick={handleSave}
+              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
+            >
+              <span>Continue to Safety Training</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

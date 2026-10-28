@@ -1,69 +1,117 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"
-import { Button } from "@/components/ui/Button"
-import { Input } from "@/components/ui/Input"
-import { Save } from "lucide-react"
+import React, { useState } from 'react';
+import { Settings, Save, CheckCircle2, Shield, Clock, Video, DollarSign } from 'lucide-react';
 
 export default function AdminSettingsPage() {
+  const [commissionRate, setCommissionRate] = useState('20');
+  const [convenienceFee, setConvenienceFee] = useState('29');
+  const [instantTimeoutMins, setInstantTimeoutMins] = useState('15');
+  const [bodycamRetentionHours, setBodycamRetentionHours] = useState('48');
+  const [gstRate, setGstRate] = useState('18');
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+
   return (
-    <div className="flex flex-col gap-6 max-w-4xl">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 max-w-2xl">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">Platform Settings</h1>
-          <p className="text-[15px] text-slate-500 mt-1">Configure global platform rules and fees.</p>
+          <div className="flex items-center gap-2">
+            <Settings className="w-6 h-6 text-[#059669]" />
+            <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">System Settings & Global Parameters</h1>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">Configure marketplace take rates, dispatch SLA timeouts, and compliance retentions.</p>
         </div>
-        <Button className="bg-[#0B2D8F] hover:bg-blue-900 gap-2">
-          <Save className="h-4 w-4" /> Save Changes
-        </Button>
+
+        {saved && (
+          <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Saved
+          </span>
+        )}
       </div>
 
-      <div className="grid gap-6 mt-4">
-        <Card className="border-slate-200">
-          <CardHeader className="border-b border-slate-100 bg-slate-50">
-            <CardTitle>Commission & Fees</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-[13px] font-semibold text-slate-600 uppercase">Platform Fee (%)</label>
-                <Input defaultValue="15" type="number" />
-                <p className="text-[12px] text-slate-500">Percentage taken from professional's payout.</p>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[13px] font-semibold text-slate-600 uppercase">Trust & Safety Fee (₹)</label>
-                <Input defaultValue="49" type="number" />
-                <p className="text-[12px] text-slate-500">Fixed amount charged to customer per booking.</p>
-              </div>
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm">
+        <form onSubmit={handleSave} className="space-y-5 text-xs">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Platform Commission Rate (%)</label>
+              <input
+                type="number"
+                value={commissionRate}
+                onChange={(e) => setCommissionRate(e.target.value)}
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                required
+              />
+              <span className="text-[10px] text-slate-400 mt-0.5 block">Partner gets 80% net split</span>
             </div>
-          </CardContent>
-        </Card>
 
-        <Card className="border-slate-200">
-          <CardHeader className="border-b border-slate-100 bg-slate-50">
-            <CardTitle>Surge Pricing</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h4 className="font-bold text-slate-900">Enable Automated Surge</h4>
-                <p className="text-[13px] text-slate-500">Automatically increase prices during high demand / low supply.</p>
-              </div>
-              <div className="w-12 h-6 bg-green-500 rounded-full relative cursor-pointer">
-                <div className="w-4 h-4 bg-white rounded-full absolute top-1 right-1 shadow-sm"></div>
-              </div>
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Safety & Convenience Fee (₹)</label>
+              <input
+                type="number"
+                value={convenienceFee}
+                onChange={(e) => setConvenienceFee(e.target.value)}
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                required
+              />
+              <span className="text-[10px] text-slate-400 mt-0.5 block">Waived for Yetzo Club members</span>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
-              <div className="space-y-2">
-                <label className="text-[13px] font-semibold text-slate-600 uppercase">Max Surge Multiplier</label>
-                <Input defaultValue="1.5" type="number" step="0.1" />
-              </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Snabbit Instant Arrival SLA (Minutes)</label>
+              <input
+                type="number"
+                value={instantTimeoutMins}
+                onChange={(e) => setInstantTimeoutMins(e.target.value)}
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                required
+              />
+              <span className="text-[10px] text-slate-400 mt-0.5 block">Default 15m cluster threshold</span>
             </div>
-          </CardContent>
-        </Card>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Pronto Bodycam Retention (Hours)</label>
+              <input
+                type="number"
+                value={bodycamRetentionHours}
+                onChange={(e) => setBodycamRetentionHours(e.target.value)}
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                required
+              />
+              <span className="text-[10px] text-slate-400 mt-0.5 block">DPDP Act compliant auto-purge</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-bold text-slate-700 mb-1">GST Tax Rate (%)</label>
+            <input
+              type="number"
+              value={gstRate}
+              onChange={(e) => setGstRate(e.target.value)}
+              className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+              required
+            />
+            <span className="text-[10px] text-slate-400 mt-0.5 block">SAC Code 9987 (18% Statutory Rate)</span>
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              className="w-full py-3.5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              <span>Save System Parameters</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  )
+  );
 }

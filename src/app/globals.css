@@ -1,40 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Colors */
-  --color-primary: #0B2D8F;
-  --color-primary-500: #2563EB;
-  --color-primary-600: #1D4ED8;
-  --color-primary-700: #1E40AF;
+  /* Pronto-Competitive Brand Palette */
+  --color-primary: #05AC5F;
+  --color-primary-hover: #049652;
+  --color-primary-dark: #064E3B;
+  --color-primary-light: #ECFDF5;
   
-  --color-accent: #06B6D4;
+  --color-accent: #05AC5F;
+  --color-gold: #F59E0B;
   
-  /* Text Colors */
-  --color-text-900: #0F172A;
+  /* Luxury Slate & Ink Typography */
+  --color-text-900: #0B0F19;
+  --color-text-800: #1E293B;
   --color-text-700: #334155;
   --color-text-600: #475569;
   --color-text-500: #64748B;
   
-  /* Background & Surface */
-  --color-background: #F8FAFC;
+  /* Pure Minimalist Surfaces */
+  --color-background: #FAFAFA;
   --color-surface: #FFFFFF;
-  --color-border: #E2E8F0;
+  --color-border: #E5E7EB;
+  --color-border-subtle: #F1F5F9;
   
   /* Status Colors */
-  --color-success: #16A34A;
+  --color-success: #05AC5F;
   --color-warning: #F59E0B;
-  --color-error: #DC2626;
+  --color-error: #EF4444;
   --color-info: #0284C7;
 }
 
 @theme inline {
   --color-primary: var(--color-primary);
-  --color-primary-500: var(--color-primary-500);
-  --color-primary-600: var(--color-primary-600);
-  --color-primary-700: var(--color-primary-700);
-  --color-accent: var(--color-accent);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  
+  --color-brand-emerald: #05AC5F;
+  --color-brand-dark: #064E3B;
+  --color-brand-mint: #ECFDF5;
   
   --color-slate-900: var(--color-text-900);
+  --color-slate-800: var(--color-text-800);
   --color-slate-700: var(--color-text-700);
   --color-slate-600: var(--color-text-600);
   --color-slate-500: var(--color-text-500);
@@ -43,31 +50,79 @@
   --color-surface: var(--color-surface);
   --color-border-color: var(--color-border);
   
-  --color-success: var(--color-success);
-  --color-warning: var(--color-warning);
-  --color-error: var(--color-error);
-  --color-info: var(--color-info);
-  
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: var(--font-montserrat), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: var(--font-sarabun), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: var(--font-sarabun), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-text-900);
-  font-family: var(--font-sans);
+  font-family: var(--font-sarabun), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom utilities based on PRD */
-.hero-gradient {
-  background: linear-gradient(135deg, #0B2D8F 0%, #2563EB 65%, #06B6D4 100%);
+/* Headings: Thin, Refined Montserrat */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-montserrat), sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  color: var(--color-text-900);
 }
 
-.card-shadow {
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+.font-heading {
+  font-family: var(--font-montserrat), sans-serif;
 }
 
-.header-shadow {
-  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.06);
+.font-body {
+  font-family: var(--font-sarabun), sans-serif;
+}
+
+/* Crisp, Refined Geometry (No excessive/childish border-radius) */
+.crisp-card {
+  background: #ffffff;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.crisp-card-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.crisp-card-hover:hover {
+  border-color: #05AC5F;
+  box-shadow: 0 4px 16px rgba(5, 172, 95, 0.08);
+}
+
+.crisp-btn {
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+}
+
+/* Radar & Pulse Animations for 15-Minute Instant SLA */
+@keyframes radar-sweep {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0.3; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.radar-ping {
+  animation: radar-sweep 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Thin Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
 }

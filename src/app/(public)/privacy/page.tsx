@@ -1,60 +1,55 @@
 'use client';
-
 import React from 'react';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function PrivacyPage() {
+  const router = useRouter();
+  const sections = [
+    { title: '1. Information We Collect', content: 'We collect information you provide directly: name, phone number, email address, and location data when you create an account or book a service. We also collect device information and usage logs to improve your experience.' },
+    { title: '2. How We Use Your Information', content: 'We use your data to provide and improve our services, match you with professionals, process payments, send booking confirmations and updates, and personalise your experience on the Yetzo platform.' },
+    { title: '3. Sharing Your Information', content: 'Your personal information is shared only with the professional assigned to your booking and with our payment partners (Razorpay) as necessary to complete transactions. We never sell your data to third parties.' },
+    { title: '4. Location Data', content: 'We use your location to show you available professionals and services near you. Location is shared with your assigned professional only during the active booking window for navigation purposes.' },
+    { title: '5. Data Security', content: 'All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We use NeonDB with row-level security and regularly conduct security audits. We are ISO 27001 compliant.' },
+    { title: '6. Your Rights', content: 'You have the right to access, correct, or delete your personal data at any time. You can export your data from the Settings page or contact us at privacy@yetzo.in within 72 hours of your request.' },
+    { title: '7. Cookie Policy', content: 'We use essential cookies for authentication and analytics cookies (anonymised) to understand how users navigate the platform. You can manage cookie preferences from your browser settings.' },
+    { title: '8. Contact Us', content: 'For any privacy-related queries, write to: Data Protection Officer, Yetzo Technologies Pvt. Ltd., privacy@yetzo.in. We respond to all requests within 72 hours.' },
+  ];
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans pb-24">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-white/20 px-4 py-6 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Privacy Policy</h1>
-          <a href="/" className="text-blue-600 font-bold hover:underline">Back to Home</a>
-        </div>
+    <div className="min-h-screen bg-white font-sans">
+      <title>Privacy Policy — Yetzo</title>
+      <header className="border-b border-slate-200 px-4 md:px-8 py-4 flex items-center gap-4 sticky top-0 z-50 bg-white/90 backdrop-blur-md">
+        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
+        <nav className="ml-auto flex items-center gap-4">
+          <button onClick={() => router.push('/terms')} className="text-slate-600 font-bold text-sm hover:text-slate-900">Terms</button>
+          <button onClick={() => router.push('/contact')} className="text-slate-600 font-bold text-sm hover:text-slate-900">Contact</button>
+        </nav>
       </header>
 
-      <main className="max-w-4xl mx-auto p-4 md:p-8 mt-8">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white/70 backdrop-blur-2xl rounded-3xl border border-white/30 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 md:p-12 space-y-8"
-        >
-          <div className="space-y-4">
-            <h2 className="text-3xl font-black text-slate-900 tracking-tight">Your Privacy is our Priority</h2>
-            <p className="text-slate-600 leading-relaxed text-lg">
-              At Yetzo, we take your privacy seriously. This document outlines how we collect, use, and protect your personal data when you use our platform for home services.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            <section className="space-y-3">
-              <h3 className="text-xl font-bold text-slate-900">1. Information We Collect</h3>
-              <p className="text-slate-600 leading-relaxed">
-                We collect information you provide directly to us, such as your name, contact information, location, and payment details when you book a service or create a professional profile.
-              </p>
-            </section>
-            
-            <section className="space-y-3">
-              <h3 className="text-xl font-bold text-slate-900">2. How We Use Information</h3>
-              <p className="text-slate-600 leading-relaxed">
-                Your information is used to facilitate the matching of customers with professionals, process payments securely through our Escrow system, and communicate important updates regarding your bookings.
-              </p>
-            </section>
-
-            <section className="space-y-3">
-              <h3 className="text-xl font-bold text-slate-900">3. Data Security</h3>
-              <p className="text-slate-600 leading-relaxed">
-                We implement industry-standard security measures to protect your data. Your payment information is encrypted and never stored directly on our servers.
-              </p>
-            </section>
-          </div>
-          
-          <div className="pt-8 border-t border-slate-200/60 text-slate-500 text-sm">
-            Last updated: October 2026
-          </div>
-        </motion.div>
+      <main className="max-w-3xl mx-auto px-4 py-16">
+        <div className="mb-10">
+          <h1 className="text-4xl font-black text-slate-900 mb-3">Privacy Policy</h1>
+          <p className="text-slate-500 font-medium">Last updated: October 10, 2026</p>
+          <p className="text-slate-600 font-medium mt-4 leading-relaxed">At Yetzo Technologies Pvt. Ltd., your privacy is fundamental to everything we build. This policy explains exactly what data we collect, why we collect it, and how you remain in control.</p>
+        </div>
+        <div className="space-y-8">
+          {sections.map((s, i) => (
+            <div key={i} className="border-b border-slate-100 pb-8">
+              <h2 className="text-xl font-black text-slate-900 mb-3">{s.title}</h2>
+              <p className="text-slate-600 font-medium leading-relaxed">{s.content}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-10 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+          <h3 className="font-black text-blue-900 mb-2">Questions about your privacy?</h3>
+          <p className="text-blue-700 font-medium text-sm mb-4">Our Data Protection Officer responds within 72 hours.</p>
+          <button onClick={() => router.push('/contact')} className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm">Contact Us</button>
+        </div>
       </main>
+
+      <footer className="bg-slate-900 text-slate-400 py-8 px-4 text-center text-sm font-medium">
+        <p>© 2026 Yetzo Technologies Pvt. Ltd. · <button onClick={() => router.push('/terms')} className="hover:text-white">Terms of Service</button> · <button onClick={() => router.push('/privacy')} className="hover:text-white">Privacy Policy</button></p>
+      </footer>
     </div>
   );
 }

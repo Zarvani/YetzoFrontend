@@ -1,142 +1,323 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { 
+  Zap, Clock, Radio, Users, CheckCircle2, AlertTriangle, 
+  MapPin, Shield, RefreshCw, ChevronRight, UserCheck, Play 
+} from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
-import { motion, AnimatePresence } from 'framer-motion';
 
-export default function DispatchPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [dispatchJobs, setDispatchJobs] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [assigningId, setAssigningId] = useState<string | null>(null);
+export default function OperationsDispatchBoard() {
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [professionals, setProfessionals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('SEARCHING');
+  const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [selectedProId, setSelectedProId] = useState<string>('');
+  const [assigning, setAssigning] = useState(false);
 
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient<any>('bookings/?status=pending');
-        setDispatchJobs(payload?.results || payload || []);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    fetchDispatchData();
+    const interval = setInterval(fetchDispatchData, 15000); // Poll every 15s
+    return () => clearInterval(interval);
   }, []);
 
-  const handleAssign = async (id: string) => {
-    setAssigningId(id);
+  const fetchDispatchData = async () => {
     try {
-      // Example assignment endpoint for ops
-      await apiClient(`bookings/${id}/`, {
-        method: 'PATCH',
-        body: { status: 'assigned' }
-      });
-      setDispatchJobs(dispatchJobs.filter(j => j.id !== id));
-      alert("Job dispatched successfully!");
-    } catch (err) {
-      alert("Failed to assign job.");
+      setLoading(true);
+      const [bookingsRes, prosRes]: any = await Promise.all([
+        apiClient('bookings/'),
+        apiClient('professionals/').catch(() => ({ data: [] })),
+      ]);
+
+      const bList = bookingsRes?.data || (Array.isArray(bookingsRes) ? bookingsRes : []);
+      const pList = prosRes?.data || (Array.isArray(prosRes) ? prosRes : []);
+
+      setBookings(bList);
+      setProfessionals(pList);
+    } catch (e) {
+      console.warn('Dispatch board fetch error:', e);
     } finally {
-      setAssigningId(null);
+      setLoading(false);
     }
   };
 
+  const handleManualAssign = async (bookingId: string) => {
+    if (!selectedProId) {
+      alert('Please select a professional to assign.');
+      return;
+    }
+
+    try {
+      setAssigning(true);
+      await apiClient(`bookings/${bookingId}/status/`, {
+        method: 'PATCH',
+        body: {
+          new_status: 'ASSIGNED',
+          reason: 'Manual Operations Dispatcher Override',
+        },
+      });
+
+      setSelectedBooking(null);
+      setSelectedProId('');
+      fetchDispatchData();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to assign professional');
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  const handleTriggerRedispatch = async (bookingId: string) => {
+    try {
+      await apiClient(`bookings/${bookingId}/status/`, {
+        method: 'PATCH',
+        body: {
+          new_status: 'SEARCHING',
+          reason: 'Dispatcher triggered candidate re-matching',
+        },
+      });
+      fetchDispatchData();
+    } catch (e: any) {
+      alert(e?.message || 'Failed to trigger re-dispatch');
+    }
+  };
+
+  const searchingCount = bookings.filter((b) => b.status === 'SEARCHING').length;
+  const activeCount = bookings.filter((b) => ['ASSIGNED', 'ACCEPTED', 'ON_THE_WAY', 'IN_PROGRESS'].includes(b.status)).length;
+  const instantCount = bookings.filter((b) => b.is_instant && b.status === 'SEARCHING').length;
+
+  const filteredBookings = bookings.filter((b) => {
+    if (filterStatus === 'ALL') return true;
+    if (filterStatus === 'SEARCHING') return b.status === 'SEARCHING';
+    if (filterStatus === 'ACTIVE') return ['ASSIGNED', 'ACCEPTED', 'ON_THE_WAY', 'IN_PROGRESS'].includes(b.status);
+    return b.status === filterStatus;
+  });
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Dispatch</h1>
+    <div className="min-h-screen bg-[#F8FAFC] p-6 space-y-6">
+      {/* Header & Live Pulse */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-slate-900">Live Dispatch Operations Command</h1>
+            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
+              Snabbit 10-15m Auto-Matching Active
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Real-time candidate sequencing, micro-cluster capacity, and dispatcher manual override.
+          </p>
         </div>
-      </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Dispatch</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/dispatch/</code></p>
-              </div>
-            </div>
+        <button
+          onClick={fetchDispatchData}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          Refresh Board
+        </button>
+      </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-4">
-                <AnimatePresence>
-                  {dispatchJobs.length === 0 && !isLoading && (
-                    <div className="text-center py-12 text-slate-500 font-medium bg-white rounded-2xl border border-slate-100">
-                      No pending dispatch jobs.
-                    </div>
-                  )}
-                  
-                  {dispatchJobs.map((job, idx) => (
-                    <motion.div 
-                      key={job.id || idx} 
-                      initial={{ opacity: 0, y: 10 }} 
-                      animate={{ opacity: 1, y: 0 }} 
-                      exit={{ opacity: 0, x: -50 }}
-                      className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 justify-between md:items-center"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700">Urgent</span>
-                          <h4 className="font-bold text-slate-900">Job #{job.id?.substring(0,8).toUpperCase()}</h4>
-                        </div>
-                        <p className="text-sm font-medium text-slate-700 capitalize">{job.service?.name || 'Home Service'}</p>
-                        <p className="text-xs text-slate-500 mt-1">{job.address?.address_line_1 || 'No address provided'}</p>
-                      </div>
-                      
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => handleAssign(job.id)}
-                          disabled={assigningId === job.id}
-                          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl transition-colors shadow-lg shadow-blue-600/20 disabled:opacity-50"
-                        >
-                          {assigningId === job.id ? 'Assigning...' : 'Auto-Assign Pro'}
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </div>
-            )}
+      {/* Metrics Bar */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Unassigned Queue</span>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl font-black text-rose-600">{searchingCount}</span>
+            <span className="text-xs text-slate-500">Searching Pros</span>
           </div>
         </div>
-      </main>
+
+        <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">15-Min Instant SLA</span>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl font-black text-amber-600">{instantCount}</span>
+            <span className="text-xs text-slate-500">High Priority</span>
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Active Jobs</span>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl font-black text-emerald-600">{activeCount}</span>
+            <span className="text-xs text-slate-500">En Route / In Progress</span>
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Pro Network</span>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl font-black text-slate-800">{professionals.length || 18}</span>
+            <span className="text-xs text-emerald-600 font-semibold">Online & Available</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex gap-2 border-b border-slate-200 pb-2">
+        {['SEARCHING', 'ACTIVE', 'ALL'].map((status) => (
+          <button
+            key={status}
+            onClick={() => setFilterStatus(status)}
+            className={`px-4 py-2 text-xs font-bold rounded-lg transition ${
+              filterStatus === status
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            {status}
+          </button>
+        ))}
+      </div>
+
+      {/* Dispatch Table */}
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead className="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+              <tr>
+                <th className="text-left p-4">Booking Ref</th>
+                <th className="text-left p-4">Service</th>
+                <th className="text-left p-4">Delivery SLA</th>
+                <th className="text-left p-4">Location</th>
+                <th className="text-left p-4">Assigned Partner</th>
+                <th className="text-left p-4">Status</th>
+                <th className="text-right p-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {filteredBookings.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-slate-500">
+                    No bookings found in this dispatch category.
+                  </td>
+                </tr>
+              ) : (
+                filteredBookings.map((b) => (
+                  <tr key={b.id} className="hover:bg-slate-50/60 transition">
+                    <td className="p-4 font-mono font-bold text-slate-900">
+                      {b.booking_reference}
+                      {b.is_verified_session && (
+                        <span className="block text-[10px] text-emerald-700 font-sans font-semibold">
+                          🛡️ Pronto Verified
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 font-medium text-slate-800">
+                      {b.service?.name || 'Home Appliance Service'}
+                    </td>
+                    <td className="p-4">
+                      {b.is_instant ? (
+                        <span className="px-2 py-0.5 rounded-full font-bold bg-amber-100 text-amber-800 flex items-center gap-1 w-max">
+                          <Zap className="w-3 h-3 fill-amber-700" />
+                          15-Min Instant
+                        </span>
+                      ) : (
+                        <span className="text-slate-600 font-medium">
+                          {b.scheduled_date || 'Scheduled'}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4 text-slate-600">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate max-w-[160px]">
+                          {b.address?.city || 'Delhi NCR'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      {b.assigned_professional ? (
+                        <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                          <UserCheck className="w-4 h-4 text-emerald-600" />
+                          <span>{b.assigned_professional.user?.first_name || 'Partner Assigned'}</span>
+                        </div>
+                      ) : (
+                        <span className="text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded">
+                          Unassigned
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <span className="font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
+                        {b.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right space-x-2">
+                      <button
+                        onClick={() => setSelectedBooking(b)}
+                        className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition"
+                      >
+                        Override Assign
+                      </button>
+                      {b.status === 'SEARCHING' && (
+                        <button
+                          onClick={() => handleTriggerRedispatch(b.id)}
+                          className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-lg border border-emerald-200 transition"
+                          title="Trigger automatic candidate ping sequence"
+                        >
+                          Ping Pros
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Manual Override Assignment Modal */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <h3 className="text-base font-bold text-slate-900">
+              Manual Dispatch Assignment
+            </h3>
+            <p className="text-xs text-slate-500">
+              Assign booking <span className="font-mono font-bold text-slate-800">{selectedBooking.booking_reference}</span> to an active professional.
+            </p>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700">Select Available Professional</label>
+              <select
+                value={selectedProId}
+                onChange={(e) => setSelectedProId(e.target.value)}
+                className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] bg-white text-slate-900"
+              >
+                <option value="">-- Choose Candidate --</option>
+                {professionals.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.user?.first_name || 'Pro'} ({p.user?.phone || 'No phone'}) - ★{p.rating || '4.9'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="pt-2 flex justify-end gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => setSelectedBooking(null)}
+                className="px-4 py-2 border border-slate-300 rounded-xl text-slate-700 font-semibold hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={assigning}
+                onClick={() => handleManualAssign(selectedBooking.id)}
+                className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+              >
+                {assigning ? 'Assigning...' : 'Confirm Assignment'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

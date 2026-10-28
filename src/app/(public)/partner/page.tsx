@@ -1,110 +1,72 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/apiClient';
 
 export default function PartnerPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Real Django API Integration via Proxy
-  useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
-  }, []);
+  const benefits = [
+    { icon: '💰', title: 'Earn ₹30,000–80,000/month', desc: 'Top professionals on Yetzo earn over ₹80,000 a month working on their own schedule.' },
+    { icon: '📅', title: 'Set Your Own Hours', desc: 'Work when you want. Toggle your availability in the app and receive jobs only when you\'re free.' },
+    { icon: '📱', title: 'All Jobs via App', desc: 'No phone calls, no paperwork. Every job request, invoice, and payment is handled in the Yetzo Pro app.' },
+    { icon: '🎓', title: 'Free Training & Tools', desc: 'Get access to Yetzo Academy — professional courses, technique videos, and certifications at no cost.' },
+    { icon: '🛡️', title: 'Liability Insurance', desc: 'We cover you. Every Yetzo professional is covered by platform-wide professional liability insurance.' },
+    { icon: '💳', title: 'Daily Payouts', desc: 'Don\'t wait for weekly paychecks. Request a payout any day and get it in your bank within 2 hours.' },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Partner</h1>
-        </div>
+    <div className="min-h-screen bg-white font-sans">
+      <title>Become a Yetzo Professional Partner</title>
+      <header className="border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50 bg-white/90 backdrop-blur-md">
+        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
+        <button onClick={() => router.push('/professional/pro/register')} className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-lg shadow-blue-600/20">Apply Now — It's Free</button>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Partner</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
-            </div>
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-slate-900 to-blue-950 text-white py-24 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-block bg-blue-500/20 text-blue-300 font-bold text-sm px-4 py-1.5 rounded-full mb-6 border border-blue-500/30">Now hiring in 30+ cities across India</div>
+          <h1 className="text-5xl md:text-6xl font-black mb-6 leading-tight">Grow Your Career<br/>with Yetzo</h1>
+          <p className="text-xl text-slate-300 font-medium mb-10 max-w-2xl mx-auto">Join 12,000+ verified professionals earning a premium income by delivering expert home services through the Yetzo platform.</p>
+          <button onClick={() => router.push('/professional/pro/register')} className="bg-blue-600 text-white font-extrabold px-10 py-5 rounded-2xl shadow-2xl shadow-blue-600/30 hover:bg-blue-500 transition-all text-lg">Start Your Application →</button>
+        </div>
+      </section>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+      {/* Benefits */}
+      <section className="py-20 px-4 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-4xl font-black text-slate-900 text-center mb-12">Why Professionals Choose Yetzo</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {benefits.map((b, i) => (
+              <div key={i} className="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm">
+                <div className="text-4xl mb-4">{b.icon}</div>
+                <h3 className="text-xl font-black text-slate-900 mb-2">{b.title}</h3>
+                <p className="text-slate-600 font-medium leading-relaxed">{b.desc}</p>
               </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* Process */}
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-4xl font-black text-slate-900 mb-12">How to Join</h2>
+          <div className="grid grid-cols-3 gap-6">
+            {[
+              { step: '1', title: 'Apply Online', desc: 'Fill in your details and skills in 5 minutes.' },
+              { step: '2', title: 'KYC & Training', desc: 'Submit documents and complete a short training module.' },
+              { step: '3', title: 'Start Earning', desc: 'Go live and receive your first job within 48 hours.' },
+            ].map((s, i) => (
+              <div key={i} className="text-center">
+                <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-4 shadow-lg shadow-blue-600/30">{s.step}</div>
+                <h4 className="font-black text-slate-900 mb-2">{s.title}</h4>
+                <p className="text-slate-500 font-medium text-sm">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => router.push('/professional/pro/register')} className="mt-12 bg-slate-900 text-white font-extrabold px-10 py-4 rounded-2xl hover:bg-black transition-all">Apply Now — Free & Takes 5 Minutes</button>
+        </div>
+      </section>
     </div>
   );
 }

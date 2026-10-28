@@ -1,110 +1,81 @@
 'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/apiClient';
 
 export default function CareersPage() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const openRoles = [
+    { title: 'Senior Backend Engineer — Django/Python', team: 'Engineering', location: 'Bengaluru (Hybrid)', type: 'Full-Time' },
+    { title: 'Product Manager — Customer Experience', team: 'Product', location: 'Bengaluru (On-site)', type: 'Full-Time' },
+    { title: 'City Operations Manager', team: 'Operations', location: 'Delhi / Mumbai / Hyderabad', type: 'Full-Time' },
+    { title: 'Growth Marketing Lead', team: 'Marketing', location: 'Remote (India)', type: 'Full-Time' },
+    { title: 'iOS Engineer — React Native', team: 'Engineering', location: 'Bengaluru (Hybrid)', type: 'Full-Time' },
+    { title: 'Head of Professional Training', team: 'People & Culture', location: 'Bengaluru (On-site)', type: 'Full-Time' },
+  ];
 
-  // Real Django API Integration via Proxy
-  useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
-  }, []);
+  const perks = [
+    { icon: '💰', label: 'Competitive Pay', desc: 'Top-of-market salaries with ESOPs' },
+    { icon: '🏥', label: 'Health Coverage', desc: 'Full family medical & dental' },
+    { icon: '🏖️', label: 'Unlimited PTO', desc: 'Take what you need, when you need it' },
+    { icon: '📚', label: 'Learning Budget', desc: '₹50k/year for courses & conferences' },
+    { icon: '🏠', label: 'Remote-Friendly', desc: 'Work from anywhere in India' },
+    { icon: '🚀', label: 'Fast Growth', desc: 'Build India\'s next unicorn with us' },
+  ];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Careers</h1>
-        </div>
+    <div className="min-h-screen bg-white font-sans">
+      <title>Careers at Yetzo — Join Our Team</title>
+      <header className="border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50 bg-white/90 backdrop-blur-md">
+        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
+        <button onClick={() => router.push('/contact')} className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-sm">Apply Now</button>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Careers</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
-            </div>
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-slate-900 to-indigo-950 py-24 px-4 text-center text-white">
+        <div className="inline-block bg-white/10 text-white font-bold text-sm px-4 py-1.5 rounded-full mb-6 border border-white/20">🚀 We're hiring across 8 teams</div>
+        <h1 className="text-5xl md:text-6xl font-black mb-6">Build India's Most Trusted<br/>Home Services Platform</h1>
+        <p className="text-xl text-slate-300 font-medium max-w-2xl mx-auto">Join a team of builders who are transforming the lives of millions of Indians — both the customers we serve and the professionals who deliver.</p>
+      </section>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
+      {/* Perks */}
+      <section className="py-20 px-4 bg-slate-50">
+        <div className="max-w-5xl mx-auto">
+          <h2 className="text-4xl font-black text-slate-900 text-center mb-12">Why Work at Yetzo?</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {perks.map((p, i) => (
+              <div key={i} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div className="text-4xl mb-3">{p.icon}</div>
+                <h4 className="font-black text-slate-900 mb-1">{p.label}</h4>
+                <p className="text-slate-500 font-medium text-sm">{p.desc}</p>
               </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      </main>
+      </section>
+
+      {/* Open Roles */}
+      <section className="py-20 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-4xl font-black text-slate-900 mb-2">Open Roles</h2>
+          <p className="text-slate-500 font-medium mb-10">{openRoles.length} positions open right now</p>
+          <div className="space-y-4">
+            {openRoles.map((role, i) => (
+              <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-blue-400 hover:shadow-md transition-all flex justify-between items-center">
+                <div>
+                  <h4 className="font-black text-slate-900 text-lg mb-1">{role.title}</h4>
+                  <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
+                    <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold text-xs">{role.team}</span>
+                    <span>📍 {role.location}</span>
+                    <span>⏱️ {role.type}</span>
+                  </div>
+                </div>
+                <button onClick={() => router.push('/contact')} className="bg-slate-900 text-white font-bold px-5 py-2.5 rounded-xl text-sm hover:bg-black transition-colors shrink-0">Apply →</button>
+              </div>
+            ))}
+          </div>
+          <p className="text-slate-500 font-medium mt-8 text-center">Don't see a fit? We hire for attitude — <button onClick={() => router.push('/contact')} className="text-blue-600 font-bold hover:underline">send us your resume anyway</button>.</p>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,110 +1,185 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, Plus, Check, ShieldCheck, Tag, ArrowRight, Wrench } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
+import { useBookingStore } from '@/store/useBookingStore';
 
-export default function AddonsPage() {
+function BookingAddonsPageContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const serviceIdParam = searchParams.get('serviceId');
 
-  // Real Django API Integration via Proxy
+  const [addons, setAddons] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
+
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/bookings/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchRealData();
+    fetchAddons();
   }, []);
 
+  const fetchAddons = async () => {
+    try {
+      setLoading(true);
+      const [pricingRes, servicesRes]: any = await Promise.all([
+        apiClient('pricing/addon-pricing/').catch(() => ({ data: [] })),
+        apiClient('services/').catch(() => ({ data: [] })),
+      ]);
+
+      const pricingList = pricingRes?.data || (Array.isArray(pricingRes) ? pricingRes : []);
+      const servicesList = servicesRes?.data || (Array.isArray(servicesRes) ? servicesRes : []);
+
+      // Extract all real addons from catalog
+      const allAddons: any[] = [];
+      servicesList.forEach((srv: any) => {
+        if (srv.addons && Array.isArray(srv.addons)) {
+          srv.addons.forEach((ad: any) => {
+            const pricing = pricingList.find((p: any) => p.addon === ad.id);
+            const price = pricing ? (pricing.price > 10000 ? pricing.price / 100 : pricing.price) : 299;
+            allAddons.push({
+              id: ad.id,
+              name: ad.name,
+              description: ad.description || `Genuine OEM part for ${srv.name}`,
+              category: srv.category?.name || 'Service Addon',
+              price: price,
+            });
+          });
+        }
+      });
+
+      setAddons(allAddons);
+    } catch (e) {
+      console.warn('Addons fetch note:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleAddon = (id: string) => {
+    if (selectedAddonIds.includes(id)) {
+      setSelectedAddonIds(selectedAddonIds.filter((item) => item !== id));
+    } else {
+      setSelectedAddonIds([...selectedAddonIds, id]);
+    }
+  };
+
+  const selectedItems = addons.filter((a) => selectedAddonIds.includes(a.id));
+  const addonsTotal = selectedItems.reduce((sum, item) => sum + item.price, 0);
+
+  const handleContinue = () => {
+    useBookingStore.getState().setAddons(selectedAddonIds);
+    router.push('/customer/booking/schedule');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Addons</h1>
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Booking
+        </button>
+
+        <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+          Urban Company Rate-Card Transparency
+        </span>
+      </div>
+
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900">Recommended Service Add-ons & Spare Parts</h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Standardized fixed rates. OEM-grade genuine replacement parts with 30-day warranty.
+          </p>
         </div>
-      </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Addons</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/bookings/</code></p>
-              </div>
-            </div>
-
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
-            )}
+        {loading ? (
+          <div className="p-12 text-center text-slate-400">Loading live spare parts catalog...</div>
+        ) : addons.length === 0 ? (
+          <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl space-y-3">
+            <Wrench className="w-8 h-8 text-slate-400 mx-auto" />
+            <p className="text-xs text-slate-600 font-medium">
+              No add-ons or spare parts required for this service visit.
+            </p>
+            <button
+              onClick={() => router.push('/customer/booking')}
+              className="px-5 py-2 bg-[#059669] text-white text-xs font-bold rounded-xl hover:bg-[#047857] shadow transition"
+            >
+              Continue with Standard Service
+            </button>
           </div>
+        ) : (
+          <div className="space-y-3">
+            {addons.map((item) => {
+              const isSelected = selectedAddonIds.includes(item.id);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => toggleAddon(item.id)}
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition flex items-start justify-between ${
+                    isSelected
+                      ? 'border-[#059669] bg-emerald-50/30'
+                      : 'border-slate-200 hover:border-slate-300 bg-white'
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`w-5 h-5 rounded-md flex items-center justify-center border mt-0.5 transition ${
+                        isSelected
+                          ? 'bg-[#059669] border-[#059669] text-white'
+                          : 'border-slate-300 bg-white'
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3.5 h-3.5" />}
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-slate-900 block">{item.name}</span>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{item.description}</p>
+                      <span className="inline-block mt-1.5 text-[10px] font-semibold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0 ml-4">
+                    <span className="text-sm font-extrabold text-slate-900 font-mono">
+                      ₹{item.price}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Total & CTA */}
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-slate-500 block">Add-ons Selected: {selectedAddonIds.length}</span>
+            <span className="text-lg font-black text-slate-900 font-mono">₹{addonsTotal}</span>
+          </div>
+
+          <button
+            onClick={handleContinue}
+            className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition text-xs flex items-center gap-2"
+          >
+            <span>Continue to Booking</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
         </div>
-      </main>
+      </div>
     </div>
+  );
+}
+
+export default function BookingAddonsPage() {
+  return (
+    <React.Suspense fallback={<div className="p-12 text-center text-slate-400 font-bold">Loading add-ons...</div>}>
+      <BookingAddonsPageContent />
+    </React.Suspense>
   );
 }

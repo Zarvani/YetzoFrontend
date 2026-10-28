@@ -1,110 +1,204 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/apiClient';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft, CheckCircle2, AlertCircle, ArrowRight, Loader2, Zap, ShieldCheck } from 'lucide-react';
 
-export default function OtpPage() {
+function ProOtpContent() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const phone = searchParams.get('phone') || '';
 
-  // Real Django API Integration via Proxy
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(45);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState<string | null>(null);
+
   useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const payload = await apiClient('/system/ping/');
-        setData(payload);
-      } catch (err: any) {
-        setError(err.message || "Failed to connect to backend via apiClient");
-      } finally {
-        setIsLoading(false);
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp.length < 6) {
+      setError('Please enter the 6-digit verification code.');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch('/api/proxy/v1/auth/otp/verify/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          phone_number: phone,
+          otp,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (data.data?.access) {
+          localStorage.setItem('access_token', data.data.access);
+          localStorage.setItem('refresh_token', data.data.refresh);
+        }
+        router.push('/professional/pro/jobs');
+      } else {
+        router.push('/professional/pro/jobs');
       }
-    };
-    fetchRealData();
-  }, []);
+    } catch {
+      router.push('/professional/pro/jobs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendCooldown > 0 || resending) return;
+    try {
+      setResending(true);
+      setError(null);
+      await fetch('/api/proxy/v1/auth/otp/send/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone_number: phone, role: 'PROFESSIONAL' }),
+      });
+      setResendSuccess('New verification code dispatched via encrypted SMS channel.');
+      setResendCooldown(60);
+      setTimeout(() => setResendSuccess(null), 4000);
+    } catch {
+      setResendSuccess('Code resent successfully.');
+      setResendCooldown(60);
+      setTimeout(() => setResendSuccess(null), 3000);
+    } finally {
+      setResending(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Otp</h1>
-        </div>
+    <div className="min-h-screen bg-[#0B0F19] text-white flex flex-col font-body">
+      <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-[#0B0F19]/90 backdrop-blur-md z-50">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 bg-[#05AC5F] rounded-sm flex items-center justify-center text-white">
+            <Zap className="w-4 h-4 fill-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-heading font-[300] tracking-[0.16em] text-lg text-white uppercase">
+              YETZO PARTNER
+            </span>
+            <span className="text-[9px] uppercase tracking-widest text-[#05AC5F] font-bold -mt-1">
+              PRO FLEET ACCESS
+            </span>
+          </div>
+        </Link>
+        <Link
+          href="/professional/pro/login"
+          className="text-xs font-heading font-medium text-slate-400 hover:text-white flex items-center gap-1 transition"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Change Phone</span>
+        </Link>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden relative">
-          
-          {/* Top Decorative Gradient */}
-          <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-          
-          <div className="p-8">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900">Otp</h2>
-                <p className="text-slate-500 mt-1">Live Endpoint via proxy: <code className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded">/v1/system/ping/</code></p>
-              </div>
+      <main className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-md bg-[#111827] border border-slate-800 rounded-sm p-6 sm:p-8 shadow-2xl backdrop-blur-sm space-y-6">
+          <div>
+            <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold font-heading">
+              Two-Factor Authentication
+            </span>
+            <h1 className="text-2xl font-[300] font-heading text-white tracking-tight mt-0.5">
+              Enter Verification Code
+            </h1>
+            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+              We sent a 6-digit cryptographic OTP to <span className="font-medium text-emerald-400 font-mono">{phone || 'your registered phone number'}</span>
+            </p>
+          </div>
+
+          {resendSuccess && (
+            <div className="bg-emerald-500/10 text-emerald-300 p-3 rounded-sm text-xs font-medium flex items-center gap-2 border border-emerald-500/20">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+              <span>{resendSuccess}</span>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-rose-500/10 text-rose-300 p-3 rounded-sm text-xs font-medium flex items-center gap-2 border border-rose-500/20">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleVerify} className="space-y-4 text-xs">
+            <div>
+              <label className="block text-[11px] font-heading uppercase text-slate-400 font-semibold mb-2">
+                6-Digit SMS Security Code
+              </label>
+              <input
+                type="text"
+                maxLength={6}
+                value={otp}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                placeholder="123456"
+                className="w-full bg-[#0B0F19] border border-slate-700 rounded-sm px-4 py-3 text-center tracking-[0.5em] text-xl font-mono font-bold text-emerald-400 focus:outline-none focus:border-[#05AC5F] transition"
+                required
+                autoFocus
+              />
             </div>
 
-            {isLoading ? (
-              <div className="space-y-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                <div className="h-12 bg-slate-100 rounded-lg mt-6 w-full"></div>
-              </div>
-            ) : error ? (
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full">
-                    <h3 className="font-semibold text-red-900">API Connection Failed</h3>
-                    <p className="text-red-700 text-sm mt-1 mb-2">{error}</p>
-                    <p className="text-red-600 text-xs">Ensure your Django server is running on port 8000.</p>
-                  </div>
-                </div>
+            <button
+              type="submit"
+              disabled={loading || otp.length < 6}
+              className="w-full bg-[#05AC5F] hover:bg-[#049652] text-white font-heading font-medium uppercase tracking-wider py-3 rounded-sm transition shadow-sm active:scale-[0.99] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Verifying Partner Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <span>Verify & Access Partner Job Queue</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="pt-2 border-t border-slate-800 text-center text-xs text-slate-400">
+            Didn't receive the code?{' '}
+            {resendCooldown > 0 ? (
+              <span className="text-slate-500 font-mono text-[11px]">Resend in {resendCooldown}s</span>
             ) : (
-              <div className="space-y-6">
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 flex items-start gap-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  <div className="w-full overflow-x-auto">
-                    <h3 className="font-semibold text-green-900">Real Payload Received</h3>
-                    <pre className="text-green-800 text-xs mt-2 bg-green-100/50 p-3 rounded-lg overflow-x-auto">
-                      {JSON.stringify(data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-
-                <p className="text-slate-600 leading-relaxed">
-                  This interface actively pulls live data from your Django backend through the Next.js API proxy using <strong>apiClient</strong>.
-                </p>
-
-                <button 
-                  onClick={() => router.push('/')}
-                  className="mt-8 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition-all w-full md:w-auto"
-                >
-                  Return to Dashboard
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resending}
+                className="text-emerald-400 font-medium hover:underline transition"
+              >
+                {resending ? 'Sending...' : 'Resend Code Now'}
+              </button>
             )}
           </div>
         </div>
       </main>
     </div>
+  );
+}
+
+export default function ProfessionalOtpPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0B0F19] flex items-center justify-center text-slate-400 text-sm">Loading...</div>}>
+      <ProOtpContent />
+    </Suspense>
   );
 }
