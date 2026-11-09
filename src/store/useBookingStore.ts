@@ -41,11 +41,14 @@ export interface BookingState {
 
 const getBasePrice = (srv: ServiceItem | null): number => {
   if (!srv) return 0;
+  if ((srv as any).starting_price) {
+    return Number((srv as any).starting_price);
+  }
   if (srv.pricing_rules && srv.pricing_rules.length > 0) {
     const p = srv.pricing_rules[0].base_price;
-    return Number(p > 10000 ? p / 100 : p) || 499;
+    return Number(p > 10000 ? p / 100 : p) || 199;
   }
-  return srv.base_price ? Number(srv.base_price > 10000 ? srv.base_price / 100 : srv.base_price) : 499;
+  return srv.base_price ? Number(srv.base_price > 10000 ? srv.base_price / 100 : srv.base_price) : 199;
 };
 
 export const useBookingStore = create<BookingState>()(
@@ -105,8 +108,8 @@ export const useBookingStore = create<BookingState>()(
         const addPrices = additionalServices.reduce((sum, s) => sum + getBasePrice(s), 0);
         const subtotal = mainPrice + addPrices;
 
-        // Bundle discount: 10% off for 2+ chores/services
-        let discount = additionalServices.length > 0 ? Math.round(subtotal * 0.1) : 0;
+        // Task Stacking discount: 15% off for 2+ chores/services (Pronto signature)
+        let discount = additionalServices.length > 0 ? Math.round(subtotal * 0.15) : 0;
 
         // Apply coupon if present
         if (appliedCoupon) {
@@ -123,7 +126,7 @@ export const useBookingStore = create<BookingState>()(
 
         const taxableAmount = Math.max(0, subtotal - discount);
         const taxes = Math.round(taxableAmount * 0.18); // 18% GST
-        const platformFee = 49;
+        const platformFee = 29; // Ultra-transparent minimal fee
         const totalAmount = taxableAmount + taxes + platformFee;
 
         return {

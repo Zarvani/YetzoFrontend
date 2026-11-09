@@ -66,6 +66,18 @@ function BookingLiveTrackContent() {
           if (payload.type === 'location_update') {
             setPartnerLocation({ lat: payload.latitude, lng: payload.longitude });
             if (payload.eta_minutes) setEtaMinutes(payload.eta_minutes);
+          } else if (payload.type === 'status_update') {
+            setBooking((prev: any) => ({
+              ...prev,
+              status: payload.status,
+              assigned_professional: payload.professional_name ? {
+                user: {
+                  first_name: payload.professional_name,
+                  phone: payload.professional_phone,
+                },
+                rating: payload.rating || 4.9,
+              } : prev?.assigned_professional
+            }));
           }
         } catch (e) {
           console.warn('WS message parse note:', e);

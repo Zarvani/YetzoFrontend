@@ -55,6 +55,7 @@ export default function OperationsDispatchBoard() {
         method: 'PATCH',
         body: {
           new_status: 'ASSIGNED',
+          professional_id: selectedProId,
           reason: 'Manual Operations Dispatcher Override',
         },
       });

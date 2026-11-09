@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ToggleLeft, ToggleRight, CheckCircle2, ShieldAlert, Sparkles, Video, Zap } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ToggleLeft, ToggleRight, CheckCircle2, ShieldAlert, Sparkles, Video, Zap, RefreshCw, Save } from 'lucide-react';
 
 interface FeatureFlag {
   id: string;
@@ -12,106 +12,170 @@ interface FeatureFlag {
   enabled: boolean;
 }
 
+const DEFAULT_FLAGS: FeatureFlag[] = [
+  {
+    id: 'ff-1',
+    key: 'PRONTO_BODYCAM_RECORDING',
+    name: 'Pronto Verified: Tamper-proof Bodycam Audio/Video',
+    desc: 'Mandates field technician bodycam recording with 48h anonymized encrypted storage and customer safety badge.',
+    benchmark: 'PRONTO Benchmark',
+    enabled: true,
+  },
+  {
+    id: 'ff-2',
+    key: 'SNABBIT_15MIN_DISPATCH',
+    name: 'Snabbit 10-15 Min Instant Arrival SLA Engine',
+    desc: 'Enables quick-commerce micro-cluster dispatch algorithm with candidate sequencing and real-time countdown timer.',
+    benchmark: 'SNABBIT Benchmark',
+    enabled: true,
+  },
+  {
+    id: 'ff-3',
+    key: 'URBAN_COMPANY_30DAY_WARRANTY',
+    name: 'Urban Company 30-Day Free Re-work Service Guarantee',
+    desc: 'Enables customer claim workflow with photographic evidence upload and free senior technician re-dispatch.',
+    benchmark: 'URBAN COMPANY Benchmark',
+    enabled: true,
+  },
+  {
+    id: 'ff-4',
+    key: 'YETZO_CLUB_MEMBERSHIP',
+    name: 'Yetzo Club Plus Membership Subscription Program',
+    desc: 'Unlocks 15% flat chore discount, zero convenience/safety fees, and priority dispatch in booking queue.',
+    benchmark: 'URBAN COMPANY Plus Benchmark',
+    enabled: true,
+  },
+  {
+    id: 'ff-5',
+    key: 'MULTI_CHORE_STACKING_DISCOUNT',
+    name: 'Multi-Chore Task Stacking 15% Bundle Discount',
+    desc: 'Applies automated 15% discount on cart subtotal when a homeowner books 2 or more distinct chore services.',
+    benchmark: 'PRONTO Stacking Benchmark',
+    enabled: true,
+  },
+  {
+    id: 'ff-6',
+    key: 'LIVE_GPS_MAP_TELEMETRY',
+    name: 'Bi-Directional WebSocket GPS Driver Tracking',
+    desc: 'Broadcasts partner vehicle GPS coordinates to customer map view every 5 seconds over Channels group.',
+    benchmark: 'Core Telemetry',
+    enabled: true,
+  },
+];
+
 export default function AdminFeatureFlagsPage() {
-  const [flags, setFlags] = useState<FeatureFlag[]>([
-    {
-      id: 'ff-1',
-      key: 'PRONTO_BODYCAM_RECORDING',
-      name: 'Pronto Verified: Tamper-proof Bodycam Audio/Video',
-      desc: 'Mandates field technician bodycam recording with 48h anonymized encrypted storage and customer safety badge.',
-      benchmark: 'PRONTO Benchmark',
-      enabled: true,
-    },
-    {
-      id: 'ff-2',
-      key: 'SNABBIT_15MIN_DISPATCH',
-      name: 'Snabbit 10-15 Min Instant Arrival SLA Engine',
-      desc: 'Enables quick-commerce micro-cluster dispatch algorithm with candidate sequencing and real-time countdown timer.',
-      benchmark: 'SNABBIT Benchmark',
-      enabled: true,
-    },
-    {
-      id: 'ff-3',
-      key: 'URBAN_COMPANY_30DAY_WARRANTY',
-      name: 'Urban Company 30-Day Free Re-work Service Guarantee',
-      desc: 'Enables customer claim workflow with photographic evidence upload and free senior technician re-dispatch.',
-      benchmark: 'URBAN COMPANY Benchmark',
-      enabled: true,
-    },
-    {
-      id: 'ff-4',
-      key: 'YETZO_CLUB_MEMBERSHIP',
-      name: 'Yetzo Club Plus Membership Subscription Program',
-      desc: 'Unlocks 15% flat chore discount, zero convenience/safety fees, and priority dispatch in booking queue.',
-      benchmark: 'URBAN COMPANY Plus Benchmark',
-      enabled: true,
-    },
-    {
-      id: 'ff-5',
-      key: 'MULTI_CHORE_STACKING_DISCOUNT',
-      name: 'Multi-Chore Task Stacking 10% Bundle Discount',
-      desc: 'Applies automated 10% discount on cart subtotal when a homeowner books 2 or more distinct chore services.',
-      benchmark: 'PRONTO Stacking Benchmark',
-      enabled: true,
-    },
-    {
-      id: 'ff-6',
-      key: 'LIVE_GPS_MAP_TELEMETRY',
-      name: 'Bi-Directional WebSocket GPS Driver Tracking',
-      desc: 'Broadcasts partner vehicle GPS coordinates to customer map view every 5 seconds over Channels group.',
-      benchmark: 'Core Telemetry',
-      enabled: true,
-    },
-  ]);
+  const [flags, setFlags] = useState<FeatureFlag[]>(DEFAULT_FLAGS);
+  const [feedback, setFeedback] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('yetzo_feature_flags');
+      if (stored) {
+        try {
+          setFlags(JSON.parse(stored));
+        } catch {
+          // ignore error
+        }
+      }
+    }
+  }, []);
 
   const toggleFlag = (id: string) => {
-    setFlags((prev) =>
-      prev.map((f) => (f.id === id ? { ...f, enabled: !f.enabled } : f))
-    );
+    setFlags((prev) => {
+      const updated = prev.map((f) => (f.id === id ? { ...f, enabled: !f.enabled } : f));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('yetzo_feature_flags', JSON.stringify(updated));
+      }
+      return updated;
+    });
+
+    const target = flags.find((f) => f.id === id);
+    const nextState = !target?.enabled;
+    setFeedback(`Feature flag ${target?.key} switched to ${nextState ? 'ENABLED' : 'DISABLED'}.`);
+    setTimeout(() => setFeedback(null), 3000);
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-[#059669]" />
-          <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">Enterprise Feature Flags & Rollout Controls</h1>
+    <div className="space-y-6 font-body">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
+            Rollout Governance
+          </span>
+          <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-0.5">
+            Enterprise Feature Flags & Rollout Controls
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Toggle dark-dispatch velocity, bodycam encryption, and warranty guarantee engines in real time.
+          </p>
         </div>
-        <p className="text-xs text-slate-500 mt-1">
-          Toggle Pronto, Urban Company, and Snabbit competitive workflows in real-time across web and mobile clients.
-        </p>
+
+        <div className="flex items-center gap-2">
+          <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm text-xs font-semibold font-heading">
+            {flags.filter((f) => f.enabled).length}/{flags.length} Flags Active
+          </span>
+        </div>
       </div>
 
-      <div className="space-y-3">
-        {flags.map((f) => (
+      {feedback && (
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-xs text-emerald-800 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{feedback}</span>
+        </div>
+      )}
+
+      {/* Grid of Flags */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {flags.map((flag) => (
           <div
-            key={f.id}
-            className={`p-5 rounded-2xl border transition flex items-center justify-between gap-4 ${
-              f.enabled ? 'border-slate-200 bg-white shadow-sm' : 'border-slate-200/60 bg-slate-50 opacity-70'
+            key={flag.id}
+            className={`p-5 rounded-sm border transition flex flex-col justify-between space-y-4 ${
+              flag.enabled
+                ? 'bg-white border-slate-200 shadow-xs'
+                : 'bg-slate-50/60 border-slate-200 opacity-70'
             }`}
           >
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 text-xs sm:text-sm">{f.name}</span>
-                <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-slate-100 text-slate-700">
-                  {f.benchmark}
-                </span>
+            <div className="space-y-2">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 font-heading block">
+                    {flag.benchmark}
+                  </span>
+                  <h3 className="font-heading font-medium text-slate-900 text-sm mt-0.5">
+                    {flag.name}
+                  </h3>
+                </div>
+
+                <button
+                  onClick={() => toggleFlag(flag.id)}
+                  className="transition shrink-0 text-slate-800"
+                >
+                  {flag.enabled ? (
+                    <ToggleRight className="w-8 h-8 text-[#05AC5F]" />
+                  ) : (
+                    <ToggleLeft className="w-8 h-8 text-slate-300" />
+                  )}
+                </button>
               </div>
-              <p className="text-[11px] text-slate-500 max-w-2xl">{f.desc}</p>
-              <span className="font-mono text-[10px] text-slate-400 block mt-1">
-                FLAG_KEY: <code className="text-[#059669] font-bold">{f.key}</code>
-              </span>
+
+              <p className="text-xs text-slate-500 leading-relaxed font-body">
+                {flag.desc}
+              </p>
             </div>
 
-            <label className="relative inline-flex items-center cursor-pointer shrink-0">
-              <input
-                type="checkbox"
-                checked={f.enabled}
-                onChange={() => toggleFlag(f.id)}
-                className="sr-only peer"
-              />
-              <div className="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
-            </label>
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-mono">
+              <span className="text-slate-400 font-bold">{flag.key}</span>
+              <span
+                className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold border ${
+                  flag.enabled
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    : 'bg-slate-100 text-slate-600 border-slate-200'
+                }`}
+              >
+                {flag.enabled ? 'ACTIVE' : 'PAUSED'}
+              </span>
+            </div>
           </div>
         ))}
       </div>

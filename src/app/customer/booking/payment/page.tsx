@@ -70,11 +70,22 @@ export default function BookingPaymentPage() {
         is_verified_session: isProntoVerified,
         scheduled_date: isInstant ? undefined : scheduledDate,
         scheduled_time: isInstant ? undefined : scheduledTime,
-        items: additionalServices.map((add) => ({
-          id: add.id,
-          quantity: 1,
-          price: add.base_price || 199,
-        })),
+        items: [
+          {
+            id: service.id,
+            service_id: service.id,
+            name: service.name,
+            quantity: 1,
+            price: service.base_price || 199,
+          },
+          ...additionalServices.map((add) => ({
+            id: add.id,
+            service_id: add.id,
+            name: add.name,
+            quantity: 1,
+            price: add.base_price || 199,
+          })),
+        ],
         answers: Object.entries(answers).map(([qId, ans]) => ({
           question_id: qId,
           answer_text: Array.isArray(ans) ? ans.join(', ') : String(ans),

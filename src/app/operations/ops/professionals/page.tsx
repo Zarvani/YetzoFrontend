@@ -33,7 +33,7 @@ export default function OperationsProfessionalsPage() {
 
   const handleApproveKyc = async (proId: string) => {
     try {
-      await apiClient(`professionals/${proId}/`, {
+      await apiClient(`professionals/${proId}/kyc/`, {
         method: 'PATCH',
         body: { kyc_status: 'ACTIVE' },
       });

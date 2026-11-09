@@ -59,14 +59,14 @@ export function LiveTrackingMap({ customerLocation, professionalLocation }: Live
 
   if (!isLoaded) {
     return (
-      <div className="w-full h-[400px] md:h-[500px] bg-slate-100 flex items-center justify-center rounded-[16px]">
-        <p className="text-slate-500 font-medium">Loading Live Map Engine...</p>
+      <div className="w-full h-[400px] md:h-[500px] bg-slate-100 flex items-center justify-center rounded-md border border-slate-200">
+        <p className="text-slate-500 font-medium text-xs font-heading uppercase tracking-wide">Loading Live Map Engine...</p>
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-[400px] md:h-[500px] rounded-[16px] overflow-hidden shadow-sm border border-slate-200">
+    <div className="relative w-full h-[400px] md:h-[500px] rounded-md overflow-hidden shadow-sm border border-slate-200">
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -90,9 +90,9 @@ export function LiveTrackingMap({ customerLocation, professionalLocation }: Live
             options={{
               suppressMarkers: true, // We will use our custom markers
               polylineOptions: {
-                strokeColor: "#2563EB",
+                strokeColor: "#05AC5F",
                 strokeWeight: 5,
-                strokeOpacity: 0.8,
+                strokeOpacity: 0.9,
               },
             }}
           />

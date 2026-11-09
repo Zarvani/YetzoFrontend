@@ -9,10 +9,10 @@ import { apiClient } from '@/lib/apiClient';
 export default function ProfessionalPayoutsPage() {
   const router = useRouter();
 
-  const [balance, setBalance] = useState<number>(4820);
-  const [upiId, setUpiId] = useState('9876543210@ybl');
+  const [balance, setBalance] = useState<number>(0);
+  const [upiId, setUpiId] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [withdrawing, setWithdrawing] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,9 +20,15 @@ export default function ProfessionalPayoutsPage() {
   const fetchWallet = async () => {
     try {
       setLoading(true);
-      const res: any = await apiClient('payments/wallet/').catch(() => null);
-      if (res?.balance !== undefined) {
-        setBalance(Number(res.balance));
+      const [walletRes, userRes]: any = await Promise.all([
+        apiClient('payments/wallet/').catch(() => null),
+        apiClient('auth/me/').catch(() => null),
+      ]);
+      if (walletRes?.balance !== undefined) {
+        setBalance(Number(walletRes.balance));
+      }
+      if (userRes?.phone_number) {
+        setUpiId(`${userRes.phone_number}@upi`);
       }
     } finally {
       setLoading(false);

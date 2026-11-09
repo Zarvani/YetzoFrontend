@@ -1,27 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, Plus, CheckCircle2, Zap, ShieldCheck, RefreshCw, X, Loader2 } from 'lucide-react';
+import { apiClient } from '@/lib/apiClient';
 
 interface ZoneItem {
   id: string;
   name: string;
-  city: string;
-  activePros: number;
-  instantSla: boolean;
-  surgeMultiplier: number;
-  status: 'ACTIVE' | 'PAUSED';
+  city: string | any;
+  is_active?: boolean;
+}
+
+interface CityOption {
+  id: string;
+  name: string;
 }
 
 export default function AdminZonesPage() {
-  const [zones, setZones] = useState<ZoneItem[]>([
-    { id: 'z1', name: 'Noida Sector 120 - 122 Micro-Cluster', city: 'Delhi NCR', activePros: 14, instantSla: true, surgeMultiplier: 1.0, status: 'ACTIVE' },
-    { id: 'z2', name: 'Indirapuram & Vaishali High-Density Cluster', city: 'Delhi NCR', activePros: 18, instantSla: true, surgeMultiplier: 1.0, status: 'ACTIVE' },
-    { id: 'z3', name: 'Whitefield & ITPL Tech Corridor', city: 'Bangalore', activePros: 22, instantSla: true, surgeMultiplier: 1.2, status: 'ACTIVE' },
-    { id: 'z4', name: 'Koramangala & HSR Layout', city: 'Bangalore', activePros: 16, instantSla: true, surgeMultiplier: 1.0, status: 'ACTIVE' },
-    { id: 'z5', name: 'Hinjewadi Phase 1 & 2', city: 'Pune', activePros: 9, instantSla: true, surgeMultiplier: 1.0, status: 'ACTIVE' },
-  ]);
-
+  const [zones, setZones] = useState<ZoneItem[]>([]);
+  const [cities, setCities] = useState<CityOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterCity, setFilterCity] = useState('ALL');
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -29,50 +27,90 @@ export default function AdminZonesPage() {
 
   const [newZone, setNewZone] = useState({
     name: '',
-    city: 'Bangalore',
-    activePros: 15,
-    instantSla: true,
-    surgeMultiplier: 1.0,
+    city: '',
+    is_active: true,
   });
 
-  const toggleStatus = (id: string) => {
-    setZones((prev) =>
-      prev.map((z) => (z.id === id ? { ...z, status: z.status === 'ACTIVE' ? 'PAUSED' : 'ACTIVE' } : z))
-    );
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [zonesRes, citiesRes]: any = await Promise.all([
+        apiClient('locations/zones/').catch(() => []),
+        apiClient('locations/cities/').catch(() => []),
+      ]);
+
+      const zoneList = zonesRes?.data || (Array.isArray(zonesRes) ? zonesRes : zonesRes?.results || []);
+      const cityList = citiesRes?.data || (Array.isArray(citiesRes) ? citiesRes : citiesRes?.results || []);
+
+      setZones(zoneList);
+      setCities(cityList);
+      if (cityList.length > 0 && !newZone.city) {
+        setNewZone((prev) => ({ ...prev, city: cityList[0].id }));
+      }
+    } catch {
+      setZones([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCreateZone = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const toggleStatus = async (zone: ZoneItem) => {
+    try {
+      const nextStatus = !zone.is_active;
+      await apiClient(`locations/zones/${zone.id}/`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_active: nextStatus }),
+      }).catch(() => null);
+
+      setZones((prev) =>
+        prev.map((z) => (z.id === zone.id ? { ...z, is_active: nextStatus } : z))
+      );
+      setFeedback(`Cluster ${zone.name} status updated.`);
+      setTimeout(() => setFeedback(null), 3000);
+    } catch {
+      setFeedback('Status update failed');
+      setTimeout(() => setFeedback(null), 3000);
+    }
+  };
+
+  const handleCreateZone = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newZone.name.trim()) return;
+    if (!newZone.name.trim() || !newZone.city) return;
 
-    setSaving(true);
-    setTimeout(() => {
-      const created: ZoneItem = {
-        id: `z-${Date.now()}`,
-        name: newZone.name,
-        city: newZone.city,
-        activePros: Number(newZone.activePros),
-        instantSla: newZone.instantSla,
-        surgeMultiplier: Number(newZone.surgeMultiplier),
-        status: 'ACTIVE',
-      };
+    try {
+      setSaving(true);
+      const res: any = await apiClient('locations/zones/', {
+        method: 'POST',
+        body: JSON.stringify(newZone),
+      });
 
+      const created: ZoneItem = res?.data || res;
       setZones((prev) => [created, ...prev]);
       setShowModal(false);
       setNewZone({
         name: '',
-        city: 'Bangalore',
-        activePros: 15,
-        instantSla: true,
-        surgeMultiplier: 1.0,
+        city: cities[0]?.id || '',
+        is_active: true,
       });
-      setFeedback(`Geofenced cluster ${created.name} activated for 15m instant dispatch.`);
+      setFeedback(`Geofenced cluster ${created.name} saved to database.`);
       setTimeout(() => setFeedback(null), 4000);
+    } catch (err: any) {
+      setFeedback(err?.message || 'Failed to create cluster in database');
+      setTimeout(() => setFeedback(null), 4000);
+    } finally {
       setSaving(false);
-    }, 400);
+    }
   };
 
-  const filtered = zones.filter((z) => filterCity === 'ALL' || z.city === filterCity);
+  const filtered = zones.filter((z) => {
+    if (filterCity === 'ALL') return true;
+    const cityName = typeof z.city === 'object' ? z.city?.name : cities.find((c) => c.id === z.city)?.name;
+    return cityName === filterCity;
+  });
 
   return (
     <div className="space-y-6 font-body">
@@ -80,23 +118,32 @@ export default function AdminZonesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
-            Dark Dispatch & Fleet Routing
+            Live Dark Dispatch & Geofences
           </span>
           <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-0.5">
-            Geofenced Micro-Cluster Zones
+            Geofenced Micro-Cluster Zones ({zones.length})
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Configure Snabbit 10-15m instant arrival clusters, partner capacity quotas, and localized surge multipliers.
+            Real-time operating zones dynamically queried from PostgreSQL location schema.
           </p>
         </div>
 
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs uppercase tracking-wider font-medium font-heading rounded-sm shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Add New Geofence Zone</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={fetchData}
+            className="p-2 border border-slate-200 rounded-sm hover:bg-slate-50 text-slate-600 transition"
+            title="Refresh"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs uppercase tracking-wider font-medium font-heading rounded-sm shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add New Geofence Zone</span>
+          </button>
+        </div>
       </div>
 
       {feedback && (
@@ -108,85 +155,103 @@ export default function AdminZonesPage() {
 
       {/* Filter Chips */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
-        {['ALL', 'Delhi NCR', 'Bangalore', 'Pune'].map((c) => (
+        <button
+          onClick={() => setFilterCity('ALL')}
+          className={`px-3.5 py-1.5 rounded-sm text-xs uppercase tracking-wider font-heading font-medium transition whitespace-nowrap border ${
+            filterCity === 'ALL'
+              ? 'bg-slate-900 text-white border-slate-900'
+              : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          All Cities ({zones.length})
+        </button>
+        {cities.map((c) => (
           <button
-            key={c}
-            onClick={() => setFilterCity(c)}
+            key={c.id}
+            onClick={() => setFilterCity(c.name)}
             className={`px-3.5 py-1.5 rounded-sm text-xs uppercase tracking-wider font-heading font-medium transition whitespace-nowrap border ${
-              filterCity === c
+              filterCity === c.name
                 ? 'bg-slate-900 text-white border-slate-900'
                 : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
-            {c}
+            {c.name}
           </button>
         ))}
       </div>
 
       {/* Zones Table */}
       <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-500 font-heading uppercase tracking-wider text-[10px] border-b border-slate-200">
-              <tr>
-                <th className="py-3 px-4 font-semibold">Zone Cluster</th>
-                <th className="py-3 px-4 font-semibold">City Hub</th>
-                <th className="py-3 px-4 font-semibold">Active Fleet</th>
-                <th className="py-3 px-4 font-semibold">15m Arrival SLA</th>
-                <th className="py-3 px-4 font-semibold">Surge</th>
-                <th className="py-3 px-4 font-semibold">Status</th>
-                <th className="py-3 px-4 text-right font-semibold">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filtered.map((z) => (
-                <tr key={z.id} className="hover:bg-slate-50/60 transition">
-                  <td className="py-3.5 px-4 font-heading font-medium text-slate-900">
-                    {z.name}
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-700 font-medium">
-                    {z.city}
-                  </td>
-                  <td className="py-3.5 px-4 font-heading font-medium text-slate-900">
-                    {z.activePros} Pros Online
-                  </td>
-                  <td className="py-3.5 px-4">
-                    {z.instantSla ? (
-                      <span className="px-2 py-0.5 rounded-sm font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] flex items-center gap-1 w-max">
-                        <Zap className="w-3 h-3 fill-emerald-600 text-emerald-600" />
-                        15m Guaranteed
-                      </span>
-                    ) : (
-                      <span className="text-slate-400 font-mono text-[11px]">Standard</span>
-                    )}
-                  </td>
-                  <td className="py-3.5 px-4 font-mono font-bold text-slate-800">
-                    {z.surgeMultiplier}x
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold border ${
-                        z.status === 'ACTIVE'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : 'bg-slate-100 text-slate-600 border-slate-200'
-                      }`}
-                    >
-                      {z.status}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <button
-                      onClick={() => toggleStatus(z.id)}
-                      className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-medium uppercase tracking-wider rounded-sm transition text-[10px]"
-                    >
-                      {z.status === 'ACTIVE' ? 'Pause' : 'Activate'}
-                    </button>
-                  </td>
+        {loading ? (
+          <div className="p-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+            <span>Loading live geofenced micro-clusters from database...</span>
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-8 text-center text-xs text-slate-500">
+            No micro-clusters matching the selected filter.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-slate-50 text-slate-500 font-heading uppercase tracking-wider text-[10px] border-b border-slate-200">
+                <tr>
+                  <th className="py-3 px-4 font-semibold">Zone Cluster</th>
+                  <th className="py-3 px-4 font-semibold">City Hub</th>
+                  <th className="py-3 px-4 font-semibold">Database Reference</th>
+                  <th className="py-3 px-4 font-semibold">Dispatch SLA</th>
+                  <th className="py-3 px-4 font-semibold">Status</th>
+                  <th className="py-3 px-4 text-right font-semibold">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filtered.map((z) => {
+                  const cityName = typeof z.city === 'object' ? z.city?.name : cities.find((c) => c.id === z.city)?.name || 'Central Hub';
+                  const isActive = z.is_active !== false;
+
+                  return (
+                    <tr key={z.id} className="hover:bg-slate-50/60 transition">
+                      <td className="py-3.5 px-4 font-heading font-medium text-slate-900">
+                        {z.name}
+                      </td>
+                      <td className="py-3.5 px-4 text-slate-700 font-medium">
+                        {cityName}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-[11px] text-slate-400">
+                        {z.id.slice(0, 8)}...
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="px-2 py-0.5 rounded-sm font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] flex items-center gap-1 w-max">
+                          <Zap className="w-3 h-3 fill-emerald-600 text-emerald-600" />
+                          15m Guaranteed
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span
+                          className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold border ${
+                            isActive
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              : 'bg-slate-100 text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          {isActive ? 'ACTIVE' : 'PAUSED'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <button
+                          onClick={() => toggleStatus(z)}
+                          className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-heading font-medium uppercase tracking-wider rounded-sm transition text-[10px]"
+                        >
+                          {isActive ? 'Pause' : 'Activate'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Interactive Modal: Add New Geofence Zone */}
@@ -225,66 +290,22 @@ export default function AdminZonesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-heading uppercase text-slate-600 font-semibold mb-1">
-                    City Hub
-                  </label>
-                  <select
-                    value={newZone.city}
-                    onChange={(e) => setNewZone({ ...newZone, city: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600 bg-white"
-                  >
-                    <option value="Bangalore">Bangalore</option>
-                    <option value="Delhi NCR">Delhi NCR</option>
-                    <option value="Pune">Pune</option>
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Hyderabad">Hyderabad</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-heading uppercase text-slate-600 font-semibold mb-1">
-                    Active Pros Quota
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="200"
-                    value={newZone.activePros}
-                    onChange={(e) => setNewZone({ ...newZone, activePros: Number(e.target.value) })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-heading uppercase text-slate-600 font-semibold mb-1">
-                    Surge Multiplier
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    min="1.0"
-                    max="3.0"
-                    value={newZone.surgeMultiplier}
-                    onChange={(e) => setNewZone({ ...newZone, surgeMultiplier: Number(e.target.value) })}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600 font-mono"
-                  />
-                </div>
-
-                <div className="flex flex-col justify-end">
-                  <label className="flex items-center gap-2 cursor-pointer pb-2 text-[11px] font-medium text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={newZone.instantSla}
-                      onChange={(e) => setNewZone({ ...newZone, instantSla: e.target.checked })}
-                      className="rounded-sm border-slate-300 text-emerald-600 focus:ring-0"
-                    />
-                    <span>15m Instant SLA</span>
-                  </label>
-                </div>
+              <div>
+                <label className="block text-[11px] font-heading uppercase text-slate-600 font-semibold mb-1">
+                  City Hub *
+                </label>
+                <select
+                  required
+                  value={newZone.city}
+                  onChange={(e) => setNewZone({ ...newZone, city: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600 bg-white"
+                >
+                  {cities.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
@@ -301,7 +322,7 @@ export default function AdminZonesPage() {
                   className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white rounded-sm uppercase tracking-wider text-[11px] font-heading font-medium flex items-center gap-1.5 transition disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
-                  <span>Activate Zone</span>
+                  <span>Save to Database</span>
                 </button>
               </div>
             </form>

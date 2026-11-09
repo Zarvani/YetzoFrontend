@@ -38,11 +38,10 @@ function OpsProfessionalDetailContent() {
     try {
       setUpdating(true);
       setError(null);
-      await apiClient(`professionals/${proId}/`, {
+      await apiClient(`professionals/${proId}/kyc/`, {
         method: 'PATCH',
         body: {
-          kyc_status: status,
-          is_verified: status === 'VERIFIED',
+          kyc_status: status === 'VERIFIED' ? 'ACTIVE' : 'REJECTED',
         },
       });
       setSuccessMsg(`KYC status updated to ${status}.`);

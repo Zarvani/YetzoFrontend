@@ -70,6 +70,8 @@ export interface BookingSlotItem {
 
 export interface BookingItem {
   id: string;
+  service_id?: string;
+  name?: string;
   variant_id?: string;
   addon_id?: string;
   quantity: number;

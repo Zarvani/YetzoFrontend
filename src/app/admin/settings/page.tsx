@@ -11,10 +11,36 @@ export default function AdminSettingsPage() {
   const [gstRate, setGstRate] = useState('18');
   const [saved, setSaved] = useState(false);
 
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem('yetzo_system_settings');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.commissionRate) setCommissionRate(parsed.commissionRate);
+        if (parsed.convenienceFee) setConvenienceFee(parsed.convenienceFee);
+        if (parsed.instantTimeoutMins) setInstantTimeoutMins(parsed.instantTimeoutMins);
+        if (parsed.bodycamRetentionHours) setBodycamRetentionHours(parsed.bodycamRetentionHours);
+        if (parsed.gstRate) setGstRate(parsed.gstRate);
+      }
+    } catch {}
+  }, []);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      localStorage.setItem('yetzo_system_settings', JSON.stringify({
+        commissionRate,
+        convenienceFee,
+        instantTimeoutMins,
+        bodycamRetentionHours,
+        gstRate,
+        updatedAt: new Date().toISOString()
+      }));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch {
+      setSaved(true);
+    }
   };
 
   return (
