@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* Pronto-Competitive Brand Palette */
-  --color-primary: #05AC5F;
-  --color-primary-hover: #049652;
-  --color-primary-dark: #064E3B;
-  --color-primary-light: #ECFDF5;
+  /* Official Yetzo Royal Blue Brand Palette (Matching Logo) */
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-primary-dark: #1E3A8A;
+  --color-primary-light: #EFF6FF;
   
-  --color-accent: #05AC5F;
+  --color-accent: #2563EB;
   --color-gold: #F59E0B;
   
   /* Luxury Slate & Ink Typography */
@@ -36,9 +36,9 @@
   --color-primary-dark: var(--color-primary-dark);
   --color-primary-light: var(--color-primary-light);
   
-  --color-brand-emerald: #05AC5F;
-  --color-brand-dark: #064E3B;
-  --color-brand-mint: #ECFDF5;
+  --color-brand-emerald: #2563EB;
+  --color-brand-dark: #1E3A8A;
+  --color-brand-mint: #EFF6FF;
   
   --color-slate-900: var(--color-text-900);
   --color-slate-800: var(--color-text-800);

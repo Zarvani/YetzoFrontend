@@ -18,8 +18,8 @@ export function ChatBox({ bookingId, recipientName }: ChatProps) {
     const token = localStorage.getItem("yetzo_access_token")
     if (!token) return
 
-    // Connect to FastAPI WebSocket Server
-    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://127.0.0.1:8001/ws"
+    // Connect to WebSocket Server
+    const wsUrl = "wss://sak.yetzo.com/ws"
     ws.current = new WebSocket(`${wsUrl}/chat/${bookingId}/?token=${token}`)
 
     ws.current.onopen = () => {
@@ -81,13 +81,12 @@ export function ChatBox({ bookingId, recipientName }: ChatProps) {
           </div>
         ) : (
           messages.map((msg, i) => (
-            <div 
-              key={i} 
-              className={`max-w-[80%] p-3 rounded-[12px] text-[14px] ${
-                msg.sender === "me" 
-                  ? "bg-[#2563EB] text-white self-end rounded-br-[4px]" 
+            <div
+              key={i}
+              className={`max-w-[80%] p-3 rounded-[12px] text-[14px] ${msg.sender === "me"
+                  ? "bg-[#2563EB] text-white self-end rounded-br-[4px]"
                   : "bg-white border border-slate-200 text-slate-800 self-start rounded-bl-[4px]"
-              }`}
+                }`}
             >
               {msg.text}
             </div>
@@ -98,15 +97,15 @@ export function ChatBox({ bookingId, recipientName }: ChatProps) {
 
       {/* Input Area */}
       <form onSubmit={sendMessage} className="p-3 bg-white border-t border-slate-200 flex gap-2">
-        <input 
-          type="text" 
-          placeholder="Type a message..." 
+        <input
+          type="text"
+          placeholder="Type a message..."
           className="flex-1 bg-slate-100 rounded-full px-4 py-2 text-[14px] outline-none focus:ring-2 focus:ring-[#2563EB]/20 transition-all"
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={!input.trim()}
           className="h-10 w-10 rounded-full bg-[#2563EB] flex items-center justify-center text-white disabled:opacity-50 disabled:bg-slate-300 transition-colors"
         >

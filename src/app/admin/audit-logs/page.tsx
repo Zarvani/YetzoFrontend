@@ -44,7 +44,7 @@ export default function AdminAuditLogsPage() {
             actor: 'System Automation',
             resource_type: 'Wallet',
             resource_id: 'TX8192',
-            ip_address: '127.0.0.1',
+            ip_address: '103.212.145.90',
             created_at: new Date(Date.now() - 3600000).toISOString(),
           },
           {

@@ -11,7 +11,7 @@ export function PaymentMethodSelector() {
             <div className="h-8 w-12 bg-white border border-[#E2E8F0] rounded-[4px] flex items-center justify-center font-bold text-[#0F172A] text-[11px] shrink-0">
               UPI
             </div>
-            <span className="text-[15px] font-bold text-[#0F172A]">UPI / QR Code</span>
+            <span className="text-[15px] font-bold text-[#0F172A]">UPI (Google Pay / PhonePe / Paytm)</span>
           </span>
           <span className="h-5 w-5 rounded-full border-[5px] border-[#2563EB] bg-white"></span>
         </span>

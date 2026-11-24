@@ -10,6 +10,8 @@ import {
 import { apiClient } from '@/lib/apiClient';
 import { useBookingStore } from '@/store/useBookingStore';
 import { Booking } from '@/types/booking';
+import { YetzoLoader } from '@/components/ui/YetzoLoader';
+import Image from 'next/image';
 
 function BookingSuccessPageContent() {
   const router = useRouter();
@@ -93,9 +95,12 @@ function BookingSuccessPageContent() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto py-16 text-center space-y-3 font-body">
-        <Loader2 className="w-6 h-6 animate-spin text-emerald-600 mx-auto" />
-        <h2 className="text-base font-[300] font-heading text-slate-900">Locating Nearest Partner...</h2>
-        <p className="text-xs text-slate-500">Matching within 3km hyper-local cluster</p>
+        <YetzoLoader
+          variant="radar"
+          size="md"
+          text="Locating Nearest Partner..."
+          subtext="Matching within 3km hyper-local cluster"
+        />
       </div>
     );
   }
@@ -106,17 +111,22 @@ function BookingSuccessPageContent() {
       {/* Success Card */}
       <div className="bg-white border border-slate-200 rounded-sm p-6 sm:p-10 shadow-[0_1px_3px_rgba(0,0,0,0.02)] text-center space-y-6">
         
-        {/* Pulsing Radar Beacon */}
-        <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-          <span className="absolute inset-0 rounded-full bg-emerald-400 opacity-25 animate-ping"></span>
-          <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
+        {/* Animated Celebration Badge */}
+        <div className="w-24 h-24 mx-auto flex items-center justify-center">
+          <Image
+            src="/success.gif"
+            alt="Booking Confirmed"
+            width={96}
+            height={96}
+            className="w-full h-full object-contain"
+            priority
+            unoptimized
+          />
         </div>
 
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-200">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
             <span>15-Minute Instant Arrival SLA Active</span>
           </div>
 

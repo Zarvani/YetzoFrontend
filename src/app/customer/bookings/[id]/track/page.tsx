@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { YetzoLoader } from '@/components/ui/YetzoLoader';
 import { 
   ArrowLeft, Shield, Phone, MessageSquare, AlertTriangle, 
   CheckCircle2, Clock, MapPin, Navigation, Sparkles, RefreshCw, Copy, Check, Star 
@@ -100,9 +101,13 @@ function BookingLiveTrackContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center p-6 space-y-3 font-body">
-        <div className="w-8 h-8 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin"></div>
-        <p className="text-xs text-slate-500 font-medium font-heading tracking-wide uppercase">Connecting to live dispatch radar...</p>
+      <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-center p-6 font-body">
+        <YetzoLoader
+          size="lg"
+          variant="radar"
+          text="Connecting to Live Telemetry Radar..."
+          subtext="Streaming real-time GPS coordinates of your Yetzo service professional"
+        />
       </div>
     );
   }
@@ -117,7 +122,7 @@ function BookingLiveTrackContent() {
         </p>
         <Link
           href="/customer/bookings"
-          className="px-5 py-2.5 bg-[#05AC5F] text-white rounded-sm text-xs uppercase tracking-wider font-medium font-heading shadow-sm hover:bg-[#049652] transition"
+          className="px-5 py-2.5 bg-blue-600 text-white rounded-md text-xs uppercase tracking-wider font-medium font-heading shadow-sm hover:bg-blue-700 transition"
         >
           Back to Bookings
         </Link>

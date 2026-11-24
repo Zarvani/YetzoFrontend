@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { BookingStepper } from '@/components/booking/BookingStepper';
 import { BookingSummary } from '@/components/booking/BookingSummary';
+import { YetzoLoader } from '@/components/ui/YetzoLoader';
 import { useBookingStore } from '@/store/useBookingStore';
 import { apiClient } from '@/lib/apiClient';
 import { CreateBookingPayload, Booking } from '@/types/booking';
@@ -211,7 +212,7 @@ export default function BookingPaymentPage() {
               {[
                 { id: 'UPI', label: 'UPI / Google Pay / PhonePe', icon: Zap, desc: 'Instant 0% transaction fee · Preferred' },
                 { id: 'CARD', label: 'Credit / Debit Card', icon: CreditCard, desc: 'Visa, Mastercard, RuPay, Amex' },
-                { id: 'COD', label: 'Pay After Service (Cash / QR)', icon: Wallet, desc: 'Pay partner directly once service is completed' },
+                { id: 'COD', label: 'Pay After Service (Cash on Delivery)', icon: Wallet, desc: 'Pay partner directly once service is completed' },
               ].map((opt) => {
                 const isSelected = paymentMethod === opt.id;
                 const Icon = opt.icon;
@@ -259,7 +260,7 @@ export default function BookingPaymentPage() {
               type="button"
               disabled={loading}
               onClick={handlePlaceOrderAndPay}
-              className="w-full py-3.5 bg-[#05AC5F] hover:bg-[#049652] disabled:opacity-50 text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading"
+              className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading"
             >
               {loading ? (
                 <>
@@ -273,6 +274,14 @@ export default function BookingPaymentPage() {
                 </>
               )}
             </button>
+
+            {loading && (
+              <YetzoLoader
+                overlay
+                text="Holding Escrow Payment & Alerting Fleet..."
+                subtext="Locating verified 15-minute home professionals in your neighborhood"
+              />
+            )}
           </div>
         </div>
 
