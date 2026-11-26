@@ -86,13 +86,13 @@ export default function AddressesPage() {
   const getIcon = (type: string) => {
     if (type === 'HOME') return <Home className="w-5 h-5 text-blue-600" />;
     if (type === 'WORK') return <Briefcase className="w-5 h-5 text-purple-600" />;
-    return <MapPin className="w-5 h-5 text-emerald-600" />;
+    return <MapPin className="w-5 h-5 text-blue-600" />;
   };
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white px-4 py-5 sticky top-0 z-40 shadow-sm flex items-center justify-between">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-200 transition">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
@@ -106,7 +106,7 @@ export default function AddressesPage() {
           <Plus className="w-4 h-4" />
           <span>Add New</span>
         </button>
-      </header>
+      </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
         {loading ? (

@@ -22,8 +22,8 @@ export default function OperationsLiveMapPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base font-bold text-slate-900">Live Field Operations GPS Map</h1>
-              <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              <span className="flex items-center gap-1 text-[11px] font-bold text-blue-800 bg-blue-100 px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
                 Live Telemetry
               </span>
             </div>
@@ -55,7 +55,7 @@ export default function OperationsLiveMapPage() {
         <div className="absolute bottom-6 left-6 z-20 bg-white/95 backdrop-blur-md border border-slate-200 p-4 rounded-2xl shadow-xl space-y-2 text-xs">
           <span className="font-bold text-slate-900 block mb-1">Active Cluster Telemetry</span>
           <div className="flex items-center gap-2 text-slate-600">
-            <span className="w-3 h-3 rounded-full bg-emerald-600" />
+            <span className="w-3 h-3 rounded-full bg-blue-600" />
             <span>28 Pros Online & In Transit</span>
           </div>
           <div className="flex items-center gap-2 text-slate-600">

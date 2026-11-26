@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Tag, Sparkles, Check, Copy } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
 export default function OffersPage() {
@@ -27,29 +28,29 @@ export default function OffersPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       <title>Offers & Coupons — Yetzo</title>
-      <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-4 sticky top-0 z-50">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <h1 className="text-xl font-black text-slate-900">Offers & Coupons</h1>
-      </header>
+      
 
       <main className="max-w-2xl mx-auto p-4 space-y-4">
         {/* Banner */}
-        <div className="bg-gradient-to-br from-orange-500 to-rose-600 p-6 rounded-3xl text-white shadow-xl shadow-orange-500/30">
-          <p className="text-orange-100 font-bold text-sm uppercase tracking-wider mb-2">🎉 Limited Time</p>
-          <h2 className="text-3xl font-black mb-1">Save Big on Your First Booking!</h2>
-          <p className="text-orange-100 font-medium">Use code YETZO50 and get flat ₹50 off on your first service.</p>
+        <div className="bg-gradient-to-br from-blue-700 to-indigo-800 p-6 rounded-2xl text-white shadow-xl shadow-blue-700/20">
+          <p className="text-sky-300 font-bold text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5 font-heading">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Launch Benefit</span>
+          </p>
+          <h2 className="text-2xl font-[300] font-heading mb-1">Save Big on Your First Booking!</h2>
+          <p className="text-blue-100 text-xs font-medium">Use code YETZO50 and get flat ₹50 off on your first doorstep service.</p>
         </div>
 
-        <h3 className="font-black text-slate-900 text-lg">All Active Offers</h3>
+        <h3 className="font-heading font-medium text-slate-900 text-base">All Active Offers</h3>
 
-        {loading ? Array(4).fill(0).map((_,i) => <div key={i} className="bg-white h-32 rounded-3xl animate-pulse border border-slate-200"></div>)
+        {loading ? Array(4).fill(0).map((_,i) => <div key={i} className="bg-white h-32 rounded-2xl animate-pulse border border-slate-200"></div>)
         : coupons.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-5xl mb-3">🎁</div>
-            <h3 className="font-black text-slate-900 text-xl">No active offers</h3>
-            <p className="text-slate-500 font-medium mt-2">Check back soon for new deals!</p>
+          <div className="text-center py-16 space-y-2">
+            <div className="w-12 h-12 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center mx-auto text-blue-600">
+              <Tag className="w-6 h-6" />
+            </div>
+            <h3 className="font-heading font-medium text-slate-900 text-base">No active seasonal offers</h3>
+            <p className="text-slate-500 text-xs">Standard 15% task stacking discount is permanently active during checkout!</p>
           </div>
         ) : coupons.map((coupon: any) => (
           <div key={coupon.id} className="bg-white p-5 rounded-3xl border-2 border-dashed border-slate-200 relative overflow-hidden">

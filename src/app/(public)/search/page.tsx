@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Search, Sparkles } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
 export default function SearchPage() {
@@ -34,22 +35,7 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       <title>Search Services — Yetzo</title>
-      <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-4 sticky top-0 z-50">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        <div className="flex-1 relative">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          <input
-            autoFocus
-            type="text"
-            placeholder="Search for a service..."
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            className="w-full bg-slate-100 border-none rounded-2xl pl-12 pr-4 py-3.5 font-medium text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </header>
+      
 
       <main className="max-w-2xl mx-auto p-4">
         {!searched && (
@@ -71,7 +57,9 @@ export default function SearchPage() {
 
         {searched && !loading && results.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-5xl mb-4">🔍</div>
+            <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
+              <Search className="w-6 h-6" />
+            </div>
             <h3 className="text-xl font-black text-slate-900">No results for "{query}"</h3>
             <p className="text-slate-500 font-medium mt-2">Try a different keyword</p>
           </div>
@@ -83,12 +71,14 @@ export default function SearchPage() {
             {results.map((srv: any) => (
               <div key={srv.id} onClick={() => router.push(`/service/${srv.slug}`)} className="bg-white p-4 rounded-2xl border border-slate-200 flex gap-4 cursor-pointer hover:border-blue-300 transition-all">
                 <div className="w-16 h-16 rounded-xl bg-slate-100 shrink-0 overflow-hidden">
-                  {srv.image_url || srv.image ? <img src={srv.image_url || srv.image} alt={srv.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-2xl">🔧</div>}
+                  {srv.image_url || srv.image ? <img src={srv.image_url || srv.image} alt={srv.name} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center bg-blue-50 text-blue-500"><Sparkles className="w-6 h-6" /></div>}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-black text-slate-900">{srv.name}</h3>
                   <p className="text-sm text-slate-500 font-medium mt-0.5">{srv.category?.name}</p>
-                  <p className="font-black text-blue-600 mt-1">₹{srv.base_price}</p>
+                  <p className="font-black text-blue-600 mt-1">
+                    ₹{srv.starting_price || srv.base_price || (srv.pricing_rules?.[0]?.base_price ? (srv.pricing_rules[0].base_price > 1000 ? Math.round(srv.pricing_rules[0].base_price / 100) : srv.pricing_rules[0].base_price) : 299)}
+                  </p>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/></svg>

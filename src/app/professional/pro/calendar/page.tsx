@@ -45,7 +45,7 @@ export default function ProfessionalCalendarPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Calendar className="w-6 h-6" />
               </div>
               <div>
@@ -75,7 +75,7 @@ export default function ProfessionalCalendarPage() {
                   onClick={() => setSelectedDate(`2026-10-${d}`)}
                   className={`p-3 rounded-2xl cursor-pointer transition ${
                     isToday
-                      ? 'bg-[#059669] text-white font-bold shadow-md'
+                      ? 'bg-[#2563EB] text-white font-bold shadow-md'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700'
                   }`}
                 >
@@ -96,7 +96,7 @@ export default function ProfessionalCalendarPage() {
 
             {loading ? (
               <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-                <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
                 Loading appointments...
               </div>
             ) : bookings.length === 0 ? (
@@ -121,7 +121,7 @@ export default function ProfessionalCalendarPage() {
 
                     <div className="flex items-center gap-3 text-[11px] text-slate-500">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-[#059669]" />
+                        <Clock className="w-3 h-3 text-[#2563EB]" />
                         10:00 AM - 11:30 AM
                       </span>
                       <span>•</span>
@@ -135,7 +135,7 @@ export default function ProfessionalCalendarPage() {
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <span className="text-[10px] uppercase font-bold text-slate-400 block">Est. Payout</span>
-                      <span className="text-xs font-black text-[#059669]">₹{Math.round(Number(b.total_amount || 499) * 0.8)}</span>
+                      <span className="text-xs font-black text-[#2563EB]">₹{Math.round(Number(b.total_amount || 499) * 0.8)}</span>
                     </div>
 
                     <Link

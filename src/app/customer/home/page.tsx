@@ -45,7 +45,7 @@ export default function CustomerHomePage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white px-4 pt-5 pb-3 sticky top-0 z-50 shadow-sm">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center justify-between mb-3">
           <div>
             <p className="text-slate-500 font-medium text-sm">Good morning 👋</p>
@@ -67,7 +67,7 @@ export default function CustomerHomePage() {
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           Search for a service...
         </button>
-      </header>
+      </div>
 
       <main className="px-4 space-y-6 pt-4">
         {/* Banners */}

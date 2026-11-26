@@ -87,7 +87,7 @@ function QuestionsContent() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <HelpCircle className="w-6 h-6" />
             </div>
             <div>
@@ -107,12 +107,12 @@ function QuestionsContent() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading service requirements...
             </div>
           ) : questions.length === 0 ? (
             <div className="space-y-4 py-4">
-              <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-xs text-emerald-800">
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-xs text-blue-800">
                 Standard equipment and verified tools will be automatically brought by the professional. No additional setup questions are required for this service.
               </div>
 
@@ -125,7 +125,7 @@ function QuestionsContent() {
                   value={answers['notes'] || ''}
                   onChange={(e) => setAnswers({ ...answers, notes: e.target.value })}
                   placeholder="e.g. Ring bell twice, gate code #4201, pets inside"
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-xs text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-xs text-slate-900"
                 />
               </div>
             </div>
@@ -143,7 +143,7 @@ function QuestionsContent() {
                       value={answers[q.id] || ''}
                       onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })}
                       placeholder="Type your response..."
-                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-xs text-slate-900"
+                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-xs text-slate-900"
                     />
                   )}
 
@@ -156,7 +156,7 @@ function QuestionsContent() {
                           onClick={() => setAnswers({ ...answers, [q.id]: val === 'Yes' })}
                           className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition ${
                             answers[q.id] === (val === 'Yes')
-                              ? 'border-[#059669] bg-emerald-50 text-emerald-800'
+                              ? 'border-[#2563EB] bg-blue-50 text-blue-800'
                               : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                           }`}
                         >
@@ -181,12 +181,12 @@ function QuestionsContent() {
                             onClick={() => handleOptionSelect(q.id, opt.id, isMulti)}
                             className={`p-3 rounded-xl border text-xs font-medium text-left flex items-center justify-between transition ${
                               isSelected
-                                ? 'border-[#059669] bg-emerald-50 text-emerald-900 font-bold'
+                                ? 'border-[#2563EB] bg-blue-50 text-blue-900 font-bold'
                                 : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                             }`}
                           >
                             <span>{opt.label}</span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-[#059669] shrink-0" />}
+                            {isSelected && <Check className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />}
                           </button>
                         );
                       })}
@@ -200,7 +200,7 @@ function QuestionsContent() {
           <div className="pt-4 border-t border-slate-100">
             <button
               onClick={handleContinue}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition text-xs flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-md transition text-xs flex items-center justify-center gap-2"
             >
               <span>Continue to Add-ons</span>
               <ArrowRight className="w-4 h-4" />

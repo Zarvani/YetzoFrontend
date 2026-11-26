@@ -14,7 +14,7 @@ function BookingReviewContent() {
     additionalServices,
     address: selectedAddress,
     isInstant,
-    isProntoVerified,
+    isYetzoVerified,
     scheduledDate,
     scheduledSlotLabel,
     appliedCoupon,
@@ -57,7 +57,7 @@ function BookingReviewContent() {
     return (
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center font-body">
         <div className="flex items-center gap-2 text-slate-500 font-medium text-xs">
-          <Loader2 className="w-4 h-4 animate-spin text-[#05AC5F]" />
+          <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
           Reviewing your service telemetry...
         </div>
       </div>
@@ -78,7 +78,7 @@ function BookingReviewContent() {
         <div className="bg-white border border-[#E5E7EB] rounded-md p-6 sm:p-8 shadow-xs space-y-6">
           <div className="flex items-center justify-between border-b border-[#E5E7EB] pb-5">
             <div>
-              <span className="text-[10px] tracking-widest font-heading font-medium text-[#05AC5F] uppercase">
+              <span className="text-[10px] tracking-widest font-heading font-medium text-[#2563EB] uppercase">
                 Step 3 of 4 • Pre-Dispatch Audit
               </span>
               <h1 className="text-2xl font-heading font-light text-slate-900 tracking-tight mt-1">
@@ -88,7 +88,7 @@ function BookingReviewContent() {
                 Verify stacked chores, precision arrival SLA, and payment breakdown.
               </p>
             </div>
-            <div className="w-10 h-10 rounded border border-[#E5E7EB] flex items-center justify-center text-[#05AC5F] bg-[#ECFDF5] shrink-0">
+            <div className="w-10 h-10 rounded border border-[#E5E7EB] flex items-center justify-center text-[#2563EB] bg-[#ECFDF5] shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
@@ -110,7 +110,7 @@ function BookingReviewContent() {
             </div>
 
             {additionalServices.map((chore: ServiceItem) => (
-              <div key={chore.id} className="flex justify-between items-center text-xs text-slate-700 pl-3 border-l-2 border-[#05AC5F]">
+              <div key={chore.id} className="flex justify-between items-center text-xs text-slate-700 pl-3 border-l-2 border-[#2563EB]">
                 <span>+ {chore.name}</span>
                 <span className="font-heading font-medium">₹{chore.base_price || 149}</span>
               </div>
@@ -120,7 +120,7 @@ function BookingReviewContent() {
           {/* Location & Arrival Timing Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="p-4 border border-[#E5E7EB] rounded bg-white flex items-start gap-3">
-              <MapPin className="w-4 h-4 text-[#05AC5F] shrink-0 mt-0.5" />
+              <MapPin className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
               <div>
                 <span className="font-heading font-medium text-slate-900 block text-xs">Service Address</span>
                 <p className="text-slate-500 mt-0.5 line-clamp-2 text-[11px]">
@@ -130,7 +130,7 @@ function BookingReviewContent() {
             </div>
 
             <div className="p-4 border border-[#E5E7EB] rounded bg-white flex items-start gap-3">
-              <Clock className="w-4 h-4 text-[#05AC5F] shrink-0 mt-0.5" />
+              <Clock className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
               <div>
                 <span className="font-heading font-medium text-slate-900 block text-xs">
                   {isInstant ? '15-Minute Instant Dispatch' : 'Scheduled Arrival Window'}
@@ -142,16 +142,16 @@ function BookingReviewContent() {
             </div>
           </div>
 
-          {/* Pronto Verified Bodycam Status */}
-          {isProntoVerified && (
-            <div className="p-3 bg-[#ECFDF5] border border-[#05AC5F]/20 rounded flex items-center justify-between text-xs">
+          {/* Yetzo Verified Bodycam Status */}
+          {isYetzoVerified && (
+            <div className="p-3 bg-[#ECFDF5] border border-[#2563EB]/20 rounded flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
-                <Video className="w-4 h-4 text-[#05AC5F]" />
+                <Video className="w-4 h-4 text-[#2563EB]" />
                 <span className="font-medium text-[#064E3B]">
                   Yetzo Verified: Encrypted Bodycam Session Active
                 </span>
               </div>
-              <span className="text-[10px] font-heading font-semibold text-[#05AC5F] uppercase tracking-wider">
+              <span className="text-[10px] font-heading font-semibold text-[#2563EB] uppercase tracking-wider">
                 COMPLIMENTARY
               </span>
             </div>
@@ -160,15 +160,15 @@ function BookingReviewContent() {
           {/* Coupon / Voucher Bar */}
           <div
             onClick={() => router.push('/customer/booking/coupon')}
-            className="p-3.5 border border-dashed border-[#E5E7EB] hover:border-[#05AC5F] rounded bg-white flex items-center justify-between cursor-pointer transition text-xs"
+            className="p-3.5 border border-dashed border-[#E5E7EB] hover:border-[#2563EB] rounded bg-white flex items-center justify-between cursor-pointer transition text-xs"
           >
             <div className="flex items-center gap-2">
-              <Tag className="w-3.5 h-3.5 text-[#05AC5F]" />
+              <Tag className="w-3.5 h-3.5 text-[#2563EB]" />
               <span className="font-medium text-slate-800">
                 {appliedCoupon ? `Voucher Applied: ${appliedCoupon.code}` : 'Apply Coupon or Enterprise Corporate Pass'}
               </span>
             </div>
-            <div className="flex items-center gap-1 text-[#05AC5F] font-heading font-medium text-xs">
+            <div className="flex items-center gap-1 text-[#2563EB] font-heading font-medium text-xs">
               <span>{appliedCoupon ? 'Change' : 'Select'}</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </div>
@@ -182,7 +182,7 @@ function BookingReviewContent() {
             </div>
 
             {pricing.discount > 0 && (
-              <div className="flex justify-between text-[#05AC5F] font-medium">
+              <div className="flex justify-between text-[#2563EB] font-medium">
                 <span>Task Stacking Bundle Savings</span>
                 <span className="font-heading font-medium">-₹{pricing.discount}</span>
               </div>
@@ -205,7 +205,7 @@ function BookingReviewContent() {
                   Held securely until you supply 4-digit start OTP to your pro
                 </p>
               </div>
-              <span className="text-xl font-heading font-light text-[#05AC5F]">
+              <span className="text-xl font-heading font-light text-[#2563EB]">
                 ₹{pricing.totalAmount}
               </span>
             </div>
@@ -213,13 +213,13 @@ function BookingReviewContent() {
 
           {/* Escrow & Warranty Assurance */}
           <div className="p-3 bg-slate-50 border border-[#E5E7EB] rounded flex items-center gap-2 text-[11px] text-slate-500">
-            <Sparkles className="w-3.5 h-3.5 text-[#05AC5F] shrink-0" />
+            <Sparkles className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
             <span>Includes 100% money-back guarantee if pro arrives later than 15 minutes.</span>
           </div>
 
           <button
             onClick={() => router.push('/customer/booking/payment')}
-            className="w-full h-12 bg-[#05AC5F] hover:bg-[#049451] text-white font-heading font-medium text-xs tracking-wider uppercase rounded shadow-xs transition flex items-center justify-center gap-2"
+            className="w-full h-12 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-heading font-medium text-xs tracking-wider uppercase rounded shadow-xs transition flex items-center justify-center gap-2"
           >
             <CreditCard className="w-4 h-4" />
             <span>CONFIRM & PROCEED TO PAYMENT • ₹{pricing.totalAmount}</span>

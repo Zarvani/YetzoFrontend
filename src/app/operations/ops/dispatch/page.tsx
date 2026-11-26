@@ -103,9 +103,9 @@ export default function OperationsDispatchBoard() {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold text-slate-900">Live Dispatch Operations Command</h1>
-            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-ping" />
-              Snabbit 10-15m Auto-Matching Active
+            <span className="flex items-center gap-1 text-[11px] font-bold text-blue-800 bg-blue-100 px-2.5 py-0.5 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+              Yetzo Instant 10-15m Auto-Matching Active
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -143,7 +143,7 @@ export default function OperationsDispatchBoard() {
         <div className="bg-white border border-slate-200 p-4 rounded-xl shadow-sm">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Active Jobs</span>
           <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-2xl font-black text-emerald-600">{activeCount}</span>
+            <span className="text-2xl font-black text-blue-600">{activeCount}</span>
             <span className="text-xs text-slate-500">En Route / In Progress</span>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function OperationsDispatchBoard() {
           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Pro Network</span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-2xl font-black text-slate-800">{professionals.length || 18}</span>
-            <span className="text-xs text-emerald-600 font-semibold">Online & Available</span>
+            <span className="text-xs text-blue-600 font-semibold">Online & Available</span>
           </div>
         </div>
       </div>
@@ -202,8 +202,8 @@ export default function OperationsDispatchBoard() {
                     <td className="p-4 font-mono font-bold text-slate-900">
                       {b.booking_reference}
                       {b.is_verified_session && (
-                        <span className="block text-[10px] text-emerald-700 font-sans font-semibold">
-                          🛡️ Pronto Verified
+                        <span className="block text-[10px] text-blue-700 font-sans font-semibold">
+                          🛡️ Yetzo Verified
                         </span>
                       )}
                     </td>
@@ -233,7 +233,7 @@ export default function OperationsDispatchBoard() {
                     <td className="p-4">
                       {b.assigned_professional ? (
                         <div className="flex items-center gap-1.5 font-bold text-slate-800">
-                          <UserCheck className="w-4 h-4 text-emerald-600" />
+                          <UserCheck className="w-4 h-4 text-blue-600" />
                           <span>{b.assigned_professional.user?.first_name || 'Partner Assigned'}</span>
                         </div>
                       ) : (
@@ -257,7 +257,7 @@ export default function OperationsDispatchBoard() {
                       {b.status === 'SEARCHING' && (
                         <button
                           onClick={() => handleTriggerRedispatch(b.id)}
-                          className="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-lg border border-emerald-200 transition"
+                          className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold rounded-lg border border-blue-200 transition"
                           title="Trigger automatic candidate ping sequence"
                         >
                           Ping Pros
@@ -288,7 +288,7 @@ export default function OperationsDispatchBoard() {
               <select
                 value={selectedProId}
                 onChange={(e) => setSelectedProId(e.target.value)}
-                className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] bg-white text-slate-900"
+                className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] bg-white text-slate-900"
               >
                 <option value="">-- Choose Candidate --</option>
                 {professionals.map((p) => (
@@ -311,7 +311,7 @@ export default function OperationsDispatchBoard() {
                 type="button"
                 disabled={assigning}
                 onClick={() => handleManualAssign(selectedBooking.id)}
-                className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+                className="px-5 py-2 bg-[#2563EB] text-white rounded-xl font-bold hover:bg-[#1D4ED8] shadow transition disabled:opacity-50"
               >
                 {assigning ? 'Assigning...' : 'Confirm Assignment'}
               </button>

@@ -66,7 +66,7 @@ export default function ProfessionalSkillsPage() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <Award className="w-6 h-6" />
             </div>
             <div>
@@ -77,7 +77,7 @@ export default function ProfessionalSkillsPage() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading service trade disciplines...
             </div>
           ) : (
@@ -90,7 +90,7 @@ export default function ProfessionalSkillsPage() {
                     onClick={() => toggleCategory(cat.id)}
                     className={`p-4 rounded-2xl border-2 cursor-pointer transition flex items-center justify-between gap-3 ${
                       isSelected
-                        ? 'border-[#059669] bg-emerald-50/50 ring-2 ring-[#059669]/20'
+                        ? 'border-[#2563EB] bg-blue-50/50 ring-2 ring-[#2563EB]/20'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
@@ -103,7 +103,7 @@ export default function ProfessionalSkillsPage() {
 
                     <div
                       className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                        isSelected ? 'border-[#059669] bg-[#059669] text-white' : 'border-slate-300'
+                        isSelected ? 'border-[#2563EB] bg-[#2563EB] text-white' : 'border-slate-300'
                       }`}
                     >
                       {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -118,7 +118,7 @@ export default function ProfessionalSkillsPage() {
             <button
               onClick={handleSaveSkills}
               disabled={saving || selectedCategoryIds.length === 0}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {saving ? (
                 <>

@@ -71,12 +71,12 @@ export default function CartPage() {
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
       <div className="min-h-screen bg-slate-50 font-sans flex flex-col">
-        <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-4 sticky top-0 z-50">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
           <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-700">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <h1 className="text-xl font-bold text-slate-900">Cart</h1>
-        </header>
+        </div>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <div className="text-6xl mb-4">🛒</div>
           <h2 className="text-xl font-black text-slate-900 mb-2">Your cart is empty</h2>
@@ -89,14 +89,14 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-32">
-      <header className="bg-white border-b border-slate-200 px-4 py-4 flex items-center justify-between sticky top-0 z-50">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center gap-4">
           <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-700">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path></svg>
           </button>
           <h1 className="text-xl font-bold text-slate-900">Summary</h1>
         </div>
-      </header>
+      </div>
 
       <main className="max-w-2xl mx-auto p-4 md:p-8 space-y-6">
         {cart.items.map((item: any) => (

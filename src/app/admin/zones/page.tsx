@@ -117,7 +117,7 @@ export default function AdminZonesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
+          <span className="text-[10px] uppercase tracking-wider text-blue-600 font-bold font-heading">
             Live Dark Dispatch & Geofences
           </span>
           <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-0.5">
@@ -138,7 +138,7 @@ export default function AdminZonesPage() {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs uppercase tracking-wider font-medium font-heading rounded-sm shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs uppercase tracking-wider font-medium font-heading rounded-sm shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add New Geofence Zone</span>
@@ -147,8 +147,8 @@ export default function AdminZonesPage() {
       </div>
 
       {feedback && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-xs text-emerald-800 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm text-xs text-blue-800 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
           <span>{feedback}</span>
         </div>
       )}
@@ -184,7 +184,7 @@ export default function AdminZonesPage() {
       <div className="bg-white border border-slate-200 rounded-sm shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-xs text-slate-500 flex items-center justify-center gap-2">
-            <Loader2 className="w-4 h-4 animate-spin text-emerald-600" />
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
             <span>Loading live geofenced micro-clusters from database...</span>
           </div>
         ) : filtered.length === 0 ? (
@@ -221,8 +221,8 @@ export default function AdminZonesPage() {
                         {z.id.slice(0, 8)}...
                       </td>
                       <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded-sm font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] flex items-center gap-1 w-max">
-                          <Zap className="w-3 h-3 fill-emerald-600 text-emerald-600" />
+                        <span className="px-2 py-0.5 rounded-sm font-semibold bg-blue-50 text-blue-800 border border-blue-200 text-[10px] flex items-center gap-1 w-max">
+                          <Zap className="w-3 h-3 fill-blue-600 text-blue-600" />
                           15m Guaranteed
                         </span>
                       </td>
@@ -230,7 +230,7 @@ export default function AdminZonesPage() {
                         <span
                           className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold border ${
                             isActive
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              ? 'bg-blue-50 text-blue-800 border-blue-200'
                               : 'bg-slate-100 text-slate-600 border-slate-200'
                           }`}
                         >
@@ -260,7 +260,7 @@ export default function AdminZonesPage() {
           <div className="bg-white border border-slate-200 rounded-sm max-w-md w-full p-6 shadow-xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
+                <span className="text-[10px] uppercase tracking-wider text-blue-600 font-bold font-heading">
                   Cluster Topology
                 </span>
                 <h3 className="text-base font-[300] font-heading text-slate-900 mt-0.5">
@@ -286,7 +286,7 @@ export default function AdminZonesPage() {
                   placeholder="e.g. Indiranagar & Domlur Central"
                   value={newZone.name}
                   onChange={(e) => setNewZone({ ...newZone, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-600"
                 />
               </div>
 
@@ -298,7 +298,7 @@ export default function AdminZonesPage() {
                   required
                   value={newZone.city}
                   onChange={(e) => setNewZone({ ...newZone, city: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-emerald-600 bg-white"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-600 bg-white"
                 >
                   {cities.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -319,7 +319,7 @@ export default function AdminZonesPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white rounded-sm uppercase tracking-wider text-[11px] font-heading font-medium flex items-center gap-1.5 transition disabled:opacity-50"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-sm uppercase tracking-wider text-[11px] font-heading font-medium flex items-center gap-1.5 transition disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                   <span>Save to Database</span>

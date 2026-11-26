@@ -84,7 +84,7 @@ function CouponPageContent() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <Tag className="w-6 h-6" />
             </div>
             <div>
@@ -101,7 +101,7 @@ function CouponPageContent() {
           )}
 
           {successMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2">
               <Check className="w-4 h-4 shrink-0" />
               <span>{successMsg}</span>
             </div>
@@ -120,12 +120,12 @@ function CouponPageContent() {
               value={inputCode}
               onChange={(e) => setInputCode(e.target.value.toUpperCase())}
               placeholder="ENTER PROMO CODE"
-              className="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-xs font-bold uppercase tracking-wider text-slate-900 placeholder:normal-case placeholder:font-normal"
+              className="flex-1 px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-xs font-bold uppercase tracking-wider text-slate-900 placeholder:normal-case placeholder:font-normal"
             />
             <button
               type="submit"
               disabled={applying || !inputCode.trim()}
-              className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white text-xs font-bold rounded-xl transition disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-xl transition disabled:opacity-50 flex items-center gap-2"
             >
               {applying ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Apply'}
             </button>
@@ -155,11 +155,11 @@ function CouponPageContent() {
                 {coupons.map((coupon) => (
                   <div
                     key={coupon.id}
-                    className="p-4 border border-slate-200 hover:border-emerald-300 rounded-2xl transition bg-gradient-to-r from-white to-slate-50 flex items-center justify-between gap-4"
+                    className="p-4 border border-slate-200 hover:border-blue-300 rounded-2xl transition bg-gradient-to-r from-white to-slate-50 flex items-center justify-between gap-4"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="px-2.5 py-1 bg-emerald-100 text-emerald-900 font-extrabold text-xs rounded-lg tracking-wider border border-emerald-200">
+                        <span className="px-2.5 py-1 bg-blue-100 text-blue-900 font-extrabold text-xs rounded-lg tracking-wider border border-blue-200">
                           {coupon.code}
                         </span>
                         <span className="text-xs font-bold text-slate-900">
@@ -178,7 +178,7 @@ function CouponPageContent() {
                       disabled={applying || appliedCoupon === coupon.code}
                       className={`px-4 py-2 text-xs font-bold rounded-xl transition ${
                         appliedCoupon === coupon.code
-                          ? 'bg-emerald-100 text-emerald-800'
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-slate-900 hover:bg-slate-800 text-white'
                       }`}
                     >

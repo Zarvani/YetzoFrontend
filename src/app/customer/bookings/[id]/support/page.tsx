@@ -74,7 +74,7 @@ function BookingSupportContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Loading booking support details...
         </div>
       </div>
@@ -95,7 +95,7 @@ function BookingSupportContent() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <LifeBuoy className="w-6 h-6" />
               </div>
               <div>
@@ -108,7 +108,7 @@ function BookingSupportContent() {
 
             <button
               onClick={() => router.push(`/customer/support/chat?bookingId=${bookingId}`)}
-              className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-[#059669] text-xs font-bold rounded-xl transition flex items-center gap-1.5"
+              className="px-3.5 py-2 bg-blue-50 hover:bg-blue-100 text-[#2563EB] text-xs font-bold rounded-xl transition flex items-center gap-1.5"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>Live Chat</span>
@@ -116,8 +116,8 @@ function BookingSupportContent() {
           </div>
 
           {ticketCreated ? (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-3">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="p-6 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-3">
+              <CheckCircle2 className="w-10 h-10 text-blue-600 mx-auto" />
               <h2 className="text-base font-bold text-slate-900">Ticket #{ticketCreated.ticket_number} Created</h2>
               <p className="text-xs text-slate-600">
                 Our operations team has received your priority escalation. A support agent has been assigned and will reach out via call/chat within 10 minutes.
@@ -125,7 +125,7 @@ function BookingSupportContent() {
               <div className="pt-2">
                 <button
                   onClick={() => router.push(`/customer/support/tickets/${ticketCreated.id || ''}`)}
-                  className="px-6 py-2.5 bg-[#059669] text-white text-xs font-bold rounded-xl shadow hover:bg-[#047857] transition"
+                  className="px-6 py-2.5 bg-[#2563EB] text-white text-xs font-bold rounded-xl shadow hover:bg-[#1D4ED8] transition"
                 >
                   View Ticket Status
                 </button>
@@ -151,21 +151,21 @@ function BookingSupportContent() {
                       onClick={() => setSelectedIssue(opt.id)}
                       className={`p-3.5 rounded-xl border-2 cursor-pointer transition flex items-center justify-between text-xs ${
                         selectedIssue === opt.id
-                          ? 'border-[#059669] bg-emerald-50/50 font-bold text-slate-900'
+                          ? 'border-[#2563EB] bg-blue-50/50 font-bold text-slate-900'
                           : 'border-slate-200 hover:border-slate-300 text-slate-700'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <span
                           className={`w-2 h-2 rounded-full ${
-                            opt.priority === 'CRITICAL' ? 'bg-rose-500' : opt.priority === 'HIGH' ? 'bg-amber-500' : 'bg-emerald-500'
+                            opt.priority === 'CRITICAL' ? 'bg-rose-500' : opt.priority === 'HIGH' ? 'bg-amber-500' : 'bg-blue-500'
                           }`}
                         />
                         <span>{opt.title}</span>
                       </div>
                       <div
                         className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          selectedIssue === opt.id ? 'border-[#059669] bg-[#059669]' : 'border-slate-300'
+                          selectedIssue === opt.id ? 'border-[#2563EB] bg-[#2563EB]' : 'border-slate-300'
                         }`}
                       >
                         {selectedIssue === opt.id && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -184,7 +184,7 @@ function BookingSupportContent() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Provide any relevant details, notes, or specific safety concerns..."
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-xs text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-xs text-slate-900"
                   required
                 />
               </div>
@@ -199,7 +199,7 @@ function BookingSupportContent() {
               <button
                 type="submit"
                 disabled={submitting || !selectedIssue || !message.trim()}
-                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {submitting ? (
                   <>

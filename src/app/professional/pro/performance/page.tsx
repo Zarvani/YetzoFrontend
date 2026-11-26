@@ -68,7 +68,7 @@ export default function ProfessionalPerformancePage() {
 
             <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
               <span className="text-[10px] font-bold text-slate-400 uppercase">15m Arrival SLA</span>
-              <div className="text-2xl font-black text-emerald-600">
+              <div className="text-2xl font-black text-blue-600">
                 98.4%
               </div>
               <p className="text-[11px] text-slate-500">Average ETA: 12.2 mins</p>
@@ -83,7 +83,7 @@ export default function ProfessionalPerformancePage() {
             </div>
 
             <div className="p-4 bg-slate-50 rounded-2xl space-y-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase">Pronto Cam Compliance</span>
+              <span className="text-[10px] font-bold text-slate-400 uppercase">Yetzo Cam Compliance</span>
               <div className="text-2xl font-black text-purple-600">
                 100%
               </div>
@@ -92,7 +92,7 @@ export default function ProfessionalPerformancePage() {
           </div>
 
           {/* Weekly Incentive Eligibility */}
-          <div className="p-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl shadow space-y-2">
+          <div className="p-4 bg-gradient-to-r from-blue-500 to-teal-600 text-white rounded-2xl shadow space-y-2">
             <div className="flex justify-between items-center">
               <span className="font-bold text-xs uppercase tracking-wider">Weekly Excellence Bonus</span>
               <span className="text-sm font-black bg-white/20 px-2.5 py-0.5 rounded-full">₹3,000 Extra</span>
@@ -107,7 +107,7 @@ export default function ProfessionalPerformancePage() {
 
           <div className="pt-2 flex justify-between items-center text-xs text-slate-500">
             <span>Next Tier Evaluation: Monday 06:00 AM</span>
-            <Link href="/professional/pro/reviews" className="text-[#059669] font-bold hover:underline">
+            <Link href="/professional/pro/reviews" className="text-[#2563EB] font-bold hover:underline">
               View Customer Reviews →
             </Link>
           </div>

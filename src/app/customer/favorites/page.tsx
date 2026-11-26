@@ -57,7 +57,7 @@ export default function CustomerFavoritesPage() {
             <div className="p-10 text-center border-2 border-dashed border-slate-200 rounded-2xl space-y-2">
               <Heart className="w-8 h-8 text-slate-300 mx-auto" />
               <p className="text-xs text-slate-500">No favorite services saved yet.</p>
-              <Link href="/services" className="text-xs font-bold text-[#059669] hover:underline">
+              <Link href="/services" className="text-xs font-bold text-[#2563EB] hover:underline">
                 Explore Services Catalog
               </Link>
             </div>
@@ -67,10 +67,10 @@ export default function CustomerFavoritesPage() {
                 <Link
                   key={srv.id}
                   href={`/customer/booking?serviceId=${srv.id}`}
-                  className="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#059669] bg-white transition flex flex-col justify-between group shadow-sm"
+                  className="p-4 rounded-2xl border-2 border-slate-200 hover:border-[#2563EB] bg-white transition flex flex-col justify-between group shadow-sm"
                 >
                   <div className="space-y-1">
-                    <span className="font-extrabold text-sm text-slate-900 group-hover:text-[#059669] transition block">
+                    <span className="font-extrabold text-sm text-slate-900 group-hover:text-[#2563EB] transition block">
                       {srv.name}
                     </span>
                     <p className="text-xs text-slate-500 line-clamp-2">{srv.description}</p>
@@ -80,7 +80,7 @@ export default function CustomerFavoritesPage() {
                     <span className="font-mono font-bold text-slate-900">
                       ₹{srv.pricing_rules?.[0]?.base_price || 499}
                     </span>
-                    <span className="font-bold text-[#059669] flex items-center gap-1 group-hover:translate-x-1 transition">
+                    <span className="font-bold text-[#2563EB] flex items-center gap-1 group-hover:translate-x-1 transition">
                       1-Click Book <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>

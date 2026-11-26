@@ -44,7 +44,7 @@ export default function OpsIssuesPage() {
             <h1 className="text-xl font-black text-slate-900 tracking-tight">Service Quality & Defect Tracker</h1>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Urban Company benchmark warranty claims, re-work investigations, and low-CSAT audits.
+            Yetzo Certified benchmark warranty claims, re-work investigations, and low-CSAT audits.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export default function OpsIssuesPage() {
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading quality defect logs...
           </div>
         ) : activeTab === 'CLAIMS' ? (

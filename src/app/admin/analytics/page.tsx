@@ -54,25 +54,25 @@ export default function AdminAnalyticsPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Average Order Value (AOV)</span>
           <div className="text-2xl font-black text-slate-900">₹{aov}</div>
-          <span className="text-[11px] text-emerald-800 font-semibold block">+12% bundle stacking</span>
+          <span className="text-[11px] text-blue-800 font-semibold block">+12% bundle stacking</span>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Repeat Booking Rate</span>
           <div className="text-2xl font-black text-slate-900">42.8%</div>
-          <span className="text-[11px] text-emerald-800 font-semibold block">60-day customer re-order</span>
+          <span className="text-[11px] text-blue-800 font-semibold block">60-day customer re-order</span>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Instant Arrival SLA (15m)</span>
-          <div className="text-2xl font-black text-emerald-600">97.6%</div>
-          <span className="text-[11px] text-slate-500 block">Snabbit micro-cluster dispatch</span>
+          <div className="text-2xl font-black text-blue-600">97.6%</div>
+          <span className="text-[11px] text-slate-500 block">Yetzo Instant micro-cluster dispatch</span>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Escrow Dispute Rate</span>
           <div className="text-2xl font-black text-blue-600">0.8%</div>
-          <span className="text-[11px] text-slate-500 block">Urban Company warranty claims</span>
+          <span className="text-[11px] text-slate-500 block">Yetzo Certified warranty claims</span>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ export default function AdminAnalyticsPage() {
                 </div>
                 <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#059669] rounded-full transition-all duration-500"
+                    className="h-full bg-[#2563EB] rounded-full transition-all duration-500"
                     style={{ width: `${p}%` }}
                   />
                 </div>

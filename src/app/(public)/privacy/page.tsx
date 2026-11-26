@@ -18,13 +18,7 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white font-sans">
       <title>Privacy Policy — Yetzo</title>
-      <header className="border-b border-slate-200 px-4 md:px-8 py-4 flex items-center gap-4 sticky top-0 z-50 bg-white/90 backdrop-blur-md">
-        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
-        <nav className="ml-auto flex items-center gap-4">
-          <button onClick={() => router.push('/terms')} className="text-slate-600 font-bold text-sm hover:text-slate-900">Terms</button>
-          <button onClick={() => router.push('/contact')} className="text-slate-600 font-bold text-sm hover:text-slate-900">Contact</button>
-        </nav>
-      </header>
+      
 
       <main className="max-w-3xl mx-auto px-4 py-16">
         <div className="mb-10">
@@ -47,9 +41,7 @@ export default function PrivacyPage() {
         </div>
       </main>
 
-      <footer className="bg-slate-900 text-slate-400 py-8 px-4 text-center text-sm font-medium">
-        <p>© 2026 Yetzo Technologies Pvt. Ltd. · <button onClick={() => router.push('/terms')} className="hover:text-white">Terms of Service</button> · <button onClick={() => router.push('/privacy')} className="hover:text-white">Privacy Policy</button></p>
-      </footer>
+      
     </div>
   );
 }

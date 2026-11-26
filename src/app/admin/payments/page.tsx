@@ -58,7 +58,7 @@ export default function AdminPaymentsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <CreditCard className="w-6 h-6 text-[#059669]" />
+            <CreditCard className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">Financial Treasury & Payment Gateways</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Audit customer collections, Razorpay escrow hold, and 80/20 platform fee splits.</p>
@@ -83,8 +83,8 @@ export default function AdminPaymentsPage() {
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Net Platform Revenue (20%)</span>
-          <div className="text-2xl font-black text-[#059669]">₹{platformRevenue.toLocaleString()}</div>
-          <span className="text-[11px] text-emerald-800 font-semibold">Commission earnings</span>
+          <div className="text-2xl font-black text-[#2563EB]">₹{platformRevenue.toLocaleString()}</div>
+          <span className="text-[11px] text-blue-800 font-semibold">Commission earnings</span>
         </div>
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
@@ -97,7 +97,7 @@ export default function AdminPaymentsPage() {
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading financial ledger...
           </div>
         ) : (
@@ -128,14 +128,14 @@ export default function AdminPaymentsPage() {
                     <td className="py-3.5 px-4 font-mono font-bold text-slate-900">
                       ₹{p.amount}
                     </td>
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#059669]">
+                    <td className="py-3.5 px-4 font-mono font-bold text-[#2563EB]">
                       ₹{Math.round(Number(p.amount) * 0.2)}
                     </td>
                     <td className="py-3.5 px-4 text-right">
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                           p.status === 'RELEASED'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-blue-100 text-blue-800'
                             : 'bg-blue-100 text-blue-800'
                         }`}
                       >

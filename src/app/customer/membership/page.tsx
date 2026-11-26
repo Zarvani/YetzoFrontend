@@ -63,7 +63,7 @@ export default function CustomerMembershipPage() {
                 <Crown className="w-5 h-5 fill-amber-950" />
               </span>
               <span className="text-xs font-black uppercase tracking-wider text-amber-200">
-                Urban Company Plus Benchmark
+                Yetzo Certified Plus Benchmark
               </span>
             </div>
 
@@ -155,15 +155,15 @@ export default function CustomerMembershipPage() {
 
                       <ul className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
                         <li className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                           <span>15% off every home service</span>
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                           <span>Waived ₹49 platform fee</span>
                         </li>
                         <li className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                           <span>VIP Dedicated Support Line</span>
                         </li>
                       </ul>

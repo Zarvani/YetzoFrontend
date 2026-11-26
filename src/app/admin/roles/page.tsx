@@ -74,7 +74,7 @@ export default function AdminRolesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-[#05AC5F]" />
+            <ShieldCheck className="w-5 h-5 text-[#2563EB]" />
             <h1 className="text-2xl font-[300] text-slate-900 tracking-tight font-['Montserrat',sans-serif]">
               Role-Based Access Control (RBAC)
             </h1>
@@ -95,7 +95,7 @@ export default function AdminRolesPage() {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Define New Role</span>
@@ -105,7 +105,7 @@ export default function AdminRolesPage() {
 
       {loading ? (
         <div className="p-12 text-center bg-white border border-slate-200/80 rounded-md">
-          <Loader2 className="w-6 h-6 animate-spin text-[#05AC5F] mx-auto mb-2" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#2563EB] mx-auto mb-2" />
           <p className="text-xs text-slate-500">Loading system roles...</p>
         </div>
       ) : (
@@ -131,7 +131,7 @@ export default function AdminRolesPage() {
                 <span className="text-[10px] uppercase font-semibold text-slate-400 block mb-1 tracking-wider">
                   System Boundary
                 </span>
-                <span className="px-2 py-0.5 rounded bg-emerald-50 text-[#05AC5F] font-mono text-[10px] font-medium border border-emerald-100">
+                <span className="px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] font-mono text-[10px] font-medium border border-blue-100">
                   {r.name.toLowerCase()}.access
                 </span>
               </div>
@@ -160,7 +160,7 @@ export default function AdminRolesPage() {
                   placeholder="DISPATCH_MANAGER"
                   value={newRoleName}
                   onChange={(e) => setNewRoleName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono uppercase focus:outline-none focus:border-[#05AC5F]"
+                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono uppercase focus:outline-none focus:border-[#2563EB]"
                 />
               </div>
 
@@ -172,7 +172,7 @@ export default function AdminRolesPage() {
                   placeholder="Oversees cluster dispatch queues and re-assigns unaccepted tasks"
                   value={newRoleDesc}
                   onChange={(e) => setNewRoleDesc(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-normal focus:outline-none focus:border-[#05AC5F]"
+                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-normal focus:outline-none focus:border-[#2563EB]"
                 />
               </div>
 
@@ -187,7 +187,7 @@ export default function AdminRolesPage() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium rounded transition flex items-center gap-1.5"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium rounded transition flex items-center gap-1.5"
                 >
                   {submitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   <span>{submitting ? 'Creating...' : 'Save Role'}</span>

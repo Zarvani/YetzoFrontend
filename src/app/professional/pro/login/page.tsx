@@ -48,7 +48,7 @@ export default function ProfessionalLoginPage() {
     <div className="min-h-screen bg-slate-900 text-white flex flex-col font-sans">
       <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur-md z-50">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#059669] rounded-lg flex items-center justify-center text-white font-black">Y</div>
+          <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center text-white font-black">Y</div>
           <span className="font-black text-xl tracking-tight text-white">Yetzo Partner</span>
         </Link>
         <Link
@@ -62,7 +62,7 @@ export default function ProfessionalLoginPage() {
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md bg-slate-800/80 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
           <div className="mb-6">
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
+            <span className="px-3 py-1 bg-blue-500/20 text-sky-400 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
               Fleet Partner App
             </span>
             <h1 className="text-2xl font-black text-white mb-1">Partner Sign In</h1>
@@ -89,7 +89,7 @@ export default function ProfessionalLoginPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="9876543210"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                   required
                 />
               </div>
@@ -98,7 +98,7 @@ export default function ProfessionalLoginPage() {
             <button
               type="submit"
               disabled={loading || phone.length < 10}
-              className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
             >
               {loading ? (
                 <>
@@ -117,22 +117,22 @@ export default function ProfessionalLoginPage() {
           {/* Value props */}
           <div className="mt-8 pt-6 border-t border-slate-700/60 space-y-2 text-[11px] text-slate-400">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <span>Earn ₹35,000 - ₹55,000/mo with 80% payout split</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span>Pronto Bodycam safety protection & insurance</span>
+              <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+              <span>Yetzo Bodycam safety protection & insurance</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <span>Instant daily UPI wallet settlements</span>
             </div>
           </div>
 
           <div className="mt-6 text-center text-xs font-medium text-slate-400">
             Want to become a service partner?{' '}
-            <Link href="/professional/pro/register" className="text-emerald-400 font-bold hover:underline">
+            <Link href="/professional/pro/register" className="text-sky-400 font-bold hover:underline">
               Register New Partner
             </Link>
           </div>

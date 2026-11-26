@@ -23,7 +23,7 @@ export default function BookingPaymentPage() {
   const router = useRouter();
   const { 
     service, additionalServices, address, isInstant, 
-    isProntoVerified, scheduledDate, scheduledTime, 
+    isYetzoVerified, scheduledDate, scheduledTime, 
     scheduledSlotLabel, appliedCoupon, answers, addons,
     getPricing, setCurrentBooking 
   } = useBookingStore();
@@ -68,7 +68,7 @@ export default function BookingPaymentPage() {
         service_id: service.id,
         address_id: address.id,
         is_instant: isInstant,
-        is_verified_session: isProntoVerified,
+        is_verified_session: isYetzoVerified,
         scheduled_date: isInstant ? undefined : scheduledDate,
         scheduled_time: isInstant ? undefined : scheduledTime,
         items: [
@@ -141,7 +141,7 @@ export default function BookingPaymentPage() {
               contact: '9999999999',
             },
             theme: {
-              color: '#05AC5F',
+              color: '#2563EB',
             },
           };
 
@@ -179,7 +179,7 @@ export default function BookingPaymentPage() {
           <span>Back to Address</span>
         </button>
 
-        <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-200">
+        <span className="text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-200">
           Step 4 of 4 · Escrow Protection
         </span>
       </div>
@@ -189,7 +189,7 @@ export default function BookingPaymentPage() {
         <div className="lg:col-span-2 space-y-5">
           <div className="bg-white border border-slate-200 rounded-md p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
             <div className="border-b border-slate-100 pb-4">
-              <span className="text-[10px] uppercase tracking-[0.16em] text-emerald-600 font-bold font-heading">
+              <span className="text-[10px] uppercase tracking-[0.16em] text-blue-600 font-bold font-heading">
                 Step 04 · Escrow Protected Checkout
               </span>
               <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-1">
@@ -222,12 +222,12 @@ export default function BookingPaymentPage() {
                     onClick={() => setPaymentMethod(opt.id as any)}
                     className={`p-3.5 rounded-sm border cursor-pointer transition flex items-center justify-between ${
                       isSelected
-                        ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
+                        ? 'border-blue-600 bg-blue-50/40 shadow-sm'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-sm ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                      <div className={`p-2 rounded-sm ${isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>
@@ -236,7 +236,7 @@ export default function BookingPaymentPage() {
                       </div>
                     </div>
                     <div className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-                      isSelected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'
+                      isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
                     }`}>
                       {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
@@ -245,11 +245,11 @@ export default function BookingPaymentPage() {
               })}
             </div>
 
-            {/* Pronto Guarantees Box */}
+            {/* Yetzo Guarantees Box */}
             <div className="p-4 bg-slate-50 rounded-sm border border-slate-200 space-y-1.5 text-xs text-slate-600">
               <div className="flex items-center gap-2 font-semibold font-heading text-slate-900">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Pronto-Grade Security & Damage Guarantee</span>
+                <ShieldCheck className="w-4 h-4 text-blue-600" />
+                <span>Yetzo-Grade Security & Damage Guarantee</span>
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 Includes ₹10,000 comprehensive property damage coverage, 100% police-verified partners, and free rework if the visit is not 100% satisfactory.

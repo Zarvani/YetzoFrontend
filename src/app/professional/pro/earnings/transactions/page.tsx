@@ -52,7 +52,7 @@ export default function ProfessionalTransactionsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <DollarSign className="w-6 h-6" />
               </div>
               <div>
@@ -71,7 +71,7 @@ export default function ProfessionalTransactionsPage() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading wallet statement...
             </div>
           ) : transactions.length === 0 ? (
@@ -87,7 +87,7 @@ export default function ProfessionalTransactionsPage() {
                     <div className="flex items-start gap-3">
                       <div
                         className={`p-2 rounded-xl mt-0.5 ${
-                          isCredit ? 'bg-emerald-50 text-emerald-800' : 'bg-slate-100 text-slate-600'
+                          isCredit ? 'bg-blue-50 text-blue-800' : 'bg-slate-100 text-slate-600'
                         }`}
                       >
                         {isCredit ? <ArrowDownLeft className="w-4 h-4" /> : <ArrowUpRight className="w-4 h-4" />}
@@ -103,7 +103,7 @@ export default function ProfessionalTransactionsPage() {
                     <div className="text-right">
                       <span
                         className={`font-mono font-bold text-sm ${
-                          isCredit ? 'text-emerald-800' : 'text-slate-900'
+                          isCredit ? 'text-blue-800' : 'text-slate-900'
                         }`}
                       >
                         {isCredit ? '+' : '-'}₹{Math.abs(Number(tx.amount))}

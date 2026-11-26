@@ -63,7 +63,7 @@ export default function ProfessionalOnboardingPage() {
     },
     {
       id: 'training',
-      title: 'Pronto Verified Bodycam & Safety Protocol',
+      title: 'Yetzo Verified Bodycam & Safety Protocol',
       desc: 'Watch required 8-minute protocol video on customer safety & privacy.',
       href: '/professional/pro/training',
       icon: Video,
@@ -94,7 +94,7 @@ export default function ProfessionalOnboardingPage() {
           </div>
           <Link
             href="/professional/pro/jobs"
-            className="text-xs font-bold text-[#059669] hover:underline"
+            className="text-xs font-bold text-[#2563EB] hover:underline"
           >
             Go to Job Queue
           </Link>
@@ -104,11 +104,11 @@ export default function ProfessionalOnboardingPage() {
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
           <div className="flex justify-between items-center text-xs font-bold">
             <span className="text-slate-700">Verification Readiness</span>
-            <span className="text-[#059669] font-black">{progressPercent}% Completed</span>
+            <span className="text-[#2563EB] font-black">{progressPercent}% Completed</span>
           </div>
           <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#059669] transition-all duration-500 rounded-full"
+              className="h-full bg-[#2563EB] transition-all duration-500 rounded-full"
               style={{ width: `${Math.max(10, progressPercent)}%` }}
             />
           </div>
@@ -125,13 +125,13 @@ export default function ProfessionalOnboardingPage() {
               <Link
                 key={step.id}
                 href={step.href}
-                className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-[#059669] shadow-sm transition flex items-center justify-between gap-4 group"
+                className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-[#2563EB] shadow-sm transition flex items-center justify-between gap-4 group"
               >
                 <div className="flex items-start gap-3.5">
                   <div
                     className={`p-3 rounded-xl shrink-0 mt-0.5 ${
                       step.status === 'COMPLETED'
-                        ? 'bg-emerald-50 text-emerald-800'
+                        ? 'bg-blue-50 text-blue-800'
                         : step.status === 'IN_PROGRESS'
                         ? 'bg-amber-50 text-amber-800'
                         : 'bg-slate-50 text-slate-600'
@@ -141,11 +141,11 @@ export default function ProfessionalOnboardingPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-900 group-hover:text-[#059669] transition">
+                      <span className="text-xs font-bold text-slate-900 group-hover:text-[#2563EB] transition">
                         {step.title}
                       </span>
                       {step.status === 'COMPLETED' ? (
-                        <span className="px-2 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800">
+                        <span className="px-2 py-0.5 rounded text-[9px] font-black bg-blue-100 text-blue-800">
                           COMPLETED
                         </span>
                       ) : step.status === 'IN_PROGRESS' ? (
@@ -170,7 +170,7 @@ export default function ProfessionalOnboardingPage() {
         <div className="pt-2">
           <Link
             href="/professional/pro/jobs"
-            className="w-full py-4 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-2xl shadow-md transition text-xs flex items-center justify-center gap-2"
+            className="w-full py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-2xl shadow-md transition text-xs flex items-center justify-center gap-2"
           >
             <span>Proceed to Active Job Dashboard</span>
             <ArrowRight className="w-4 h-4" />

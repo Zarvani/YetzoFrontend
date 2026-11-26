@@ -75,7 +75,7 @@ export default function AdminCouponsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Tag className="w-6 h-6 text-[#059669]" />
+            <Tag className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">Promotional Coupons & Voucher Codes</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Configure customer discounts, marketing codes, and minimum checkout thresholds.</p>
@@ -93,7 +93,7 @@ export default function AdminCouponsPage() {
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading voucher rules...
           </div>
         ) : coupons.length === 0 ? (
@@ -116,11 +116,11 @@ export default function AdminCouponsPage() {
                 {coupons.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/60 transition">
                     <td className="py-3.5 px-4 font-mono font-black text-slate-900 tracking-wider">
-                      <span className="px-2.5 py-1 bg-emerald-50 text-emerald-900 rounded-lg border border-emerald-200">
+                      <span className="px-2.5 py-1 bg-blue-50 text-blue-900 rounded-lg border border-blue-200">
                         {c.code}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 font-bold text-[#059669]">
+                    <td className="py-3.5 px-4 font-bold text-[#2563EB]">
                       {c.discount_type === 'PERCENTAGE' ? `${c.discount_value}% OFF` : `₹${c.discount_value} FLAT`}
                     </td>
                     <td className="py-3.5 px-4 font-mono text-slate-700">
@@ -130,7 +130,7 @@ export default function AdminCouponsPage() {
                       {c.description || 'Promotional Discount'}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
                         Active
                       </span>
                     </td>
@@ -155,7 +155,7 @@ export default function AdminCouponsPage() {
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value.toUpperCase())}
                   placeholder="YETZO100"
-                  className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold uppercase focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold uppercase focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -166,7 +166,7 @@ export default function AdminCouponsPage() {
                   <select
                     value={newType}
                     onChange={(e: any) => setNewType(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900 font-semibold"
+                    className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900 font-semibold"
                   >
                     <option value="PERCENTAGE">Percentage (%)</option>
                     <option value="FLAT">Flat (₹)</option>
@@ -179,7 +179,7 @@ export default function AdminCouponsPage() {
                     type="number"
                     value={newValue}
                     onChange={(e) => setNewValue(e.target.value)}
-                    className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#059669] text-slate-900 font-bold"
+                    className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#2563EB] text-slate-900 font-bold"
                     required
                   />
                 </div>
@@ -191,7 +191,7 @@ export default function AdminCouponsPage() {
                   type="number"
                   value={newMinOrder}
                   onChange={(e) => setNewMinOrder(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 />
               </div>
 
@@ -202,7 +202,7 @@ export default function AdminCouponsPage() {
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
                   placeholder="e.g. Valid on AC deep cleaning service"
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 />
               </div>
 
@@ -217,7 +217,7 @@ export default function AdminCouponsPage() {
                 <button
                   type="submit"
                   disabled={creating || !newCode.trim()}
-                  className="px-5 py-2 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition disabled:opacity-50"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition disabled:opacity-50"
                 >
                   {creating ? 'Saving...' : 'Save Voucher'}
                 </button>

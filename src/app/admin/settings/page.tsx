@@ -48,14 +48,14 @@ export default function AdminSettingsPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Settings className="w-6 h-6 text-[#059669]" />
+            <Settings className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">System Settings & Global Parameters</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Configure marketplace take rates, dispatch SLA timeouts, and compliance retentions.</p>
         </div>
 
         {saved && (
-          <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1">
+          <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-1">
             <CheckCircle2 className="w-3.5 h-3.5" /> Saved
           </span>
         )}
@@ -70,7 +70,7 @@ export default function AdminSettingsPage() {
                 type="number"
                 value={commissionRate}
                 onChange={(e) => setCommissionRate(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
                 required
               />
               <span className="text-[10px] text-slate-400 mt-0.5 block">Partner gets 80% net split</span>
@@ -82,7 +82,7 @@ export default function AdminSettingsPage() {
                 type="number"
                 value={convenienceFee}
                 onChange={(e) => setConvenienceFee(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
                 required
               />
               <span className="text-[10px] text-slate-400 mt-0.5 block">Waived for Yetzo Club members</span>
@@ -91,24 +91,24 @@ export default function AdminSettingsPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Snabbit Instant Arrival SLA (Minutes)</label>
+              <label className="block font-bold text-slate-700 mb-1">Yetzo Instant Instant Arrival SLA (Minutes)</label>
               <input
                 type="number"
                 value={instantTimeoutMins}
                 onChange={(e) => setInstantTimeoutMins(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
                 required
               />
               <span className="text-[10px] text-slate-400 mt-0.5 block">Default 15m cluster threshold</span>
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Pronto Bodycam Retention (Hours)</label>
+              <label className="block font-bold text-slate-700 mb-1">Yetzo Bodycam Retention (Hours)</label>
               <input
                 type="number"
                 value={bodycamRetentionHours}
                 onChange={(e) => setBodycamRetentionHours(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
                 required
               />
               <span className="text-[10px] text-slate-400 mt-0.5 block">DPDP Act compliant auto-purge</span>
@@ -121,7 +121,7 @@ export default function AdminSettingsPage() {
               type="number"
               value={gstRate}
               onChange={(e) => setGstRate(e.target.value)}
-              className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+              className="w-full p-3 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
               required
             />
             <span className="text-[10px] text-slate-400 mt-0.5 block">SAC Code 9987 (18% Statutory Rate)</span>

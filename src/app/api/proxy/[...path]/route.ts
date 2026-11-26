@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import fs from 'fs';
+import path from 'path';
 
 const DJANGO_API_URL = 'https://sak.yetzo.com/api';
 
 async function handleProxy(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   try {
     const resolvedParams = await params;
-    const path = resolvedParams.path.join('/');
+    const subPath = resolvedParams.path.join('/');
     const searchParams = req.nextUrl.searchParams.toString();
     const queryString = searchParams ? `?${searchParams}` : '';
-    const targetUrl = `${DJANGO_API_URL}/${path}/${queryString}`;
+    const targetUrl = `${DJANGO_API_URL}/${subPath}/${queryString}`;
 
     const cookieStore = await cookies();
     const token = cookieStore.get('yetzo_access_token')?.value;
@@ -37,7 +39,33 @@ async function handleProxy(req: NextRequest, { params }: { params: Promise<{ pat
       if (body) options.body = body;
     }
 
-    const response = await fetch(targetUrl, options);
+    let response: Response;
+    try {
+      response = await fetch(targetUrl, options);
+    } catch (fetchErr) {
+      console.warn(`Upstream API unreachable for ${subPath}, checking fallback cache...`);
+      response = new Response(null, { status: 503 });
+    }
+
+    // Resilient Fallback: If remote Django server throttles (429) or is unavailable (502/503/504)
+    // for public catalog endpoints, serve the high-speed local verified catalog cache
+    if ((response.status === 429 || response.status >= 500) && req.method === 'GET' && subPath.includes('services')) {
+      try {
+        const cachePath = path.join(process.cwd(), 'public', 'services_catalog.json');
+        if (fs.existsSync(cachePath)) {
+          const cachedData = fs.readFileSync(cachePath, 'utf-8');
+          return new NextResponse(cachedData, {
+            status: 200,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Yetzo-Cache': 'Resilient-Fallback-HIT',
+            },
+          });
+        }
+      } catch (cacheErr) {
+        console.error('Failed to read services cache:', cacheErr);
+      }
+    }
 
     const responseHeaders = new Headers(response.headers);
     responseHeaders.delete('content-encoding');

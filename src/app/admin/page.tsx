@@ -78,14 +78,14 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total GMV (Orders)</span>
-            <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg">
+            <div className="p-2 bg-blue-50 text-blue-800 rounded-lg">
               <DollarSign className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-black text-slate-900">
             ₹{totalGMV > 0 ? totalGMV.toLocaleString() : '84,920'}
           </div>
-          <div className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-semibold">
+          <div className="flex items-center gap-1.5 text-[11px] text-blue-800 font-semibold">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>+18.4% vs last week</span>
           </div>
@@ -103,7 +103,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
             <Zap className="w-3.5 h-3.5 text-amber-500" />
-            <span>Snabbit 15-min arrival SLA: 98.2%</span>
+            <span>Yetzo Instant 15-min arrival SLA: 98.2%</span>
           </div>
         </div>
 
@@ -134,7 +134,7 @@ export default function AdminDashboardPage() {
             {services.length} Services
           </div>
           <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-            <span>Urban Company rate cards</span>
+            <span>Yetzo Certified rate cards</span>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function AdminDashboardPage() {
           </div>
           <Link
             href="/admin/bookings"
-            className="text-xs font-bold text-[#059669] hover:underline flex items-center gap-1"
+            className="text-xs font-bold text-[#2563EB] hover:underline flex items-center gap-1"
           >
             <span>View All Bookings</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -157,7 +157,7 @@ export default function AdminDashboardPage() {
 
         {loading ? (
           <div className="p-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading live dispatch orders...
           </div>
         ) : bookings.length === 0 ? (

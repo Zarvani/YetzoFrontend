@@ -79,8 +79,8 @@ function BookingWarrantyContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
-        <div className="w-10 h-10 border-4 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
-        <p className="text-slate-600 font-medium">Checking Urban Company 30-Day Warranty...</p>
+        <div className="w-10 h-10 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-3" />
+        <p className="text-slate-600 font-medium">Checking Yetzo Certified 30-Day Warranty...</p>
       </div>
     );
   }
@@ -97,25 +97,25 @@ function BookingWarrantyContent() {
           Back to Booking
         </button>
 
-        {/* Urban Company 30-Day Guarantee Header */}
-        <div className="bg-gradient-to-br from-[#064E3B] to-[#047857] text-white p-6 rounded-2xl shadow-md relative overflow-hidden">
+        {/* Yetzo Certified 30-Day Guarantee Header */}
+        <div className="bg-gradient-to-br from-[#064E3B] to-[#1D4ED8] text-white p-6 rounded-2xl shadow-md relative overflow-hidden">
           <div className="flex items-start gap-4">
             <div className="p-3 bg-white/10 rounded-2xl border border-white/20 shrink-0">
-              <ShieldCheck className="w-8 h-8 text-emerald-200" />
+              <ShieldCheck className="w-8 h-8 text-blue-200" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider bg-emerald-400/20 text-emerald-100 px-2 py-0.5 rounded">
-                  Urban Company Benchmark
+                <span className="text-xs font-bold uppercase tracking-wider bg-sky-400/20 text-blue-100 px-2 py-0.5 rounded">
+                  Yetzo Certified Benchmark
                 </span>
-                <span className="text-xs text-emerald-200 font-mono">
+                <span className="text-xs text-blue-200 font-mono">
                   Ref: {booking?.booking_reference || bookingId.slice(0, 8)}
                 </span>
               </div>
               <h1 className="text-xl sm:text-2xl font-extrabold mt-1">
                 30-Day Free Re-work Warranty
               </h1>
-              <p className="text-xs sm:text-sm text-emerald-100/90 mt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-blue-100/90 mt-1 leading-relaxed">
                 If the problem recurs or you are not completely satisfied with the workmanship, Yetzo sends a senior master technician for a 100% free inspection and re-work.
               </p>
             </div>
@@ -125,7 +125,7 @@ function BookingWarrantyContent() {
         {/* Claim Success State */}
         {submittedClaim ? (
           <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 text-center space-y-4 shadow-sm">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-2">
+            <div className="w-16 h-16 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center mx-auto mb-2">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h2 className="text-2xl font-bold text-slate-900">Warranty Claim Registered</h2>
@@ -140,7 +140,7 @@ function BookingWarrantyContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Inspection Fee:</span>
-                <span className="font-bold text-emerald-600">₹0 (100% Free under UC Guarantee)</span>
+                <span className="font-bold text-blue-600">₹0 (100% Free under UC Guarantee)</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-500">Scheduled Slot:</span>
@@ -151,7 +151,7 @@ function BookingWarrantyContent() {
             <div className="pt-4 flex justify-center gap-3">
               <Link
                 href={`/customer/bookings/${bookingId}`}
-                className="px-6 py-2.5 bg-[#059669] text-white rounded-xl text-sm font-semibold hover:bg-[#047857] shadow transition"
+                className="px-6 py-2.5 bg-[#2563EB] text-white rounded-xl text-sm font-semibold hover:bg-[#1D4ED8] shadow transition"
               >
                 Back to Booking Overview
               </Link>
@@ -183,7 +183,7 @@ function BookingWarrantyContent() {
                     key={item.id}
                     className={`flex items-start p-3.5 rounded-xl border-2 cursor-pointer transition ${
                       issueType === item.id
-                        ? 'border-[#059669] bg-emerald-50/40 text-slate-900'
+                        ? 'border-[#2563EB] bg-blue-50/40 text-slate-900'
                         : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700'
                     }`}
                   >
@@ -193,7 +193,7 @@ function BookingWarrantyContent() {
                       value={item.id}
                       checked={issueType === item.id}
                       onChange={(e) => setIssueType(e.target.value)}
-                      className="mt-0.5 text-[#059669] focus:ring-[#059669]"
+                      className="mt-0.5 text-[#2563EB] focus:ring-[#2563EB]"
                     />
                     <div className="ml-2.5">
                       <div className="text-xs font-bold">{item.label}</div>
@@ -214,7 +214,7 @@ function BookingWarrantyContent() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="e.g. The Split AC was serviced yesterday but started blowing warm air and making a vibrating noise this morning..."
-                className="w-full text-xs p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#059669] focus:border-transparent text-slate-900 placeholder:text-slate-400"
+                className="w-full text-xs p-3.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent text-slate-900 placeholder:text-slate-400"
                 required
               />
             </div>
@@ -231,7 +231,7 @@ function BookingWarrantyContent() {
                   value={preferredDate}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => setPreferredDate(e.target.value)}
-                  className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 />
               </div>
 
@@ -243,7 +243,7 @@ function BookingWarrantyContent() {
                 <select
                   value={preferredSlot}
                   onChange={(e) => setPreferredSlot(e.target.value)}
-                  className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900 bg-white"
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900 bg-white"
                 >
                   <option value="MORNING">Morning (09:00 AM - 12:00 PM)</option>
                   <option value="AFTERNOON">Afternoon (12:00 PM - 04:00 PM)</option>
@@ -272,7 +272,7 @@ function BookingWarrantyContent() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 px-4 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-sm flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-sm flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <>

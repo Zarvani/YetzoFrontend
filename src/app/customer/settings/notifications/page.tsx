@@ -78,7 +78,7 @@ export default function NotificationsSettingsPage() {
     {
       id: 'whatsapp',
       title: 'WhatsApp Invoices & Warranty Cards',
-      desc: 'Get GST Tax invoice and 30-Day Urban Company warranty certificates directly on WhatsApp.',
+      desc: 'Get GST Tax invoice and 30-Day Yetzo Certified warranty certificates directly on WhatsApp.',
       icon: MessageSquare,
       checked: whatsappReceipts,
       onChange: setWhatsappReceipts,
@@ -109,7 +109,7 @@ export default function NotificationsSettingsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Bell className="w-6 h-6" />
               </div>
               <div>
@@ -119,7 +119,7 @@ export default function NotificationsSettingsPage() {
             </div>
 
             {saved && (
-              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1">
+              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" /> Saved
               </span>
             )}
@@ -155,7 +155,7 @@ export default function NotificationsSettingsPage() {
                       onChange={(e) => ch.onChange(e.target.checked)}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
                   </label>
                 </div>
               );
@@ -166,7 +166,7 @@ export default function NotificationsSettingsPage() {
             <button
               onClick={handleSave}
               disabled={loading}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>{loading ? 'Saving Changes...' : 'Save Notification Preferences'}</span>

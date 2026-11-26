@@ -33,7 +33,7 @@ function ProfessionalDetailPageContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
-        <div className="w-8 h-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
+        <div className="w-8 h-8 border-3 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-3" />
         <p className="text-xs text-slate-500">Loading professional profile...</p>
       </div>
     );
@@ -43,7 +43,7 @@ function ProfessionalDetailPageContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-lg font-bold text-slate-900">Professional Not Found</h2>
-        <Link href="/customer/professionals" className="text-xs font-bold text-[#059669] hover:underline mt-2">
+        <Link href="/customer/professionals" className="text-xs font-bold text-[#2563EB] hover:underline mt-2">
           Back to Directory
         </Link>
       </div>
@@ -63,7 +63,7 @@ function ProfessionalDetailPageContent() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold text-xl">
+            <div className="w-16 h-16 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center font-bold text-xl">
               {pro.user?.first_name ? pro.user.first_name[0] : 'P'}
             </div>
             <div>
@@ -71,7 +71,7 @@ function ProfessionalDetailPageContent() {
                 <h1 className="text-xl font-bold text-slate-900">
                   {pro.user?.first_name || 'Service Partner'} {pro.user?.last_name || ''}
                 </h1>
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-blue-600 shrink-0" />
               </div>
               <p className="text-xs text-slate-500">Yetzo Certified Home Maintenance Specialist</p>
               <div className="flex items-center gap-3 mt-1.5 text-xs">
@@ -88,13 +88,13 @@ function ProfessionalDetailPageContent() {
 
           {/* Badges */}
           <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center gap-2 text-emerald-800">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 flex items-center gap-2 text-blue-800">
+              <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
               <span className="font-bold">Police Background Verified</span>
             </div>
             <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 flex items-center gap-2 text-blue-800">
               <Award className="w-4 h-4 text-blue-600 shrink-0" />
-              <span className="font-bold">Urban Company Standard Certified</span>
+              <span className="font-bold">Yetzo Certified Standard Certified</span>
             </div>
           </div>
 
@@ -109,7 +109,7 @@ function ProfessionalDetailPageContent() {
           <div className="pt-4 border-t border-slate-100">
             <Link
               href="/customer/booking"
-              className="w-full py-4 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-2xl shadow-md transition text-xs flex items-center justify-center gap-2"
+              className="w-full py-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-2xl shadow-md transition text-xs flex items-center justify-center gap-2"
             >
               <span>Book Service with Verified Partner</span>
               <ArrowRight className="w-4 h-4" />

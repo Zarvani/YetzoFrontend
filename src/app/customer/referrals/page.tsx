@@ -42,24 +42,24 @@ export default function CustomerReferralsPage() {
         </button>
 
         {/* Hero Card */}
-        <div className="bg-gradient-to-br from-emerald-950 via-[#064E3B] to-[#047857] text-white p-8 rounded-3xl shadow-xl text-center space-y-4 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-emerald-950 via-[#064E3B] to-[#1D4ED8] text-white p-8 rounded-3xl shadow-xl text-center space-y-4 relative overflow-hidden">
           <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto border border-white/20">
-            <Gift className="w-8 h-8 text-emerald-300" />
+            <Gift className="w-8 h-8 text-sky-300" />
           </div>
 
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 bg-white/10 px-3 py-1 rounded-full">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-300 bg-white/10 px-3 py-1 rounded-full">
               Give ₹250, Get ₹250
             </span>
             <h1 className="text-2xl sm:text-3xl font-black mt-2">Invite Friends to Yetzo</h1>
-            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-md mx-auto mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm text-blue-100/90 max-w-md mx-auto mt-1 leading-relaxed">
               Share your unique referral link. When your friend completes their first service, both of you receive ₹250 directly into your Yetzo Wallet!
             </p>
           </div>
 
           {/* Referral Code Box */}
           <div className="max-w-xs mx-auto bg-black/30 p-3 rounded-2xl border border-white/15 flex items-center justify-between">
-            <span className="font-mono font-black text-xl tracking-wider text-emerald-300 pl-2">
+            <span className="font-mono font-black text-xl tracking-wider text-sky-300 pl-2">
               {referralCode}
             </span>
             <button
@@ -68,7 +68,7 @@ export default function CustomerReferralsPage() {
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <Check className="w-3.5 h-3.5 text-blue-600" />
                   Copied
                 </>
               ) : (
@@ -99,17 +99,17 @@ export default function CustomerReferralsPage() {
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">How It Works</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-              <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs mb-2">1</span>
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-black flex items-center justify-center text-xs mb-2">1</span>
               <h3 className="font-bold text-slate-900">Share Link</h3>
               <p className="text-slate-500">Send your code via WhatsApp, SMS, or social media.</p>
             </div>
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-              <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs mb-2">2</span>
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-black flex items-center justify-center text-xs mb-2">2</span>
               <h3 className="font-bold text-slate-900">Friend Books</h3>
               <p className="text-slate-500">They get ₹250 discount on their first home service booking.</p>
             </div>
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-              <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 font-black flex items-center justify-center text-xs mb-2">3</span>
+              <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-800 font-black flex items-center justify-center text-xs mb-2">3</span>
               <h3 className="font-bold text-slate-900">You Get Paid</h3>
               <p className="text-slate-500">₹250 credited to your Yetzo Wallet upon job completion.</p>
             </div>

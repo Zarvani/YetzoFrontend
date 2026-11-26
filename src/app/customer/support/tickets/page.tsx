@@ -73,17 +73,17 @@ export default function CustomerTicketsPage() {
         <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <HelpCircle className="w-6 h-6 text-[#059669]" />
+              <HelpCircle className="w-6 h-6 text-[#2563EB]" />
               <h1 className="text-xl font-bold text-slate-900">Yetzo Customer Care & Support</h1>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Urban Company grade resolution. 24/7 priority ticket tracking and escalation desk.
+              Yetzo Certified grade resolution. 24/7 priority ticket tracking and escalation desk.
             </p>
           </div>
 
           <button
             onClick={() => setShowCreateModal(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#059669] text-white rounded-xl text-xs font-bold hover:bg-[#047857] shadow transition"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-[#1D4ED8] shadow transition"
           >
             <Plus className="w-4 h-4" />
             Open New Ticket
@@ -135,14 +135,14 @@ export default function CustomerTicketsPage() {
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                           t.status === 'RESOLVED'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-blue-100 text-blue-800'
                             : 'bg-amber-100 text-amber-800'
                         }`}
                       >
                         {t.status}
                       </span>
                     </div>
-                    <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#059669] transition">
+                    <h3 className="font-bold text-slate-800 text-sm group-hover:text-[#2563EB] transition">
                       {t.subject}
                     </h3>
                     <p className="text-xs text-slate-500 line-clamp-1">{t.description}</p>
@@ -167,7 +167,7 @@ export default function CustomerTicketsPage() {
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] bg-white text-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] bg-white text-slate-900"
                   >
                     <option value="BOOKING">Booking Issue</option>
                     <option value="PAYMENT">Payment / Escrow / Refund</option>
@@ -185,7 +185,7 @@ export default function CustomerTicketsPage() {
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="Brief summary of issue"
-                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                     required
                   />
                 </div>
@@ -197,7 +197,7 @@ export default function CustomerTicketsPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe what occurred, any technician details, etc."
-                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                    className="w-full p-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                     required
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function CustomerTicketsPage() {
                   <button
                     type="submit"
                     disabled={creating}
-                    className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+                    className="px-5 py-2 bg-[#2563EB] text-white rounded-xl font-bold hover:bg-[#1D4ED8] shadow transition disabled:opacity-50"
                   >
                     {creating ? 'Submitting...' : 'Submit Ticket'}
                   </button>

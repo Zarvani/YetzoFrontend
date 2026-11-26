@@ -42,7 +42,7 @@ export default function AdminBookingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Briefcase className="w-6 h-6 text-[#059669]" />
+            <Briefcase className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">Master Bookings Repository</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Audit and govern all orders placed across Yetzo web and mobile applications.</p>
@@ -65,7 +65,7 @@ export default function AdminBookingsPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search bookings by number, customer, or phone..."
-            className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#059669]"
+            className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB]"
           />
         </div>
 
@@ -89,7 +89,7 @@ export default function AdminBookingsPage() {
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading master bookings...
           </div>
         ) : filtered.length === 0 ? (

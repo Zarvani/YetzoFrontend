@@ -15,7 +15,7 @@ function BookingScheduleContent() {
   const router = useRouter();
   const { service, isInstant: storedInstant, scheduledDate: storedDate, scheduledTime: storedTime, setSchedule } = useBookingStore();
 
-  // Mode: 'instant' | 'later' | 'recurring' (Pronto daily pass)
+  // Mode: 'instant' | 'later' | 'recurring' (Yetzo daily pass)
   const [bookingMode, setBookingMode] = useState<'instant' | 'later' | 'recurring'>('instant');
   const [selectedDate, setSelectedDate] = useState(storedDate || '');
   const [selectedTime, setSelectedTime] = useState(storedTime || '10:00:00');
@@ -45,7 +45,7 @@ function BookingScheduleContent() {
     setNextDays(days);
   }, []);
 
-  // Production curated time windows matching Pronto hyper-local dispatch
+  // Production curated time windows matching Yetzo hyper-local dispatch
   const fallbackWindows = [
     { id: 'slot-morning-1', time: '08:00:00', label: '08:00 AM - 09:30 AM', period: 'Morning Rush' },
     { id: 'slot-morning-2', time: '10:00:00', label: '10:00 AM - 11:30 AM', period: 'Mid Morning' },
@@ -126,8 +126,8 @@ function BookingScheduleContent() {
           <span>Back to Chore Selection</span>
         </button>
 
-        <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-200">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-200">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
           <span>15-Minute Instant Arrival SLA Guaranteed</span>
         </div>
       </div>
@@ -137,7 +137,7 @@ function BookingScheduleContent() {
         
         {/* Header */}
         <div className="border-b border-slate-100 pb-5">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-emerald-600 font-bold font-heading">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-blue-600 font-bold font-heading">
             Step 02 · Timing & Dispatch
           </span>
           <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-1">
@@ -148,7 +148,7 @@ function BookingScheduleContent() {
           </p>
         </div>
 
-        {/* 3 Dispatch Mode Options (Pronto Competitor Architecture) */}
+        {/* 3 Dispatch Mode Options (Yetzo Competitor Architecture) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           
           {/* 1. Instant Dispatch */}
@@ -156,31 +156,31 @@ function BookingScheduleContent() {
             onClick={() => setBookingMode('instant')}
             className={`p-4 rounded-md border cursor-pointer transition relative ${
               bookingMode === 'instant'
-                ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
+                ? 'border-blue-600 bg-blue-50/40 shadow-sm'
                 : 'border-slate-200 hover:border-slate-300 bg-white'
             }`}
           >
             {bookingMode === 'instant' && (
-              <span className="absolute -top-2.5 right-3 bg-emerald-600 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-sm">
+              <span className="absolute -top-2.5 right-3 bg-blue-600 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm shadow-sm">
                 Fastest
               </span>
             )}
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-7 h-7 rounded-sm bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-sm bg-blue-600 text-white flex items-center justify-center shrink-0">
                 <Zap className="w-4 h-4 fill-white" />
               </div>
               <h3 className="font-heading font-medium text-sm text-slate-900">Instant Dispatch</h3>
             </div>
             <p className="text-[12px] text-slate-600 leading-relaxed font-body">
-              Partner dispatched immediately. Doorstep arrival in <strong className="text-emerald-700 font-semibold">10–15 mins</strong>.
+              Partner dispatched immediately. Doorstep arrival in <strong className="text-blue-700 font-semibold">10–15 mins</strong>.
             </p>
             <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-              <span className="text-emerald-700 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span className="text-blue-700 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
                 <span>{onlineProsCount !== null && onlineProsCount > 0 ? `${onlineProsCount} Pros Online` : 'Cluster Fleet Active'}</span>
               </span>
               <div className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-                bookingMode === 'instant' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'
+                bookingMode === 'instant' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
               }`}>
                 {bookingMode === 'instant' && <Check className="w-3 h-3 stroke-[3]" />}
               </div>
@@ -192,7 +192,7 @@ function BookingScheduleContent() {
             onClick={() => setBookingMode('later')}
             className={`p-4 rounded-md border cursor-pointer transition relative ${
               bookingMode === 'later'
-                ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
+                ? 'border-blue-600 bg-blue-50/40 shadow-sm'
                 : 'border-slate-200 hover:border-slate-300 bg-white'
             }`}
           >
@@ -208,19 +208,19 @@ function BookingScheduleContent() {
             <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
               <span className="text-slate-500 font-medium">Any Date & Window</span>
               <div className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-                bookingMode === 'later' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'
+                bookingMode === 'later' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
               }`}>
                 {bookingMode === 'later' && <Check className="w-3 h-3 stroke-[3]" />}
               </div>
             </div>
           </div>
 
-          {/* 3. Daily Maid Pass (Pronto Recurring Subscription) */}
+          {/* 3. Daily Maid Pass (Yetzo Recurring Subscription) */}
           <div
             onClick={() => setBookingMode('recurring')}
             className={`p-4 rounded-md border cursor-pointer transition relative ${
               bookingMode === 'recurring'
-                ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
+                ? 'border-blue-600 bg-blue-50/40 shadow-sm'
                 : 'border-slate-200 hover:border-slate-300 bg-white'
             }`}
           >
@@ -239,7 +239,7 @@ function BookingScheduleContent() {
             <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
               <span className="text-amber-700 font-medium">Zero Cancellation Hassle</span>
               <div className={`w-4 h-4 rounded-sm border flex items-center justify-center ${
-                bookingMode === 'recurring' ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300'
+                bookingMode === 'recurring' ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
               }`}>
                 {bookingMode === 'recurring' && <Check className="w-3 h-3 stroke-[3]" />}
               </div>
@@ -252,8 +252,8 @@ function BookingScheduleContent() {
 
         {/* 1. Instant Mode Information Box */}
         {bookingMode === 'instant' && (
-          <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-sm flex items-start gap-3">
-            <div className="w-6 h-6 rounded-sm bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+          <div className="p-4 bg-blue-50/60 border border-blue-200 rounded-sm flex items-start gap-3">
+            <div className="w-6 h-6 rounded-sm bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
               <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div className="text-xs text-slate-700 leading-relaxed">
@@ -284,17 +284,17 @@ function BookingScheduleContent() {
                       onClick={() => setSelectedDate(d.dateStr)}
                       className={`p-2.5 rounded-sm border text-center transition ${
                         isSelected
-                          ? 'border-emerald-600 bg-emerald-600 text-white font-semibold shadow-sm'
+                          ? 'border-blue-600 bg-blue-600 text-white font-semibold shadow-sm'
                           : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                       }`}
                     >
-                      <div className={`text-[10px] uppercase ${isSelected ? 'text-emerald-100' : 'text-slate-400'}`}>
+                      <div className={`text-[10px] uppercase ${isSelected ? 'text-blue-100' : 'text-slate-400'}`}>
                         {d.dayName}
                       </div>
                       <div className="text-base font-heading font-medium leading-snug">
                         {d.dateNum}
                       </div>
-                      <div className={`text-[10px] ${isSelected ? 'text-emerald-100' : 'text-slate-500'}`}>
+                      <div className={`text-[10px] ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
                         {d.month}
                       </div>
                     </button>
@@ -309,7 +309,7 @@ function BookingScheduleContent() {
               </label>
               {loadingSlots ? (
                 <div className="p-8 text-center bg-slate-50 border border-slate-200 rounded-sm">
-                  <Loader2 className="w-5 h-5 animate-spin text-emerald-600 mx-auto mb-2" />
+                  <Loader2 className="w-5 h-5 animate-spin text-blue-600 mx-auto mb-2" />
                   <p className="text-xs text-slate-500 font-medium">Checking live partner capacity in your locality...</p>
                 </div>
               ) : (
@@ -326,16 +326,16 @@ function BookingScheduleContent() {
                         }}
                         className={`p-3 rounded-sm border text-xs flex items-center justify-between transition ${
                           isSelected
-                            ? 'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-semibold'
+                            ? 'border-blue-600 bg-blue-50/70 text-emerald-950 font-semibold'
                             : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <Clock className={`w-3.5 h-3.5 ${isSelected ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          <Clock className={`w-3.5 h-3.5 ${isSelected ? 'text-blue-600' : 'text-slate-400'}`} />
                           <span>{slot.label}</span>
                         </div>
                         <span className={`text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-wider ${
-                          isSelected ? 'bg-emerald-200/60 text-emerald-900 font-bold' : 'bg-slate-100 text-slate-500'
+                          isSelected ? 'bg-blue-200/60 text-blue-900 font-bold' : 'bg-slate-100 text-slate-500'
                         }`}>
                           {slot.period}
                         </span>
@@ -367,7 +367,7 @@ function BookingScheduleContent() {
                     onClick={() => setRecurringFrequency(f.id as any)}
                     className={`p-3 rounded-sm border text-left transition ${
                       recurringFrequency === f.id
-                        ? 'border-emerald-600 bg-emerald-50/60 text-emerald-950'
+                        ? 'border-blue-600 bg-blue-50/60 text-emerald-950'
                         : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -380,7 +380,7 @@ function BookingScheduleContent() {
 
             <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-sm text-xs text-slate-600 space-y-1.5">
               <div className="flex items-center gap-2 text-slate-900 font-semibold font-heading">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
                 <span>Yetzo Daily Pass Benefits:</span>
               </div>
               <p className="pl-6">• 25% discounted recurring hourly rate.</p>
@@ -393,7 +393,7 @@ function BookingScheduleContent() {
         {/* Safety & Quality Guarantee */}
         <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
             <span>100% Police Verified · SOP Certified · Optional Encrypted Bodycam Session</span>
           </div>
           <span className="font-medium text-slate-700">₹10,000 Damage Cover Included</span>
@@ -403,7 +403,7 @@ function BookingScheduleContent() {
         <button
           type="button"
           onClick={handleConfirmSchedule}
-          className="w-full py-3.5 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium text-sm rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading tracking-wide"
+          className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium text-sm rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading tracking-wide"
         >
           <span>Continue to Address Confirmation</span>
           <ArrowRight className="w-4 h-4" />

@@ -85,13 +85,13 @@ export default function ProfessionalJobsPage() {
             <span
               className={`text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 ${
                 isOnline
-                  ? 'bg-emerald-100 text-emerald-800'
+                  ? 'bg-blue-100 text-blue-800'
                   : 'bg-slate-200 text-slate-600'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isOnline ? 'bg-emerald-600 animate-pulse' : 'bg-slate-500'
+                  isOnline ? 'bg-blue-600 animate-pulse' : 'bg-slate-500'
                 }`}
               />
               {isOnline ? 'ONLINE & DISPATCHABLE' : 'OFFLINE'}
@@ -107,7 +107,7 @@ export default function ProfessionalJobsPage() {
           className={`px-4 py-2 text-xs font-bold rounded-xl transition ${
             isOnline
               ? 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-              : 'bg-emerald-600 text-white hover:bg-emerald-700'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
           }`}
         >
           {isOnline ? 'Go Offline' : 'Go Online'}
@@ -140,7 +140,7 @@ export default function ProfessionalJobsPage() {
             {activeJobs.map((job) => (
               <div
                 key={job.id}
-                className="bg-white border-2 border-emerald-500/30 rounded-2xl p-5 shadow-sm space-y-4"
+                className="bg-white border-2 border-blue-500/30 rounded-2xl p-5 shadow-sm space-y-4"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -152,7 +152,7 @@ export default function ProfessionalJobsPage() {
                     </h3>
                   </div>
 
-                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                  <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
                     {job.status}
                   </span>
                 </div>
@@ -164,16 +164,16 @@ export default function ProfessionalJobsPage() {
                     <span className="truncate">{job.address?.address_line_1}, {job.address?.city}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <Phone className="w-4 h-4 text-blue-600 shrink-0" />
                     <span>Customer: {job.customer?.first_name || 'Customer'} ({job.customer?.phone || 'Protected'})</span>
                   </div>
                 </div>
 
-                {/* Pronto Verified Bodycam Status */}
+                {/* Yetzo Verified Bodycam Status */}
                 {job.is_verified_session && (
-                  <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 p-2 rounded-lg border border-emerald-200">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>Pronto Verified: Encrypted Bodycam Active</span>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-blue-800 bg-blue-50 p-2 rounded-lg border border-blue-200">
+                    <ShieldCheck className="w-4 h-4 text-blue-600" />
+                    <span>Yetzo Verified: Encrypted Bodycam Active</span>
                   </div>
                 )}
 
@@ -186,7 +186,7 @@ export default function ProfessionalJobsPage() {
                         setOtpMode('START');
                         setInputOtp('');
                       }}
-                      className="flex-1 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5"
+                      className="flex-1 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl text-xs transition shadow flex items-center justify-center gap-1.5"
                     >
                       <Play className="w-4 h-4 fill-white" />
                       Verify Start OTP
@@ -229,7 +229,7 @@ export default function ProfessionalJobsPage() {
                 value={inputOtp}
                 onChange={(e) => setInputOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="••••"
-                className="w-full text-center text-3xl font-mono font-black tracking-widest p-3 rounded-xl border-2 border-slate-300 focus:border-[#059669] focus:outline-none"
+                className="w-full text-center text-3xl font-mono font-black tracking-widest p-3 rounded-xl border-2 border-slate-300 focus:border-[#2563EB] focus:outline-none"
               />
             </div>
 
@@ -245,7 +245,7 @@ export default function ProfessionalJobsPage() {
                 type="button"
                 disabled={verifying || inputOtp.length !== 4}
                 onClick={() => handleVerifyOtp(selectedJob.id)}
-                className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+                className="px-5 py-2 bg-[#2563EB] text-white rounded-xl font-bold hover:bg-[#1D4ED8] shadow transition disabled:opacity-50"
               >
                 {verifying ? 'Verifying...' : 'Authorize'}
               </button>

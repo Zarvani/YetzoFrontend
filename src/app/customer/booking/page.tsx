@@ -15,10 +15,11 @@ function CustomerBookingHubPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const serviceIdParam = searchParams.get('serviceId');
+  const stackParam = searchParams.get('stack');
 
   // Booking Configuration State
   const [isInstant, setIsInstant] = useState(true);
-  const [isProntoVerified, setIsProntoVerified] = useState(true);
+  const [isYetzoVerified, setIsYetzoVerified] = useState(true);
   const [services, setServices] = useState<any[]>([]);
   const [selectedChoreIds, setSelectedChoreIds] = useState<string[]>([]);
   const [addresses, setAddresses] = useState<any[]>([]);
@@ -33,9 +34,10 @@ function CustomerBookingHubPageContent() {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
       const [servicesRes, addrRes]: any = await Promise.all([
         apiClient('services/').catch(() => ({ data: [] })),
-        apiClient('locations/addresses/').catch(() => ({ data: [] })),
+        token ? apiClient('locations/addresses/').catch(() => ({ data: [] })) : Promise.resolve({ data: [] }),
       ]);
 
       const sList: any[] = servicesRes?.data || (Array.isArray(servicesRes) ? servicesRes : servicesRes?.results || []);
@@ -44,10 +46,33 @@ function CustomerBookingHubPageContent() {
       setServices(sList);
 
       if (sList.length > 0) {
-        if (serviceIdParam && sList.some((s) => s.id === serviceIdParam)) {
-          setSelectedChoreIds([serviceIdParam]);
+        if (stackParam) {
+          // Pre-select bundle chores from stack query
+          const requestedKeys = stackParam.split(',').map((k) => k.trim().toLowerCase());
+          const matchedIds = sList
+            .filter((s) => {
+              const sid = String(s.id).toLowerCase();
+              const sslug = String(s.slug || '').toLowerCase();
+              return requestedKeys.some((k) => sid === k || sslug === k || sslug.includes(k) || k.includes(sslug));
+            })
+            .map((s) => s.id);
+          setSelectedChoreIds(matchedIds.length > 0 ? matchedIds : [sList[0].id]);
+        } else if (serviceIdParam) {
+          // Match by id OR slug
+          const matchedService = sList.find(
+            (s) => String(s.id).toLowerCase() === serviceIdParam.toLowerCase() ||
+                   String(s.slug).toLowerCase() === serviceIdParam.toLowerCase() ||
+                   serviceIdParam.toLowerCase().includes(String(s.slug || '').toLowerCase()) ||
+                   String(s.slug || '').toLowerCase().includes(serviceIdParam.toLowerCase())
+          );
+          if (matchedService) {
+            setSelectedChoreIds([matchedService.id]);
+          } else {
+            setSelectedChoreIds([]);
+          }
         } else {
-          setSelectedChoreIds([sList[0].id]);
+          // Do not pre-select automatically without user click
+          setSelectedChoreIds([]);
         }
       }
 
@@ -64,7 +89,6 @@ function CustomerBookingHubPageContent() {
 
   const toggleChore = (choreId: string) => {
     if (selectedChoreIds.includes(choreId)) {
-      if (selectedChoreIds.length === 1) return; // Keep at least one chore
       setSelectedChoreIds(selectedChoreIds.filter((id) => id !== choreId));
     } else {
       setSelectedChoreIds([...selectedChoreIds, choreId]);
@@ -79,12 +103,12 @@ function CustomerBookingHubPageContent() {
     return sum + Number(price);
   }, 0);
 
-  // Pronto signature: 15% discount when stacking 2+ chores in a single pro visit
+  // Yetzo signature: 15% discount when stacking 2+ chores in a single pro visit
   const stackingDiscount = selectedChores.length >= 2 ? Math.round(subtotal * 0.15) : 0;
   const taxableAmount = subtotal - stackingDiscount;
-  const gst = Math.round(taxableAmount * 0.18);
-  const platformFee = 29; // Ultra-transparent minimal fee
-  const totalAmount = taxableAmount + gst + platformFee;
+  const gst = selectedChores.length > 0 ? Math.round(taxableAmount * 0.18) : 0;
+  const platformFee = selectedChores.length > 0 ? 29 : 0; // Ultra-transparent minimal fee
+  const totalAmount = selectedChores.length > 0 ? taxableAmount + gst + platformFee : 0;
 
   const handleProceedToSchedule = () => {
     if (selectedChores.length === 0) {
@@ -102,7 +126,7 @@ function CustomerBookingHubPageContent() {
       category: { name: primaryService.category?.name || primaryService.category_name || 'Home Maintenance' },
     } as any);
 
-    store.setProntoVerified(isProntoVerified);
+    store.setYetzoVerified(isYetzoVerified);
     store.setSchedule(isInstant, new Date().toISOString().split('T')[0]);
 
     if (selectedAddressId) {
@@ -116,7 +140,7 @@ function CustomerBookingHubPageContent() {
   if (loading) {
     return (
       <div className="py-24 text-center space-y-3 font-body">
-        <Loader2 className="w-6 h-6 animate-spin text-emerald-600 mx-auto" />
+        <Loader2 className="w-6 h-6 animate-spin text-blue-600 mx-auto" />
         <h2 className="text-base font-[300] font-heading text-slate-900">Loading Live Service Catalog...</h2>
         <p className="text-xs text-slate-500">Querying real-time services from PostgreSQL database</p>
       </div>
@@ -131,9 +155,9 @@ function CustomerBookingHubPageContent() {
       <div className="bg-white border border-slate-200 rounded-sm p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-              <span>15-Minute Instant House Help SLA · Pronto Quality Guaranteed</span>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-blue-50 text-blue-800 text-[11px] font-semibold border border-blue-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+              <span>15-Minute Instant House Help SLA · Yetzo Quality Guaranteed</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight">
               Select Your Tasks & Stack Chores
@@ -144,7 +168,7 @@ function CustomerBookingHubPageContent() {
           </div>
 
           <div className="flex items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-sm shrink-0">
-            <ShieldCheck className="w-6 h-6 text-emerald-600 shrink-0" />
+            <ShieldCheck className="w-6 h-6 text-blue-600 shrink-0" />
             <div className="text-xs">
               <div className="font-heading font-medium text-slate-900">₹10,000 Damage Guarantee</div>
               <div className="text-slate-500 text-[11px]">100% Police & SOP Verified</div>
@@ -170,7 +194,7 @@ function CustomerBookingHubPageContent() {
           <div className="bg-white border border-slate-200 rounded-sm p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
             <div className="border-b border-slate-100 pb-3">
               <h2 className="text-sm font-semibold font-heading text-slate-900 flex items-center gap-2 uppercase tracking-wider">
-                <Clock className="w-4 h-4 text-emerald-600" />
+                <Clock className="w-4 h-4 text-blue-600" />
                 1. Dispatch SLA & Timing
               </h2>
               <p className="text-[12px] text-slate-500 mt-0.5">
@@ -183,16 +207,16 @@ function CustomerBookingHubPageContent() {
                 onClick={() => setIsInstant(true)}
                 className={`p-4 rounded-sm border cursor-pointer transition ${
                   isInstant
-                    ? 'border-emerald-600 bg-emerald-50/40 shadow-xs'
+                    ? 'border-blue-600 bg-blue-50/40 shadow-xs'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-emerald-700 font-heading font-semibold text-xs">
-                    <Zap className="w-4 h-4 fill-emerald-600" />
+                  <div className="flex items-center gap-2 text-blue-700 font-heading font-semibold text-xs">
+                    <Zap className="w-4 h-4 fill-blue-600" />
                     <span>Instant Doorstep Help</span>
                   </div>
-                  <span className="text-[10px] uppercase font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-sm">
+                  <span className="text-[10px] uppercase font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-sm">
                     15 Min SLA
                   </span>
                 </div>
@@ -205,7 +229,7 @@ function CustomerBookingHubPageContent() {
                 onClick={() => setIsInstant(false)}
                 className={`p-4 rounded-sm border cursor-pointer transition ${
                   !isInstant
-                    ? 'border-emerald-600 bg-emerald-50/40 shadow-xs'
+                    ? 'border-blue-600 bg-blue-50/40 shadow-xs'
                     : 'border-slate-200 hover:border-slate-300 bg-white'
                 }`}
               >
@@ -230,7 +254,7 @@ function CustomerBookingHubPageContent() {
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h2 className="text-sm font-semibold font-heading text-slate-900 flex items-center gap-2 uppercase tracking-wider">
-                  <Layers className="w-4 h-4 text-emerald-600" />
+                  <Layers className="w-4 h-4 text-blue-600" />
                   2. Select Chores & Services ({services.length})
                 </h2>
                 <p className="text-[12px] text-slate-500 mt-0.5">
@@ -239,7 +263,7 @@ function CustomerBookingHubPageContent() {
               </div>
 
               {selectedChores.length >= 2 && (
-                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-1 rounded-sm flex items-center gap-1 font-heading">
+                <span className="text-[11px] font-bold text-blue-800 bg-blue-100 px-2.5 py-1 rounded-sm flex items-center gap-1 font-heading">
                   <Tag className="w-3 h-3" />
                   15% Bundle Discount Active
                 </span>
@@ -249,7 +273,7 @@ function CustomerBookingHubPageContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {services.map((chore) => {
                 const isSelected = selectedChoreIds.includes(chore.id);
-                const price = chore.starting_price || chore.price || 299;
+                const price = chore.starting_price || (chore.pricing_rules?.[0]?.base_price ? (chore.pricing_rules[0].base_price > 1000 ? Math.round(chore.pricing_rules[0].base_price / 100) : chore.pricing_rules[0].base_price) : (chore.price || 299));
 
                 return (
                   <div
@@ -257,13 +281,13 @@ function CustomerBookingHubPageContent() {
                     onClick={() => toggleChore(chore.id)}
                     className={`p-3.5 rounded-sm border cursor-pointer transition flex items-start justify-between ${
                       isSelected
-                        ? 'border-emerald-600 bg-emerald-50/30'
+                        ? 'border-blue-600 bg-blue-50/30'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <div className="flex items-start gap-2.5">
                       <div className={`w-4 h-4 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 transition ${
-                        isSelected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300 bg-white'
+                        isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white'
                       }`}>
                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                       </div>
@@ -295,16 +319,16 @@ function CustomerBookingHubPageContent() {
             </div>
           </div>
 
-          {/* Step 3: Pronto Verified Security Suite */}
+          {/* Step 3: Yetzo Verified Security Suite */}
           <div className="bg-white border border-slate-200 rounded-sm p-5 sm:p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-sm bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-sm bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-xs font-semibold font-heading text-slate-900 uppercase tracking-wide">
-                    Pronto Verified: Encrypted Bodycam Session
+                    Yetzo Verified: Encrypted Bodycam Session
                   </h3>
                   <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
                     Partner records audio/video stream during visit with end-to-end encryption. Footage stored in compliance with India DPDP Act 2023.
@@ -315,11 +339,11 @@ function CustomerBookingHubPageContent() {
               <label className="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
                 <input
                   type="checkbox"
-                  checked={isProntoVerified}
-                  onChange={(e) => setIsProntoVerified(e.target.checked)}
+                  checked={isYetzoVerified}
+                  onChange={(e) => setIsYetzoVerified(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#05AC5F]"></div>
+                <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
           </div>
@@ -329,7 +353,7 @@ function CustomerBookingHubPageContent() {
         {/* Right 1 Col: Live Escrow Summary Card */}
         <div className="bg-white border border-slate-200 rounded-sm p-6 shadow-sm space-y-5 sticky top-24">
           <div className="border-b border-slate-100 pb-3">
-            <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
+            <span className="text-[10px] uppercase tracking-wider text-blue-600 font-bold font-heading">
               Visit Breakdown
             </span>
             <h3 className="text-base font-[300] font-heading text-slate-900 mt-0.5">
@@ -344,7 +368,7 @@ function CustomerBookingHubPageContent() {
             </div>
 
             {stackingDiscount > 0 && (
-              <div className="flex justify-between text-emerald-700 font-medium">
+              <div className="flex justify-between text-blue-700 font-medium">
                 <span className="flex items-center gap-1">
                   <Tag className="w-3 h-3" />
                   Task Stacking (15% Off)
@@ -367,7 +391,7 @@ function CustomerBookingHubPageContent() {
               <span className="text-xs uppercase tracking-wider font-bold text-slate-900 font-heading">
                 Total Held in Escrow
               </span>
-              <span className="text-xl font-bold font-heading text-slate-900 text-emerald-800">
+              <span className="text-xl font-bold font-heading text-slate-900 text-blue-800">
                 ₹{totalAmount}
               </span>
             </div>
@@ -377,7 +401,7 @@ function CustomerBookingHubPageContent() {
             <button
               onClick={handleProceedToSchedule}
               disabled={selectedChores.length === 0}
-              className="w-full py-3 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium font-heading uppercase tracking-wider text-xs rounded-sm shadow-sm transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium font-heading uppercase tracking-wider text-xs rounded-sm shadow-sm transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <span>Confirm & Choose Slot</span>
               <ArrowRight className="w-3.5 h-3.5" />

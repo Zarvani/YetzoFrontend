@@ -1,25 +1,26 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  CircleDollarSign, Calendar, Smartphone, GraduationCap,
+  ShieldCheck, CreditCard
+} from 'lucide-react';
 
 export default function PartnerPage() {
   const router = useRouter();
   const benefits = [
-    { icon: '💰', title: 'Earn ₹30,000–80,000/month', desc: 'Top professionals on Yetzo earn over ₹80,000 a month working on their own schedule.' },
-    { icon: '📅', title: 'Set Your Own Hours', desc: 'Work when you want. Toggle your availability in the app and receive jobs only when you\'re free.' },
-    { icon: '📱', title: 'All Jobs via App', desc: 'No phone calls, no paperwork. Every job request, invoice, and payment is handled in the Yetzo Pro app.' },
-    { icon: '🎓', title: 'Free Training & Tools', desc: 'Get access to Yetzo Academy — professional courses, technique videos, and certifications at no cost.' },
-    { icon: '🛡️', title: 'Liability Insurance', desc: 'We cover you. Every Yetzo professional is covered by platform-wide professional liability insurance.' },
-    { icon: '💳', title: 'Daily Payouts', desc: 'Don\'t wait for weekly paychecks. Request a payout any day and get it in your bank within 2 hours.' },
+    { icon: <CircleDollarSign className="w-7 h-7 text-[#2563EB]" />, title: 'Earn ₹30,000–80,000/month', desc: 'Top professionals on Yetzo earn over ₹80,000 a month working on their own schedule.' },
+    { icon: <Calendar className="w-7 h-7 text-[#2563EB]" />, title: 'Set Your Own Hours', desc: 'Work when you want. Toggle your availability in the app and receive jobs only when you\'re free.' },
+    { icon: <Smartphone className="w-7 h-7 text-[#2563EB]" />, title: 'All Jobs via App', desc: 'No phone calls, no paperwork. Every job request, invoice, and payment is handled in the Yetzo Pro app.' },
+    { icon: <GraduationCap className="w-7 h-7 text-[#2563EB]" />, title: 'Free Training & Tools', desc: 'Get access to Yetzo Academy — professional courses, technique videos, and certifications at no cost.' },
+    { icon: <ShieldCheck className="w-7 h-7 text-[#2563EB]" />, title: 'Liability Insurance', desc: 'We cover you. Every Yetzo professional is covered by platform-wide professional liability insurance.' },
+    { icon: <CreditCard className="w-7 h-7 text-[#2563EB]" />, title: 'Daily Payouts', desc: 'Don\'t wait for weekly paychecks. Request a payout any day and get it in your bank within 2 hours.' },
   ];
 
   return (
     <div className="min-h-screen bg-white font-sans">
       <title>Become a Yetzo Professional Partner</title>
-      <header className="border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50 bg-white/90 backdrop-blur-md">
-        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
-        <button onClick={() => router.push('/professional/pro/register')} className="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm shadow-lg shadow-blue-600/20">Apply Now — It's Free</button>
-      </header>
+      
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-blue-950 text-white py-24 px-4">
@@ -37,8 +38,8 @@ export default function PartnerPage() {
           <h2 className="text-4xl font-black text-slate-900 text-center mb-12">Why Professionals Choose Yetzo</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {benefits.map((b, i) => (
-              <div key={i} className="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm">
-                <div className="text-4xl mb-4">{b.icon}</div>
+              <div key={i} className="bg-white p-7 rounded-2xl border border-slate-200 shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-4">{b.icon}</div>
                 <h3 className="text-xl font-black text-slate-900 mb-2">{b.title}</h3>
                 <p className="text-slate-600 font-medium leading-relaxed">{b.desc}</p>
               </div>

@@ -24,9 +24,9 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white px-4 py-5 sticky top-0 z-50 shadow-sm flex items-center justify-between">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <h1 className="text-xl font-black text-slate-900">Profile</h1>
-      </header>
+      </div>
 
       <main className="px-4 py-6 space-y-6">
         {/* Profile Card */}

@@ -37,7 +37,7 @@ function BookingInvoiceContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
-        <div className="w-10 h-10 border-4 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
+        <div className="w-10 h-10 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-3" />
         <p className="text-slate-600 font-medium">Generating Tax Invoice...</p>
       </div>
     );
@@ -47,7 +47,7 @@ function BookingInvoiceContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
         <p className="text-slate-600 mb-4">Invoice not found for this booking.</p>
-        <Link href="/customer/bookings" className="text-emerald-600 font-bold hover:underline">
+        <Link href="/customer/bookings" className="text-blue-600 font-bold hover:underline">
           Back to Bookings
         </Link>
       </div>
@@ -85,7 +85,7 @@ function BookingInvoiceContent() {
             </button>
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#059669] text-white rounded-xl text-xs font-bold hover:bg-[#047857] transition shadow-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#2563EB] text-white rounded-xl text-xs font-bold hover:bg-[#1D4ED8] transition shadow-sm"
             >
               <Download className="w-4 h-4" />
               Download PDF
@@ -99,8 +99,8 @@ function BookingInvoiceContent() {
           <div className="flex items-start justify-between border-b border-slate-200 pb-8">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-black text-[#059669] tracking-tight">YETZO</span>
-                <span className="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">
+                <span className="text-2xl font-black text-[#2563EB] tracking-tight">YETZO</span>
+                <span className="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded">
                   TAX INVOICE
                 </span>
               </div>
@@ -144,7 +144,7 @@ function BookingInvoiceContent() {
                 Execution Date: {booking.scheduled_date || 'Instant Dispatch'}
               </p>
               <p className="text-slate-600">
-                Payment Status: <span className="font-bold text-emerald-600">{booking.status}</span>
+                Payment Status: <span className="font-bold text-blue-600">{booking.status}</span>
               </p>
             </div>
           </div>
@@ -173,7 +173,7 @@ function BookingInvoiceContent() {
                 </tr>
 
                 {discount > 0 && (
-                  <tr className="text-emerald-700 bg-emerald-50/40">
+                  <tr className="text-blue-700 bg-blue-50/40">
                     <td className="py-2.5 font-medium">
                       Multi-Chore Bundle / Membership Discount
                     </td>
@@ -212,7 +212,7 @@ function BookingInvoiceContent() {
               </div>
               <div className="border-t border-slate-200 pt-2 flex justify-between font-bold text-sm text-slate-900">
                 <span>Total Amount Paid:</span>
-                <span className="text-[#059669] font-mono">₹{total}</span>
+                <span className="text-[#2563EB] font-mono">₹{total}</span>
               </div>
             </div>
           </div>
@@ -220,8 +220,8 @@ function BookingInvoiceContent() {
           {/* Warranty & Guarantee Stamp */}
           <div className="mt-6 pt-6 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>Covered by Yetzo 30-Day Urban Company Standard Service Warranty</span>
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>Covered by Yetzo 30-Day Yetzo Certified Standard Service Warranty</span>
             </div>
             <div className="text-right text-[11px]">
               Computer Generated Invoice. No Signature Required.

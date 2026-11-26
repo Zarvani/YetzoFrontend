@@ -89,14 +89,14 @@ function ProOtpContent() {
     <div className="min-h-screen bg-[#0B0F19] text-white flex flex-col font-body">
       <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-[#0B0F19]/90 backdrop-blur-md z-50">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-[#05AC5F] rounded-sm flex items-center justify-center text-white">
+          <div className="w-8 h-8 bg-[#2563EB] rounded-sm flex items-center justify-center text-white">
             <Zap className="w-4 h-4 fill-white" />
           </div>
           <div className="flex flex-col">
             <span className="font-heading font-[300] tracking-[0.16em] text-lg text-white uppercase">
               YETZO PARTNER
             </span>
-            <span className="text-[9px] uppercase tracking-widest text-[#05AC5F] font-bold -mt-1">
+            <span className="text-[9px] uppercase tracking-widest text-[#2563EB] font-bold -mt-1">
               PRO FLEET ACCESS
             </span>
           </div>
@@ -113,20 +113,20 @@ function ProOtpContent() {
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md bg-[#111827] border border-slate-800 rounded-sm p-6 sm:p-8 shadow-2xl backdrop-blur-sm space-y-6">
           <div>
-            <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold font-heading">
+            <span className="text-[10px] uppercase tracking-wider text-sky-400 font-bold font-heading">
               Two-Factor Authentication
             </span>
             <h1 className="text-2xl font-[300] font-heading text-white tracking-tight mt-0.5">
               Enter Verification Code
             </h1>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-              We sent a 6-digit cryptographic OTP to <span className="font-medium text-emerald-400 font-mono">{phone || 'your registered phone number'}</span>
+              We sent a 6-digit cryptographic OTP to <span className="font-medium text-sky-400 font-mono">{phone || 'your registered phone number'}</span>
             </p>
           </div>
 
           {resendSuccess && (
-            <div className="bg-emerald-500/10 text-emerald-300 p-3 rounded-sm text-xs font-medium flex items-center gap-2 border border-emerald-500/20">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+            <div className="bg-blue-500/10 text-sky-300 p-3 rounded-sm text-xs font-medium flex items-center gap-2 border border-blue-500/20">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-sky-400" />
               <span>{resendSuccess}</span>
             </div>
           )}
@@ -149,7 +149,7 @@ function ProOtpContent() {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="123456"
-                className="w-full bg-[#0B0F19] border border-slate-700 rounded-sm px-4 py-3 text-center tracking-[0.5em] text-xl font-mono font-bold text-emerald-400 focus:outline-none focus:border-[#05AC5F] transition"
+                className="w-full bg-[#0B0F19] border border-slate-700 rounded-sm px-4 py-3 text-center tracking-[0.5em] text-xl font-mono font-bold text-sky-400 focus:outline-none focus:border-[#2563EB] transition"
                 required
                 autoFocus
               />
@@ -158,7 +158,7 @@ function ProOtpContent() {
             <button
               type="submit"
               disabled={loading || otp.length < 6}
-              className="w-full bg-[#05AC5F] hover:bg-[#049652] text-white font-heading font-medium uppercase tracking-wider py-3 rounded-sm transition shadow-sm active:scale-[0.99] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-heading font-medium uppercase tracking-wider py-3 rounded-sm transition shadow-sm active:scale-[0.99] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
             >
               {loading ? (
                 <>
@@ -183,7 +183,7 @@ function ProOtpContent() {
                 type="button"
                 onClick={handleResend}
                 disabled={resending}
-                className="text-emerald-400 font-medium hover:underline transition"
+                className="text-sky-400 font-medium hover:underline transition"
               >
                 {resending ? 'Sending...' : 'Resend Code Now'}
               </button>

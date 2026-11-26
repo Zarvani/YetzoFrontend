@@ -39,14 +39,14 @@ export default function AdminNotificationsPage() {
     <div className="space-y-6 max-w-2xl">
       <div>
         <div className="flex items-center gap-2">
-          <Bell className="w-6 h-6 text-[#059669]" />
+          <Bell className="w-6 h-6 text-[#2563EB]" />
           <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">System Push Broadcast Console</h1>
         </div>
         <p className="text-xs text-slate-500 mt-1">Send emergency weather alerts, promotional announcements, and fleet notifications.</p>
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -68,7 +68,7 @@ export default function AdminNotificationsPage() {
                   onClick={() => setTargetAudience(aud.id as any)}
                   className={`py-2.5 rounded-xl border font-bold transition text-xs ${
                     targetAudience === aud.id
-                      ? 'border-[#059669] bg-emerald-50 text-emerald-900'
+                      ? 'border-[#2563EB] bg-blue-50 text-blue-900'
                       : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
@@ -85,7 +85,7 @@ export default function AdminNotificationsPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Summer Monsoon Maintenance Alert"
-              className="w-full p-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+              className="w-full p-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>
@@ -97,7 +97,7 @@ export default function AdminNotificationsPage() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Write broadcast message text..."
-              className="w-full p-3 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-[#059669]"
+              className="w-full p-3 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
               required
             />
           </div>

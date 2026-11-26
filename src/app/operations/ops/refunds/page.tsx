@@ -60,7 +60,7 @@ export default function OpsRefundsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-[#059669]" />
+            <DollarSign className="w-5 h-5 text-[#2563EB]" />
             <h1 className="text-xl font-black text-slate-900 tracking-tight">Escrow Refunds & Reversals Desk</h1>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -78,7 +78,7 @@ export default function OpsRefundsPage() {
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -87,7 +87,7 @@ export default function OpsRefundsPage() {
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading refund transactions...
           </div>
         ) : refunds.length === 0 ? (
@@ -133,7 +133,7 @@ export default function OpsRefundsPage() {
                       <span
                         className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           r.status === 'PROCESSED'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-blue-100 text-blue-800'
                             : 'bg-amber-100 text-amber-800'
                         }`}
                       >
@@ -151,7 +151,7 @@ export default function OpsRefundsPage() {
                           {processingId === r.id ? 'Processing...' : 'Disburse Refund'}
                         </button>
                       ) : (
-                        <span className="text-emerald-800 font-bold text-[11px] flex items-center justify-end gap-1">
+                        <span className="text-blue-800 font-bold text-[11px] flex items-center justify-end gap-1">
                           <CheckCircle2 className="w-3.5 h-3.5" /> Settled
                         </span>
                       )}

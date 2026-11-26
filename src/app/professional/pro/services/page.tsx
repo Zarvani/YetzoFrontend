@@ -66,7 +66,7 @@ export default function ProfessionalServicesPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Wrench className="w-6 h-6" />
               </div>
               <div>
@@ -78,7 +78,7 @@ export default function ProfessionalServicesPage() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading service rate cards...
             </div>
           ) : (
@@ -117,7 +117,7 @@ export default function ProfessionalServicesPage() {
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <span className="text-[10px] uppercase font-bold text-slate-400 block">Your Payout (80%)</span>
-                        <span className="text-sm font-black text-[#059669]">₹{partnerPayout}</span>
+                        <span className="text-sm font-black text-[#2563EB]">₹{partnerPayout}</span>
                       </div>
 
                       <label className="relative inline-flex items-center cursor-pointer shrink-0">
@@ -127,7 +127,7 @@ export default function ProfessionalServicesPage() {
                           onChange={() => toggleService(svc.id)}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                        <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
                       </label>
                     </div>
                   </div>
@@ -139,7 +139,7 @@ export default function ProfessionalServicesPage() {
           <div className="pt-2 border-t border-slate-100">
             <button
               onClick={handleSave}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
             >
               <span>Continue to Safety Training</span>
               <ArrowRight className="w-4 h-4" />

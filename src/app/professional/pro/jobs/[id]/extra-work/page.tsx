@@ -101,13 +101,13 @@ function ExtraWorkContent() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-slate-900">Request Extra Work & Spare Parts</h1>
-              <p className="text-xs text-slate-500">Urban Company standard transparent parts pricing with customer consent.</p>
+              <p className="text-xs text-slate-500">Yetzo Certified standard transparent parts pricing with customer consent.</p>
             </div>
           </div>
 
           {sentSuccess ? (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="p-6 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-blue-600 mx-auto" />
               <h2 className="text-sm font-bold text-slate-900">Consent Notification Sent to Customer!</h2>
               <p className="text-xs text-slate-600">
                 Homeowner has received an instant push notification to approve ₹{selectedTotal} extra charge.
@@ -128,7 +128,7 @@ function ExtraWorkContent() {
                       onClick={() => toggleAddon(a.id)}
                       className={`p-3.5 rounded-2xl border-2 cursor-pointer transition flex items-center justify-between text-xs ${
                         isChecked
-                          ? 'border-[#059669] bg-emerald-50/40 ring-2 ring-[#059669]/20 font-bold'
+                          ? 'border-[#2563EB] bg-blue-50/40 ring-2 ring-[#2563EB]/20 font-bold'
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
@@ -141,7 +141,7 @@ function ExtraWorkContent() {
                         <span className="font-mono font-bold text-slate-900">₹{a.price}</span>
                         <div
                           className={`w-4 h-4 rounded border flex items-center justify-center ${
-                            isChecked ? 'border-[#059669] bg-[#059669] text-white' : 'border-slate-300'
+                            isChecked ? 'border-[#2563EB] bg-[#2563EB] text-white' : 'border-slate-300'
                           }`}
                         >
                           {isChecked && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -155,14 +155,14 @@ function ExtraWorkContent() {
               {selectedIds.length > 0 && (
                 <div className="p-4 bg-slate-50 rounded-2xl flex justify-between items-center text-xs border border-slate-200">
                   <span className="font-bold text-slate-700">Total Additional Bill</span>
-                  <span className="text-base font-black text-[#059669]">₹{selectedTotal}</span>
+                  <span className="text-base font-black text-[#2563EB]">₹{selectedTotal}</span>
                 </div>
               )}
 
               <button
                 onClick={handleSendApproval}
                 disabled={submitting || selectedIds.length === 0}
-                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {submitting ? (
                   <>

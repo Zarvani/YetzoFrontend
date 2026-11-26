@@ -66,7 +66,7 @@ export default function ProfessionalKycPage() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -83,8 +83,8 @@ export default function ProfessionalKycPage() {
           )}
 
           {submitted ? (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="p-6 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-blue-600 mx-auto" />
               <h2 className="text-sm font-bold text-slate-900">KYC Records Uploaded!</h2>
               <p className="text-xs text-slate-600">Redirecting to document attachments...</p>
             </div>
@@ -98,7 +98,7 @@ export default function ProfessionalKycPage() {
                   value={aadhaarNumber}
                   onChange={(e) => setAadhaarNumber(e.target.value.replace(/\D/g, ''))}
                   placeholder="5481 9283 1029"
-                  className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 font-mono focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -111,7 +111,7 @@ export default function ProfessionalKycPage() {
                   value={panNumber}
                   onChange={(e) => setPanNumber(e.target.value.toUpperCase())}
                   placeholder="ABCDE1234F"
-                  className="w-full p-3 rounded-xl border border-slate-300 font-mono uppercase focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 font-mono uppercase focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -123,7 +123,7 @@ export default function ProfessionalKycPage() {
                   value={policeCertRef}
                   onChange={(e) => setPoliceCertRef(e.target.value)}
                   placeholder="e.g. PCC-DL-2026-94819"
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -140,7 +140,7 @@ export default function ProfessionalKycPage() {
                       value={emergencyContactName}
                       onChange={(e) => setEmergencyContactName(e.target.value)}
                       placeholder="Spouse / Parent Name"
-                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                       required
                     />
                   </div>
@@ -153,7 +153,7 @@ export default function ProfessionalKycPage() {
                       value={emergencyContactPhone}
                       onChange={(e) => setEmergencyContactPhone(e.target.value.replace(/\D/g, ''))}
                       placeholder="9811122233"
-                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                      className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                       required
                     />
                   </div>
@@ -164,7 +164,7 @@ export default function ProfessionalKycPage() {
                 <button
                   type="submit"
                   disabled={loading || aadhaarNumber.length < 12}
-                  className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {loading ? (
                     <>

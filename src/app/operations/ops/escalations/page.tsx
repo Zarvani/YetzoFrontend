@@ -89,7 +89,7 @@ export default function OpsEscalationsPage() {
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Scanning active escalations...
           </div>
         ) : escalations.length === 0 ? (
@@ -155,7 +155,7 @@ export default function OpsEscalationsPage() {
                       <button
                         onClick={() => handleResolve(t.id)}
                         disabled={resolvingId === t.id || t.status === 'RESOLVED'}
-                        className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl transition text-[11px] disabled:opacity-50"
+                        className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold rounded-xl transition text-[11px] disabled:opacity-50"
                       >
                         {resolvingId === t.id ? 'Resolving...' : t.status === 'RESOLVED' ? 'Resolved' : 'Mark Resolved'}
                       </button>

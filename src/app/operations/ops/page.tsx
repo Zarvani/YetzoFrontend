@@ -96,8 +96,8 @@ export default function OperationsOverviewPage() {
       <div className="bg-slate-900 text-white p-6 sm:p-8 rounded-md shadow-md flex flex-col md:flex-row md:items-center justify-between gap-6 border border-slate-800">
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#05AC5F] animate-pulse" />
-            <span className="text-[11px] font-semibold uppercase tracking-widest text-[#05AC5F]">
+            <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
+            <span className="text-[11px] font-semibold uppercase tracking-widest text-[#2563EB]">
               Yetzo Hyper-Local Ops Control
             </span>
           </div>
@@ -105,7 +105,7 @@ export default function OperationsOverviewPage() {
             Central Operations Hub
           </h1>
           <p className="text-xs sm:text-sm text-slate-400 max-w-xl font-[300] leading-relaxed">
-            Live telemetry for Snabbit 10-15m dispatch SLAs, Pronto verified bodycam feeds, and Urban Company 30-day warranty rework claims.
+            Live telemetry for Yetzo Instant 10-15m dispatch SLAs, Yetzo verified bodycam feeds, and Yetzo Certified 30-day warranty rework claims.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function OperationsOverviewPage() {
           </button>
           <Link
             href="/operations/ops/dispatch"
-            className="px-5 py-2.5 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium text-xs rounded shadow-sm transition flex items-center gap-2"
+            className="px-5 py-2.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium text-xs rounded shadow-sm transition flex items-center gap-2"
           >
             <Zap className="w-3.5 h-3.5 fill-white" />
             <span>Live Dispatch Board</span>
@@ -129,7 +129,7 @@ export default function OperationsOverviewPage() {
             href="/operations/ops/warranty"
             className="px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white font-medium text-xs rounded border border-white/20 transition flex items-center gap-2"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
+            <ShieldCheck className="w-3.5 h-3.5 text-sky-300" />
             <span>30-Day Warranty</span>
           </Link>
         </div>
@@ -137,7 +137,7 @@ export default function OperationsOverviewPage() {
 
       {lastRefreshed && (
         <div className="text-[11px] text-slate-400 flex items-center gap-1.5 px-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
           <span>Live telemetry active • Last synced at {lastRefreshed}</span>
         </div>
       )}
@@ -147,11 +147,11 @@ export default function OperationsOverviewPage() {
         <div className="bg-white border border-slate-200/80 p-5 rounded-md shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Instant 15m SLA</span>
-            <Clock className="w-4 h-4 text-[#05AC5F]" />
+            <Clock className="w-4 h-4 text-[#2563EB]" />
           </div>
           <div className="text-2xl font-[400] text-slate-900 font-['Montserrat',sans-serif]">{stats.slaAdherence}</div>
-          <span className="text-[11px] text-emerald-600 font-medium mt-1 inline-block">
-            Snabbit 10-15m Benchmark Standard
+          <span className="text-[11px] text-blue-600 font-medium mt-1 inline-block">
+            Yetzo Instant 10-15m Benchmark Standard
           </span>
         </div>
 
@@ -180,11 +180,11 @@ export default function OperationsOverviewPage() {
         <div className="bg-white border border-slate-200/80 p-5 rounded-md shadow-xs">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Warranty Inquiries</span>
-            <ShieldCheck className="w-4 h-4 text-[#05AC5F]" />
+            <ShieldCheck className="w-4 h-4 text-[#2563EB]" />
           </div>
           <div className="text-2xl font-[400] text-slate-900 font-['Montserrat',sans-serif]">{stats.pendingWarranties}</div>
-          <span className="text-[11px] text-emerald-700 font-medium mt-1 inline-block">
-            30-Day Urban Company Guarantee
+          <span className="text-[11px] text-blue-700 font-medium mt-1 inline-block">
+            30-Day Yetzo Certified Guarantee
           </span>
         </div>
       </div>
@@ -193,16 +193,16 @@ export default function OperationsOverviewPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <Link
           href="/operations/ops/dispatch"
-          className="bg-white border border-slate-200/90 hover:border-[#05AC5F] p-6 rounded-md shadow-xs transition-all group"
+          className="bg-white border border-slate-200/90 hover:border-[#2563EB] p-6 rounded-md shadow-xs transition-all group"
         >
-          <div className="p-2.5 bg-emerald-50 text-[#05AC5F] rounded w-max mb-4 group-hover:scale-105 transition-transform">
+          <div className="p-2.5 bg-blue-50 text-[#2563EB] rounded w-max mb-4 group-hover:scale-105 transition-transform">
             <Zap className="w-5 h-5" />
           </div>
           <h3 className="font-[400] text-slate-900 text-base mb-1 font-['Montserrat',sans-serif]">Live Dispatch Engine</h3>
           <p className="text-xs text-slate-500 leading-relaxed font-[300]">
             Monitor real-time matching, instant 15-minute dispatch SLAs, and perform manual candidate overrides.
           </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#05AC5F]">
+          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#2563EB]">
             <span>Open Board</span>
             <ChevronRight className="w-4 h-4" />
           </div>
@@ -210,7 +210,7 @@ export default function OperationsOverviewPage() {
 
         <Link
           href="/operations/ops/warranty"
-          className="bg-white border border-slate-200/90 hover:border-[#05AC5F] p-6 rounded-md shadow-xs transition-all group"
+          className="bg-white border border-slate-200/90 hover:border-[#2563EB] p-6 rounded-md shadow-xs transition-all group"
         >
           <div className="p-2.5 bg-blue-50 text-blue-700 rounded w-max mb-4 group-hover:scale-105 transition-transform">
             <ShieldCheck className="w-5 h-5" />
@@ -219,7 +219,7 @@ export default function OperationsOverviewPage() {
           <p className="text-xs text-slate-500 leading-relaxed font-[300]">
             Process rework claims, review customer photo evidence, and authorize free second-visit technician dispatches.
           </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#05AC5F]">
+          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#2563EB]">
             <span>Review Claims</span>
             <ChevronRight className="w-4 h-4" />
           </div>
@@ -227,7 +227,7 @@ export default function OperationsOverviewPage() {
 
         <Link
           href="/operations/ops/professionals"
-          className="bg-white border border-slate-200/90 hover:border-[#05AC5F] p-6 rounded-md shadow-xs transition-all group"
+          className="bg-white border border-slate-200/90 hover:border-[#2563EB] p-6 rounded-md shadow-xs transition-all group"
         >
           <div className="p-2.5 bg-purple-50 text-purple-700 rounded w-max mb-4 group-hover:scale-105 transition-transform">
             <Users className="w-5 h-5" />
@@ -236,7 +236,7 @@ export default function OperationsOverviewPage() {
           <p className="text-xs text-slate-500 leading-relaxed font-[300]">
             Verify Aadhaar/PAN, background check clearances, and monitor active partner live locations on map ({stats.onlinePros} online).
           </p>
-          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#05AC5F]">
+          <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-[#2563EB]">
             <span>Manage Fleet</span>
             <ChevronRight className="w-4 h-4" />
           </div>

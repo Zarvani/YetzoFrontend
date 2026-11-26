@@ -69,7 +69,7 @@ export default function ProfessionalSettingsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Settings className="w-6 h-6" />
               </div>
               <div>
@@ -79,7 +79,7 @@ export default function ProfessionalSettingsPage() {
             </div>
 
             {saved && (
-              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1">
+              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" /> Saved
               </span>
             )}
@@ -88,7 +88,7 @@ export default function ProfessionalSettingsPage() {
           {/* Profile Card */}
           <div className="p-4 bg-slate-50 rounded-2xl flex items-center justify-between text-xs">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-emerald-100 text-emerald-800 rounded-xl flex items-center justify-center font-bold text-base">
+              <div className="w-11 h-11 bg-blue-100 text-blue-800 rounded-xl flex items-center justify-center font-bold text-base">
                 {pro?.user?.first_name ? pro.user.first_name[0] : 'P'}
               </div>
               <div>
@@ -99,7 +99,7 @@ export default function ProfessionalSettingsPage() {
               </div>
             </div>
 
-            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-black text-[10px] rounded-full">
+            <span className="px-2.5 py-1 bg-blue-100 text-blue-800 font-black text-[10px] rounded-full">
               KYC VERIFIED
             </span>
           </div>
@@ -111,7 +111,7 @@ export default function ProfessionalSettingsPage() {
               <select
                 value={maxRadius}
                 onChange={(e) => setMaxRadius(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-[#059669]"
+                className="w-full p-3 rounded-xl border border-slate-300 font-semibold text-slate-900 focus:ring-2 focus:ring-[#2563EB]"
               >
                 <option value="5km">5 km (Micro-Cluster High Density)</option>
                 <option value="10km">10 km (Standard City Radius - Recommended)</option>
@@ -128,20 +128,20 @@ export default function ProfessionalSettingsPage() {
                 type="checkbox"
                 checked={soundAlerts}
                 onChange={(e) => setSoundAlerts(e.target.checked)}
-                className="w-4 h-4 accent-[#059669] rounded cursor-pointer"
+                className="w-4 h-4 accent-[#2563EB] rounded cursor-pointer"
               />
             </div>
 
             <div className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200">
               <div>
-                <span className="font-bold text-slate-900 block">Pronto Bodycam Auto-Sync over WiFi</span>
+                <span className="font-bold text-slate-900 block">Yetzo Bodycam Auto-Sync over WiFi</span>
                 <span className="text-[11px] text-slate-500">Upload encrypted video files automatically when on home WiFi</span>
               </div>
               <input
                 type="checkbox"
                 checked={autoUploadWifi}
                 onChange={(e) => setAutoUploadWifi(e.target.checked)}
-                className="w-4 h-4 accent-[#059669] rounded cursor-pointer"
+                className="w-4 h-4 accent-[#2563EB] rounded cursor-pointer"
               />
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function ProfessionalSettingsPage() {
             <button
               onClick={handleSave}
               disabled={loading}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>{loading ? 'Saving Preferences...' : 'Save App Preferences'}</span>

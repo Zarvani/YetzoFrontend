@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { 
   BarChart3, 
   Users, 
@@ -20,9 +21,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-[#F1F5F9] flex">
       {/* Sidebar - Dark Navy Command Center */}
       <aside className="w-[260px] bg-[#0F172A] text-slate-300 flex-shrink-0 flex flex-col hidden md:flex h-screen sticky top-0 overflow-y-auto custom-scrollbar">
-        <div className="p-6 border-b border-slate-800/50 mb-4 bg-[#0B1221]">
-          <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-[22px] font-bold text-white tracking-tight">YETZO <span className="text-[#06B6D4]">ADMIN</span></span>
+        <div className="p-5 border-b border-slate-800/50 mb-3 bg-[#0B1221] flex items-center gap-3">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden border border-slate-700 flex-shrink-0">
+            <Image src="/logo.jpg" alt="Yetzo" fill className="object-cover" priority />
+          </div>
+          <Link href="/admin" className="flex items-center gap-1.5">
+            <span className="text-[20px] font-bold text-white tracking-tight">YETZO <span className="text-[#38BDF8]">ADMIN</span></span>
           </Link>
         </div>
         

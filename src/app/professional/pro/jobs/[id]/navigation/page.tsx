@@ -49,7 +49,7 @@ function ProJobNavigationContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Connecting GPS Telemetry...
         </div>
       </div>
@@ -77,7 +77,7 @@ function ProJobNavigationContent() {
 
         <a
           href={`tel:${booking?.customer?.phone || ''}`}
-          className="px-3 py-1.5 bg-emerald-50 text-[#059669] hover:bg-emerald-100 rounded-xl font-bold text-xs flex items-center gap-1.5 transition"
+          className="px-3 py-1.5 bg-blue-50 text-[#2563EB] hover:bg-blue-100 rounded-xl font-bold text-xs flex items-center gap-1.5 transition"
         >
           <Phone className="w-3.5 h-3.5" />
           <span>Call Customer</span>
@@ -95,7 +95,7 @@ function ProJobNavigationContent() {
         <div className="absolute bottom-6 left-4 right-4 max-w-md mx-auto z-20 bg-white border border-slate-200 p-5 rounded-3xl shadow-2xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-2 bg-blue-50 text-blue-800 rounded-xl">
                 <Clock className="w-5 h-5" />
               </div>
               <div>
@@ -104,13 +104,13 @@ function ProJobNavigationContent() {
               </div>
             </div>
 
-            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-extrabold text-[10px] rounded-full">
+            <span className="px-2.5 py-1 bg-blue-100 text-blue-800 font-extrabold text-[10px] rounded-full">
               ON TIME
             </span>
           </div>
 
           <div className="p-3 bg-slate-50 rounded-2xl flex items-start gap-2 text-xs">
-            <MapPin className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
+            <MapPin className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
             <span className="text-slate-700 font-medium line-clamp-1">
               {booking?.address?.address_line_1 || 'Flat 301, Tower C, Prateek Laurel, Sector 120'}
             </span>
@@ -118,7 +118,7 @@ function ProJobNavigationContent() {
 
           <button
             onClick={handleArrived}
-            className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>I Have Arrived at Doorstep</span>

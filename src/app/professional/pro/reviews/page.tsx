@@ -71,7 +71,7 @@ export default function ProfessionalReviewsPage() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading customer reviews...
             </div>
           ) : reviews.length === 0 ? (
@@ -107,7 +107,7 @@ export default function ProfessionalReviewsPage() {
 
                   <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
                     <span>{r.service?.name || 'Verified Service Visit'}</span>
-                    <span className="flex items-center gap-1 text-emerald-800 font-semibold">
+                    <span className="flex items-center gap-1 text-blue-800 font-semibold">
                       <ThumbsUp className="w-3 h-3" />
                       100% Recommended
                     </span>

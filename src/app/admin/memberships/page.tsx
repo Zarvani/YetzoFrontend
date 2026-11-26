@@ -85,7 +85,7 @@ export default function AdminMembershipsPage() {
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1 font-[300]">
-            Urban Company Plus benchmark subscription plans, zero surge benefits, and VIP queue privileges.
+            Yetzo Certified Plus benchmark subscription plans, zero surge benefits, and VIP queue privileges.
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function AdminMembershipsPage() {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Subscription Plan</span>
@@ -122,32 +122,32 @@ export default function AdminMembershipsPage() {
                 <h2 className="text-lg font-[400] text-slate-900 mt-2 font-['Montserrat',sans-serif]">{p.name}</h2>
               </div>
               <div className="text-right">
-                <span className="text-2xl font-[400] text-[#05AC5F] font-mono">₹{p.price}</span>
+                <span className="text-2xl font-[400] text-[#2563EB] font-mono">₹{p.price}</span>
                 <span className="text-[10px] text-slate-400 block font-normal">One-time payment</span>
               </div>
             </div>
 
             <div className="space-y-2 pt-2 border-t border-slate-100 text-xs text-slate-700">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#05AC5F] shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB] shrink-0" />
                 <span><strong className="font-semibold">{p.discount_percentage}% Flat Discount</strong> on all bookings</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#05AC5F] shrink-0" />
-                <span><strong className="font-semibold">Priority Dispatch</strong> in Snabbit 10-15m queue</span>
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB] shrink-0" />
+                <span><strong className="font-semibold">Priority Dispatch</strong> in Yetzo Instant 10-15m queue</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#05AC5F] shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB] shrink-0" />
                 <span><strong className="font-semibold">Zero Convenience / Platform Fee</strong> (Save ₹29/order)</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#05AC5F] shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-[#2563EB] shrink-0" />
                 <span><strong className="font-semibold">Free Cancellations</strong> with zero late penalty</span>
               </div>
             </div>
 
             <div className="pt-2">
-              <span className="px-2.5 py-1 bg-emerald-50 text-[#05AC5F] text-[11px] font-medium rounded border border-emerald-100">
+              <span className="px-2.5 py-1 bg-blue-50 text-[#2563EB] text-[11px] font-medium rounded border border-blue-100">
                 Active & Live on Mobile / Web Checkout
               </span>
             </div>
@@ -175,7 +175,7 @@ export default function AdminMembershipsPage() {
                   placeholder="e.g. Yetzo Club Annual VIP"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs focus:outline-none focus:border-[#05AC5F]"
+                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs focus:outline-none focus:border-[#2563EB]"
                 />
               </div>
 
@@ -187,7 +187,7 @@ export default function AdminMembershipsPage() {
                     required
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#05AC5F]"
+                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#2563EB]"
                   />
                 </div>
                 <div>
@@ -197,7 +197,7 @@ export default function AdminMembershipsPage() {
                     required
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#05AC5F]"
+                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#2563EB]"
                   />
                 </div>
                 <div>
@@ -207,7 +207,7 @@ export default function AdminMembershipsPage() {
                     required
                     value={discount}
                     onChange={(e) => setDiscount(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#05AC5F]"
+                    className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#2563EB]"
                   />
                 </div>
               </div>
@@ -223,7 +223,7 @@ export default function AdminMembershipsPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium rounded transition flex items-center gap-1.5"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium rounded transition flex items-center gap-1.5"
                 >
                   {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   <span>{saving ? 'Creating...' : 'Publish Plan'}</span>

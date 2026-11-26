@@ -64,7 +64,7 @@ export default function SecuritySettingsPage() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
@@ -77,7 +77,7 @@ export default function SecuritySettingsPage() {
           <div className="space-y-4">
             <div className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-slate-200">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg shrink-0 mt-0.5">
+                <div className="p-2 bg-blue-50 text-blue-800 rounded-lg shrink-0 mt-0.5">
                   <Smartphone className="w-4 h-4" />
                 </div>
                 <div>
@@ -95,7 +95,7 @@ export default function SecuritySettingsPage() {
                   onChange={(e) => setTwoFactorEnabled(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
 
@@ -119,7 +119,7 @@ export default function SecuritySettingsPage() {
                   onChange={(e) => setRequireBookingPin(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
           </div>
@@ -138,7 +138,7 @@ export default function SecuritySettingsPage() {
             )}
 
             {passwordSuccess && (
-              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 flex items-center gap-2">
+              <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-blue-800 flex items-center gap-2">
                 <Check className="w-4 h-4 shrink-0" />
                 <span>Password updated successfully!</span>
               </div>
@@ -151,7 +151,7 @@ export default function SecuritySettingsPage() {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="At least 8 characters"
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 required
               />
             </div>
@@ -163,7 +163,7 @@ export default function SecuritySettingsPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Repeat new password"
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 required
               />
             </div>

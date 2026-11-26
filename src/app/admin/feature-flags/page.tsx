@@ -15,26 +15,26 @@ interface FeatureFlag {
 const DEFAULT_FLAGS: FeatureFlag[] = [
   {
     id: 'ff-1',
-    key: 'PRONTO_BODYCAM_RECORDING',
-    name: 'Pronto Verified: Tamper-proof Bodycam Audio/Video',
+    key: 'YETZO_BODYCAM_RECORDING',
+    name: 'Yetzo Verified: Tamper-proof Bodycam Audio/Video',
     desc: 'Mandates field technician bodycam recording with 48h anonymized encrypted storage and customer safety badge.',
-    benchmark: 'PRONTO Benchmark',
+    benchmark: 'YETZO Benchmark',
     enabled: true,
   },
   {
     id: 'ff-2',
-    key: 'SNABBIT_15MIN_DISPATCH',
-    name: 'Snabbit 10-15 Min Instant Arrival SLA Engine',
+    key: 'YETZO INSTANT_15MIN_DISPATCH',
+    name: 'Yetzo Instant 10-15 Min Instant Arrival SLA Engine',
     desc: 'Enables quick-commerce micro-cluster dispatch algorithm with candidate sequencing and real-time countdown timer.',
-    benchmark: 'SNABBIT Benchmark',
+    benchmark: 'YETZO INSTANT Benchmark',
     enabled: true,
   },
   {
     id: 'ff-3',
-    key: 'URBAN_COMPANY_30DAY_WARRANTY',
-    name: 'Urban Company 30-Day Free Re-work Service Guarantee',
+    key: 'YETZO_30DAY_WARRANTY',
+    name: 'Yetzo Certified 30-Day Free Re-work Service Guarantee',
     desc: 'Enables customer claim workflow with photographic evidence upload and free senior technician re-dispatch.',
-    benchmark: 'URBAN COMPANY Benchmark',
+    benchmark: 'YETZO CERTIFIED Benchmark',
     enabled: true,
   },
   {
@@ -42,7 +42,7 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     key: 'YETZO_CLUB_MEMBERSHIP',
     name: 'Yetzo Club Plus Membership Subscription Program',
     desc: 'Unlocks 15% flat chore discount, zero convenience/safety fees, and priority dispatch in booking queue.',
-    benchmark: 'URBAN COMPANY Plus Benchmark',
+    benchmark: 'YETZO CERTIFIED Plus Benchmark',
     enabled: true,
   },
   {
@@ -50,7 +50,7 @@ const DEFAULT_FLAGS: FeatureFlag[] = [
     key: 'MULTI_CHORE_STACKING_DISCOUNT',
     name: 'Multi-Chore Task Stacking 15% Bundle Discount',
     desc: 'Applies automated 15% discount on cart subtotal when a homeowner books 2 or more distinct chore services.',
-    benchmark: 'PRONTO Stacking Benchmark',
+    benchmark: 'YETZO Stacking Benchmark',
     enabled: true,
   },
   {
@@ -100,7 +100,7 @@ export default function AdminFeatureFlagsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
-          <span className="text-[10px] uppercase tracking-wider text-emerald-600 font-bold font-heading">
+          <span className="text-[10px] uppercase tracking-wider text-blue-600 font-bold font-heading">
             Rollout Governance
           </span>
           <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-0.5">
@@ -112,15 +112,15 @@ export default function AdminFeatureFlagsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm text-xs font-semibold font-heading">
+          <span className="px-3 py-1 bg-blue-50 text-blue-800 border border-blue-200 rounded-sm text-xs font-semibold font-heading">
             {flags.filter((f) => f.enabled).length}/{flags.length} Flags Active
           </span>
         </div>
       </div>
 
       {feedback && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-xs text-emerald-800 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-sm text-xs text-blue-800 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
           <span>{feedback}</span>
         </div>
       )}
@@ -152,7 +152,7 @@ export default function AdminFeatureFlagsPage() {
                   className="transition shrink-0 text-slate-800"
                 >
                   {flag.enabled ? (
-                    <ToggleRight className="w-8 h-8 text-[#05AC5F]" />
+                    <ToggleRight className="w-8 h-8 text-[#2563EB]" />
                   ) : (
                     <ToggleLeft className="w-8 h-8 text-slate-300" />
                   )}
@@ -169,7 +169,7 @@ export default function AdminFeatureFlagsPage() {
               <span
                 className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold border ${
                   flag.enabled
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    ? 'bg-blue-50 text-blue-800 border-blue-200'
                     : 'bg-slate-100 text-slate-600 border-slate-200'
                 }`}
               >

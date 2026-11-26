@@ -84,7 +84,7 @@ export default function AdminAuditLogsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-[#059669]" />
+            <ShieldCheck className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">System Security & Audit Logs</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Immutable tamper-proof audit trail for operational compliance and RBAC access.</p>
@@ -106,14 +106,14 @@ export default function AdminAuditLogsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter audit logs by action, actor, or resource type..."
-          className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#059669]"
+          className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB]"
         />
       </div>
 
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading security logs...
           </div>
         ) : filtered.length === 0 ? (

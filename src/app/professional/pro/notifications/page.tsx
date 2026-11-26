@@ -80,7 +80,7 @@ export default function ProfessionalNotificationsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Bell className="w-6 h-6" />
               </div>
               <div>
@@ -99,7 +99,7 @@ export default function ProfessionalNotificationsPage() {
 
           {loading ? (
             <div className="py-12 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Loading notifications...
             </div>
           ) : (
@@ -109,14 +109,14 @@ export default function ProfessionalNotificationsPage() {
                   key={n.id}
                   onClick={() => markRead(n.id)}
                   className={`py-4 cursor-pointer transition flex items-start justify-between gap-4 ${
-                    !n.is_read ? 'bg-emerald-50/40 -mx-4 px-4 rounded-xl' : ''
+                    !n.is_read ? 'bg-blue-50/40 -mx-4 px-4 rounded-xl' : ''
                   }`}
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-slate-900">{n.title}</span>
                       {!n.is_read && (
-                        <span className="w-2 h-2 rounded-full bg-[#059669]" />
+                        <span className="w-2 h-2 rounded-full bg-[#2563EB]" />
                       )}
                     </div>
                     <p className="text-[11px] text-slate-600 leading-relaxed">{n.message}</p>

@@ -50,7 +50,7 @@ function CustomerChatPageContent() {
   return (
     <div className="h-screen bg-[#F8FAFC] flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-3 sm:px-6 flex items-center justify-between z-10">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
@@ -63,19 +63,19 @@ function CustomerChatPageContent() {
               <h1 className="text-sm font-bold text-slate-900">
                 {bookingId ? `Service Partner Chat (${bookingId.slice(0, 8)})` : 'Yetzo Live Support Desk'}
               </h1>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             </div>
-            <p className="text-[11px] text-slate-400">Pronto & Urban Company Verified Resolution</p>
+            <p className="text-[11px] text-slate-400">Yetzo On-Demand Services Verified Resolution</p>
           </div>
         </div>
 
         <Link
           href="/customer/support/tickets"
-          className="text-xs font-bold text-[#059669] hover:underline"
+          className="text-xs font-bold text-[#2563EB] hover:underline"
         >
           View All Tickets
         </Link>
-      </header>
+      </div>
 
       {/* Messages Stream */}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3 max-w-3xl w-full mx-auto">
@@ -93,14 +93,14 @@ function CustomerChatPageContent() {
               key={m.id}
               className={`p-3.5 rounded-2xl text-xs max-w-sm ${
                 m.sender === 'CUSTOMER'
-                  ? 'bg-[#059669] text-white ml-auto rounded-br-none shadow-sm'
+                  ? 'bg-[#2563EB] text-white ml-auto rounded-br-none shadow-sm'
                   : 'bg-white border border-slate-200 text-slate-800 mr-auto rounded-bl-none shadow-sm'
               }`}
             >
               <p className="leading-relaxed">{m.text}</p>
               <span
                 className={`text-[10px] mt-1 block text-right ${
-                  m.sender === 'CUSTOMER' ? 'text-emerald-100' : 'text-slate-400'
+                  m.sender === 'CUSTOMER' ? 'text-blue-100' : 'text-slate-400'
                 }`}
               >
                 {m.timestamp}
@@ -118,12 +118,12 @@ function CustomerChatPageContent() {
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+            className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
           />
           <button
             type="submit"
             disabled={!inputText.trim()}
-            className="px-5 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
+            className="px-5 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
           >
             <Send className="w-3.5 h-3.5" />
             Send

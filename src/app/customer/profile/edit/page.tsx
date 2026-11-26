@@ -82,7 +82,7 @@ export default function CustomerProfileEditPage() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center font-bold text-lg">
+            <div className="w-12 h-12 bg-blue-100 text-blue-800 rounded-2xl flex items-center justify-center font-bold text-lg">
               {firstName ? firstName[0].toUpperCase() : 'U'}
             </div>
             <div>
@@ -92,7 +92,7 @@ export default function CustomerProfileEditPage() {
           </div>
 
           {success && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>Profile updated successfully! Redirecting...</span>
             </div>
@@ -113,7 +113,7 @@ export default function CustomerProfileEditPage() {
                   type="text"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -124,7 +124,7 @@ export default function CustomerProfileEditPage() {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 />
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function CustomerProfileEditPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
               />
             </div>
 
@@ -158,7 +158,7 @@ export default function CustomerProfileEditPage() {
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] bg-white text-slate-900"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] bg-white text-slate-900"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi (हिंदी)</option>
@@ -169,7 +169,7 @@ export default function CustomerProfileEditPage() {
               <button
                 type="submit"
                 disabled={saving || loading}
-                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-xs flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-xs flex items-center justify-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Saving Changes...' : 'Save Profile Changes'}

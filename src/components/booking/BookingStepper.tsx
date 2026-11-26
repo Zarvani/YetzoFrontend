@@ -32,7 +32,7 @@ export function BookingStepper({ currentStep }: BookingStepperProps) {
                 key={step.name}
                 className={`relative flex-1 flex flex-col items-center ${
                   stepIdx !== steps.length - 1 ? 'after:content-[\'\'] after:w-full after:h-0.5 after:bg-slate-200 after:absolute after:top-3.5 after:left-1/2' : ''
-                } ${isCompleted ? 'after:!bg-[#05AC5F]' : ''}`}
+                } ${isCompleted ? 'after:!bg-[#2563EB]' : ''}`}
               >
                 <button
                   type="button"
@@ -40,9 +40,9 @@ export function BookingStepper({ currentStep }: BookingStepperProps) {
                   onClick={() => isClickable && router.push(step.path)}
                   className={`relative z-10 flex h-7 w-7 items-center justify-center rounded-sm transition-all text-xs font-heading ${
                     isCompleted
-                      ? 'bg-[#05AC5F] text-white cursor-pointer shadow-sm'
+                      ? 'bg-[#2563EB] text-white cursor-pointer shadow-sm'
                       : isCurrent
-                        ? 'border border-[#05AC5F] bg-white text-[#05AC5F] font-semibold ring-2 ring-emerald-50'
+                        ? 'border border-[#2563EB] bg-white text-[#2563EB] font-semibold ring-2 ring-blue-50'
                         : 'border border-slate-200 bg-white text-slate-400 cursor-not-allowed'
                   }`}
                   aria-current={isCurrent ? 'step' : undefined}

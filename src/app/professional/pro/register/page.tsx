@@ -61,7 +61,7 @@ export default function ProfessionalRegisterPage() {
     <div className="min-h-screen bg-slate-900 text-white flex flex-col font-sans">
       <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur-md z-50">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#059669] rounded-lg flex items-center justify-center text-white font-black">Y</div>
+          <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center text-white font-black">Y</div>
           <span className="font-black text-xl tracking-tight text-white">Yetzo Partner Network</span>
         </Link>
         <Link
@@ -75,12 +75,12 @@ export default function ProfessionalRegisterPage() {
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-lg bg-slate-800/80 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
           <div className="mb-6">
-            <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
+            <span className="px-3 py-1 bg-blue-500/20 text-sky-400 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
               Join Our Verified Fleet
             </span>
             <h1 className="text-2xl font-black text-white mb-1">Partner Onboarding Application</h1>
             <p className="text-xs text-slate-400 font-medium">
-              Join 5,000+ top technicians earning high daily payouts with transparent Urban Company & Pronto rate cards.
+              Join 5,000+ top technicians earning high daily payouts with transparent Yetzo Certified & Yetzo rate cards.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export default function ProfessionalRegisterPage() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Ramesh"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                   required
                 />
               </div>
@@ -112,7 +112,7 @@ export default function ProfessionalRegisterPage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Kumar"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                 />
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function ProfessionalRegisterPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="9876543210"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                   required
                 />
               </div>
@@ -139,7 +139,7 @@ export default function ProfessionalRegisterPage() {
                 <select
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                 >
                   <option value="Delhi NCR">Delhi NCR</option>
                   <option value="Bangalore">Bangalore</option>
@@ -154,7 +154,7 @@ export default function ProfessionalRegisterPage() {
                 <select
                   value={trade}
                   onChange={(e) => setTrade(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
                 >
                   <option value="AC & Appliance Repair">AC & Appliance Repair</option>
                   <option value="Deep Home Cleaning">Deep Home Cleaning</option>
@@ -171,7 +171,7 @@ export default function ProfessionalRegisterPage() {
               <select
                 value={experience}
                 onChange={(e) => setExperience(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#059669] transition"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
               >
                 <option value="1-2 Years">1-2 Years</option>
                 <option value="3-5 Years">3-5 Years (Recommended)</option>
@@ -183,7 +183,7 @@ export default function ProfessionalRegisterPage() {
             <button
               type="submit"
               disabled={loading || phone.length < 10}
-              className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
             >
               {loading ? (
                 <>
@@ -201,7 +201,7 @@ export default function ProfessionalRegisterPage() {
 
           <div className="mt-6 text-center text-xs font-medium text-slate-400">
             Already registered?{' '}
-            <Link href="/professional/pro/login" className="text-emerald-400 font-bold hover:underline">
+            <Link href="/professional/pro/login" className="text-sky-400 font-bold hover:underline">
               Partner Sign In
             </Link>
           </div>

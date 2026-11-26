@@ -42,11 +42,11 @@ export default function CustomerProfessionalsDirectoryPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-6 h-6 text-[#059669]" />
+              <ShieldCheck className="w-6 h-6 text-[#2563EB]" />
               <h1 className="text-xl font-bold text-slate-900">Verified Professional Fleet</h1>
             </div>
             <p className="text-xs text-slate-500 mt-1">
-              Every partner is 100% background checked, police verified, and trained to Urban Company standards.
+              Every partner is 100% background checked, police verified, and trained to Yetzo Certified standards.
             </p>
           </div>
 
@@ -62,17 +62,17 @@ export default function CustomerProfessionalsDirectoryPage() {
                 <Link
                   key={pro.id}
                   href={`/customer/professionals/${pro.id}`}
-                  className="bg-white border border-slate-200 hover:border-[#059669] p-5 rounded-2xl shadow-sm transition flex flex-col justify-between group"
+                  className="bg-white border border-slate-200 hover:border-[#2563EB] p-5 rounded-2xl shadow-sm transition flex flex-col justify-between group"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center font-bold text-base">
+                      <div className="w-12 h-12 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center font-bold text-base">
                         {pro.user?.first_name ? pro.user.first_name[0] : 'P'}
                       </div>
                       <div>
                         <div className="flex items-center gap-1 font-bold text-slate-900 text-sm">
                           <span>{pro.user?.first_name || 'Service Specialist'}</span>
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
                         </div>
                         <span className="text-[11px] text-slate-500 block">
                           Certified Home Technician
@@ -91,7 +91,7 @@ export default function CustomerProfessionalsDirectoryPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-[#059669] font-bold">
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-[#2563EB] font-bold">
                     <span>View Profile</span>
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition" />
                   </div>

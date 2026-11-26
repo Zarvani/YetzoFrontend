@@ -58,7 +58,7 @@ export default function NewAddressPage() {
 
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
               <MapPin className="w-6 h-6" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export default function NewAddressPage() {
                 value={addressLine}
                 onChange={(e) => setAddressLine(e.target.value)}
                 placeholder="e.g. Flat 301, Tower C, Prateek Laurel, Sector 120"
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                 required
               />
             </div>
@@ -94,7 +94,7 @@ export default function NewAddressPage() {
                   type="text"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -105,7 +105,7 @@ export default function NewAddressPage() {
                   type="text"
                   value={pincode}
                   onChange={(e) => setPincode(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -121,7 +121,7 @@ export default function NewAddressPage() {
                     onClick={() => setAddressType(type)}
                     className={`flex-1 py-2.5 rounded-xl border text-xs font-bold transition ${
                       addressType === type
-                        ? 'border-[#059669] bg-emerald-50 text-emerald-800'
+                        ? 'border-[#2563EB] bg-blue-50 text-blue-800'
                         : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                     }`}
                   >
@@ -135,7 +135,7 @@ export default function NewAddressPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-xs flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-md transition disabled:opacity-50 text-xs flex items-center justify-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 {submitting ? 'Saving Address...' : 'Save Service Address'}

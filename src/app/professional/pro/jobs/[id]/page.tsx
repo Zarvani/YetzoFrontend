@@ -49,7 +49,7 @@ function ProJobDetailContent() {
         method: 'POST',
         body: { otp: otpInput },
       });
-      setStatusMessage('Start OTP verified! Work session in progress with Pronto Bodycam recording.');
+      setStatusMessage('Start OTP verified! Work session in progress with Yetzo Bodycam recording.');
       setOtpInput('');
       fetchJob();
     } catch (err: any) {
@@ -87,7 +87,7 @@ function ProJobDetailContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Loading active service order...
         </div>
       </div>
@@ -121,7 +121,7 @@ function ProJobDetailContent() {
                 booking?.status === 'IN_PROGRESS'
                   ? 'bg-blue-100 text-blue-800 animate-pulse'
                   : booking?.status === 'COMPLETED'
-                  ? 'bg-emerald-100 text-emerald-800'
+                  ? 'bg-blue-100 text-blue-800'
                   : 'bg-slate-900 text-white'
               }`}
             >
@@ -130,7 +130,7 @@ function ProJobDetailContent() {
           </div>
 
           {statusMessage && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{statusMessage}</span>
             </div>
@@ -154,14 +154,14 @@ function ProJobDetailContent() {
               </div>
               <a
                 href={`tel:${booking?.customer?.phone || ''}`}
-                className="p-2.5 bg-white border border-slate-200 rounded-xl text-[#059669] hover:bg-emerald-50 transition"
+                className="p-2.5 bg-white border border-slate-200 rounded-xl text-[#2563EB] hover:bg-blue-50 transition"
               >
                 <Phone className="w-4 h-4" />
               </a>
             </div>
 
             <div className="pt-2 border-t border-slate-200/60 flex items-start gap-2">
-              <MapPin className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
+              <MapPin className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
               <div>
                 <span className="font-semibold text-slate-800 block">
                   {booking?.address?.address_line_1 || 'Customer Home'}
@@ -173,11 +173,11 @@ function ProJobDetailContent() {
             </div>
           </div>
 
-          {/* Pronto Verified Bodycam status */}
+          {/* Yetzo Verified Bodycam status */}
           <div className="p-3.5 bg-purple-50 border border-purple-200 rounded-2xl flex items-center justify-between text-xs">
             <div className="flex items-center gap-2 text-purple-900 font-bold">
               <Video className="w-4 h-4 text-purple-700" />
-              <span>Pronto Verified Bodycam Protocol</span>
+              <span>Yetzo Verified Bodycam Protocol</span>
             </div>
             <span className="px-2 py-0.5 rounded text-[10px] font-black bg-purple-200 text-purple-900">
               ACTIVE
@@ -196,7 +196,7 @@ function ProJobDetailContent() {
               </Link>
 
               {/* Enter start OTP */}
-              <form onSubmit={handleStartWork} className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-2xl space-y-3 text-xs">
+              <form onSubmit={handleStartWork} className="p-4 bg-blue-50/50 border border-blue-200 rounded-2xl space-y-3 text-xs">
                 <div>
                   <span className="font-bold text-slate-900 block">Customer Doorstep Start Verification</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
@@ -210,13 +210,13 @@ function ProJobDetailContent() {
                     value={otpInput}
                     onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
                     placeholder="4-DIGIT OTP"
-                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-center font-mono text-base font-black tracking-widest text-slate-900 focus:outline-none focus:border-[#059669]"
+                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-center font-mono text-base font-black tracking-widest text-slate-900 focus:outline-none focus:border-[#2563EB]"
                     required
                   />
                   <button
                     type="submit"
                     disabled={actionLoading || otpInput.length < 4}
-                    className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl transition text-xs disabled:opacity-50"
+                    className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl transition text-xs disabled:opacity-50"
                   >
                     Start Work
                   </button>
@@ -242,7 +242,7 @@ function ProJobDetailContent() {
               </div>
 
               {/* Enter End OTP */}
-              <form onSubmit={handleCompleteWork} className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl space-y-3 text-xs">
+              <form onSubmit={handleCompleteWork} className="p-4 bg-blue-50 border border-blue-200 rounded-2xl space-y-3 text-xs">
                 <div>
                   <span className="font-bold text-slate-900 block">Complete Job & Release Payment</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
@@ -256,13 +256,13 @@ function ProJobDetailContent() {
                     value={otpInput}
                     onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ''))}
                     placeholder="END OTP"
-                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-center font-mono text-base font-black tracking-widest text-slate-900 focus:outline-none focus:border-[#059669]"
+                    className="flex-1 px-4 py-3 bg-white border border-slate-300 rounded-xl text-center font-mono text-base font-black tracking-widest text-slate-900 focus:outline-none focus:border-[#2563EB]"
                     required
                   />
                   <button
                     type="submit"
                     disabled={actionLoading || otpInput.length < 4}
-                    className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl transition text-xs disabled:opacity-50"
+                    className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl transition text-xs disabled:opacity-50"
                   >
                     Release ₹{partnerEarnings}
                   </button>
@@ -272,8 +272,8 @@ function ProJobDetailContent() {
           )}
 
           {booking?.status === 'COMPLETED' && (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="p-6 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-blue-600 mx-auto" />
               <h2 className="text-sm font-bold text-slate-900">Job Successfully Finished!</h2>
               <p className="text-xs text-slate-600">
                 ₹{partnerEarnings} has been credited to your wallet balance.
@@ -281,7 +281,7 @@ function ProJobDetailContent() {
               <div className="pt-2">
                 <Link
                   href="/professional/pro/earnings"
-                  className="inline-block px-4 py-2 bg-[#059669] text-white font-bold rounded-xl text-xs"
+                  className="inline-block px-4 py-2 bg-[#2563EB] text-white font-bold rounded-xl text-xs"
                 >
                   View Wallet Payout
                 </Link>

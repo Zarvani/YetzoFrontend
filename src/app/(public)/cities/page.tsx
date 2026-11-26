@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { MapPin, Building2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
 export default function CitiesPage() {
@@ -34,10 +35,7 @@ export default function CitiesPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       <title>Cities We Serve — Yetzo</title>
-      <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center justify-between sticky top-0 z-50">
-        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
-        <button onClick={() => router.push('/auth/login')} className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-sm">Sign In</button>
-      </header>
+      
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-blue-950 py-16 px-4 text-center text-white">
@@ -58,7 +56,9 @@ export default function CitiesPage() {
                 onClick={() => router.push(`/cities/${(city.name || city.slug || city.id).toLowerCase().replace(/\s+/g, '-')}`)}
                 className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-400 hover:shadow-md transition-all shadow-sm group"
               >
-                <div className="text-2xl mb-2">🏙️</div>
+                <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center mb-3 text-[#2563EB]">
+                  <Building2 className="w-4 h-4" />
+                </div>
                 <h3 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors">{city.name}</h3>
                 <p className="text-slate-500 font-medium text-sm">{city.state}</p>
                 <p className="text-blue-600 font-bold text-xs mt-2">{city.services_count || '100+'}+ services</p>

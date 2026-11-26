@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Star, ThumbsUp, MessageSquare } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
 export default function ReviewsPage() {
@@ -15,21 +16,15 @@ export default function ReviewsPage() {
   }, []);
 
   const platformStats = [
-    { value: '4.82', label: 'Platform Rating', icon: '⭐' },
-    { value: '98%', label: 'Satisfaction Rate', icon: '😊' },
-    { value: '5L+', label: 'Reviews Collected', icon: '💬' },
+    { value: '4.85 / 5', label: 'Platform Quality Rating', icon: <Star className="w-5 h-5 text-amber-400 fill-amber-400 inline" /> },
+    { value: '98.4%', label: 'On-Time Doorstep SLA', icon: <ThumbsUp className="w-5 h-5 text-sky-400 inline" /> },
+    { value: '500k+', label: 'Homes Serviced', icon: <MessageSquare className="w-5 h-5 text-sky-400 inline" /> },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans">
       <title>Customer Reviews — Yetzo</title>
-      <header className="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex items-center gap-4 sticky top-0 z-50">
-        <img src="/assets/images/logo.png" alt="Yetzo" className="h-8 cursor-pointer" onClick={() => router.push('/')} />
-        <nav className="ml-auto flex items-center gap-4">
-          <button onClick={() => router.push('/services')} className="text-slate-600 font-bold text-sm hover:text-slate-900">Services</button>
-          <button onClick={() => router.push('/auth/login')} className="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-sm">Sign In</button>
-        </nav>
-      </header>
+      
 
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-blue-950 text-white py-20 px-4 text-center">
@@ -38,8 +33,11 @@ export default function ReviewsPage() {
         <div className="flex justify-center gap-10 mt-10">
           {platformStats.map((s, i) => (
             <div key={i} className="text-center">
-              <p className="text-4xl font-black text-blue-400">{s.icon} {s.value}</p>
-              <p className="text-slate-400 font-bold text-sm mt-1">{s.label}</p>
+              <div className="flex items-center justify-center gap-2 text-2xl sm:text-3xl font-[300] font-heading text-white">
+                {s.icon}
+                <span>{s.value}</span>
+              </div>
+              <p className="text-slate-400 font-heading font-medium text-xs mt-1">{s.label}</p>
             </div>
           ))}
         </div>

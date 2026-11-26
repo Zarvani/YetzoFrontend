@@ -38,14 +38,14 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white px-4 py-5 sticky top-0 z-50 shadow-sm flex items-center justify-between">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
           </button>
           <h1 className="text-xl font-black text-slate-900">Notifications</h1>
         </div>
-      </header>
+      </div>
 
       <main className="px-4 py-6">
         {loading ? (

@@ -95,7 +95,7 @@ export default function SessionsSettingsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Globe className="w-6 h-6" />
               </div>
               <div>
@@ -106,7 +106,7 @@ export default function SessionsSettingsPage() {
           </div>
 
           {successMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2">
               <Check className="w-4 h-4 shrink-0" />
               <span>{successMsg}</span>
             </div>
@@ -114,7 +114,7 @@ export default function SessionsSettingsPage() {
 
           {loading ? (
             <div className="py-10 flex items-center justify-center gap-2 text-xs text-slate-400">
-              <Loader2 className="w-4 h-4 animate-spin text-[#059669]" />
+              <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
               Scanning authorized sessions...
             </div>
           ) : (
@@ -123,7 +123,7 @@ export default function SessionsSettingsPage() {
                 <div
                   key={sess.id}
                   className={`p-4 rounded-2xl border transition flex items-center justify-between gap-4 ${
-                    sess.isCurrent ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200 bg-white'
+                    sess.isCurrent ? 'border-blue-300 bg-blue-50/30' : 'border-slate-200 bg-white'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -138,7 +138,7 @@ export default function SessionsSettingsPage() {
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-900">{sess.device}</span>
                         {sess.isCurrent && (
-                          <span className="text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded-full">
+                          <span className="text-[10px] font-extrabold uppercase bg-blue-100 text-blue-900 px-2 py-0.5 rounded-full">
                             Current Device
                           </span>
                         )}

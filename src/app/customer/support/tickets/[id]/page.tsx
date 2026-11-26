@@ -64,7 +64,7 @@ function TicketDetailPageContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
-        <div className="w-8 h-8 border-3 border-[#059669] border-t-transparent rounded-full animate-spin mb-3" />
+        <div className="w-8 h-8 border-3 border-[#2563EB] border-t-transparent rounded-full animate-spin mb-3" />
         <p className="text-xs text-slate-500">Loading ticket thread...</p>
       </div>
     );
@@ -76,7 +76,7 @@ function TicketDetailPageContent() {
         <AlertCircle className="w-12 h-12 text-rose-500 mb-2" />
         <h2 className="text-lg font-bold text-slate-900">Ticket Not Found</h2>
         <p className="text-xs text-slate-500 mb-4">The requested ticket does not exist or was closed.</p>
-        <Link href="/customer/support/tickets" className="text-xs font-bold text-[#059669] hover:underline">
+        <Link href="/customer/support/tickets" className="text-xs font-bold text-[#2563EB] hover:underline">
           Back to Tickets
         </Link>
       </div>
@@ -104,7 +104,7 @@ function TicketDetailPageContent() {
             <span
               className={`text-xs font-bold px-2.5 py-0.5 rounded ${
                 ticket.status === 'RESOLVED'
-                  ? 'bg-emerald-100 text-emerald-800'
+                  ? 'bg-blue-100 text-blue-800'
                   : 'bg-amber-100 text-amber-800'
               }`}
             >
@@ -141,7 +141,7 @@ function TicketDetailPageContent() {
                   className={`p-3.5 rounded-2xl text-xs max-w-md ${
                     msg.is_agent
                       ? 'bg-slate-100 text-slate-800 mr-auto'
-                      : 'bg-emerald-50 text-emerald-950 border border-emerald-200 ml-auto'
+                      : 'bg-blue-50 text-emerald-950 border border-blue-200 ml-auto'
                   }`}
                 >
                   <div className="font-bold text-[11px] mb-1 text-slate-600">
@@ -160,12 +160,12 @@ function TicketDetailPageContent() {
               value={replyText}
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Type your reply to the support agent..."
-              className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+              className="flex-1 text-xs p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
             />
             <button
               type="submit"
               disabled={sending || !replyText.trim()}
-              className="px-5 py-3 bg-[#059669] hover:bg-[#047857] text-white rounded-xl font-bold text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
+              className="px-5 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl font-bold text-xs shadow transition disabled:opacity-50 flex items-center gap-1.5"
             >
               <Send className="w-3.5 h-3.5" />
               Send

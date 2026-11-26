@@ -66,20 +66,20 @@ export default function ProfessionalEarningsPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-4 sm:p-6 space-y-6">
       {/* Earnings Overview Header */}
-      <div className="bg-gradient-to-br from-slate-950 via-[#064E3B] to-[#047857] text-white p-6 sm:p-8 rounded-3xl shadow-lg relative overflow-hidden">
+      <div className="bg-gradient-to-br from-slate-950 via-[#064E3B] to-[#1D4ED8] text-white p-6 sm:p-8 rounded-3xl shadow-lg relative overflow-hidden">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
               <Wallet className="w-4 h-4" />
               Partner Escrow Ledger
             </span>
-            <span className="text-xs bg-white/10 px-2.5 py-0.5 rounded-full text-emerald-200">
+            <span className="text-xs bg-white/10 px-2.5 py-0.5 rounded-full text-blue-200">
               80% Net Payout Split
             </span>
           </div>
 
           <div>
-            <span className="text-xs text-emerald-200 block">Available Withdrawable Balance</span>
+            <span className="text-xs text-blue-200 block">Available Withdrawable Balance</span>
             <div className="text-3xl sm:text-4xl font-black font-mono tracking-tight mt-1">
               ₹{balance.toLocaleString('en-IN')}
             </div>
@@ -90,7 +90,7 @@ export default function ProfessionalEarningsPage() {
               onClick={() => setShowWithdrawModal(true)}
               className="px-6 py-2.5 bg-white text-slate-900 hover:bg-slate-100 font-extrabold rounded-xl text-xs transition shadow-md flex items-center gap-1.5"
             >
-              <ArrowUpRight className="w-4 h-4 text-[#059669]" />
+              <ArrowUpRight className="w-4 h-4 text-[#2563EB]" />
               Instant UPI Payout
             </button>
             <button
@@ -109,19 +109,19 @@ export default function ProfessionalEarningsPage() {
         <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
           <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">Completed Jobs</span>
           <div className="text-xl font-black text-slate-900 mt-1">128 Jobs</div>
-          <span className="text-[11px] text-emerald-600 font-semibold">100% on-time SLA</span>
+          <span className="text-[11px] text-blue-600 font-semibold">100% on-time SLA</span>
         </div>
 
         <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
           <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">This Week Net</span>
           <div className="text-xl font-black text-slate-900 mt-1">₹8,490</div>
-          <span className="text-[11px] text-emerald-600 font-semibold">+14% vs last week</span>
+          <span className="text-[11px] text-blue-600 font-semibold">+14% vs last week</span>
         </div>
 
         <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
           <span className="text-xs text-slate-500 font-bold uppercase tracking-wider block">Warranty Protection</span>
           <div className="text-xl font-black text-slate-900 mt-1">0 Deductions</div>
-          <span className="text-[11px] text-emerald-700 font-semibold">High quality score</span>
+          <span className="text-[11px] text-blue-700 font-semibold">High quality score</span>
         </div>
       </div>
 
@@ -138,7 +138,7 @@ export default function ProfessionalEarningsPage() {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                     tx.transaction_type === 'CREDIT'
-                      ? 'bg-emerald-100 text-emerald-700'
+                      ? 'bg-blue-100 text-blue-700'
                       : 'bg-rose-100 text-rose-700'
                   }`}
                 >
@@ -159,7 +159,7 @@ export default function ProfessionalEarningsPage() {
               <div
                 className={`font-mono font-bold text-sm ${
                   tx.transaction_type === 'CREDIT'
-                    ? 'text-emerald-600'
+                    ? 'text-blue-600'
                     : 'text-slate-900'
                 }`}
               >
@@ -187,7 +187,7 @@ export default function ProfessionalEarningsPage() {
                   placeholder="e.g. mobile@upi or name@okaxis"
                   value={upiId}
                   onChange={(e) => setUpiId(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -203,7 +203,7 @@ export default function ProfessionalEarningsPage() {
                 <button
                   type="submit"
                   disabled={withdrawing}
-                  className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition disabled:opacity-50"
+                  className="px-5 py-2 bg-[#2563EB] text-white rounded-xl font-bold hover:bg-[#1D4ED8] shadow transition disabled:opacity-50"
                 >
                   {withdrawing ? 'Processing Payout...' : 'Transfer ₹' + balance}
                 </button>

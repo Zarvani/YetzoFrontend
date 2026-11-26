@@ -96,7 +96,7 @@ export default function ProfessionalLayout({ children }: { children: React.React
             </button>
             <div className="flex items-center gap-3 border-l border-[#E2E8F0] pl-6">
               <div className="text-right hidden sm:block">
-                <p className="text-[14px] font-bold text-[#0F172A]">Rahul Kumar</p>
+                <p className="text-[14px] font-bold text-[#0F172A]">Verified Partner</p>
                 <p className="text-[12px] text-[#64748B]">ID: YP-9923</p>
               </div>
               <div className="h-9 w-9 rounded-full overflow-hidden border border-[#E2E8F0]">

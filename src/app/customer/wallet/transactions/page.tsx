@@ -50,7 +50,7 @@ export default function CustomerWalletTransactionsPage() {
 
         <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">
           <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-[#059669]" />
+            <Wallet className="w-5 h-5 text-[#2563EB]" />
             <h1 className="text-lg font-bold text-slate-900">Wallet Passbook & Statements</h1>
           </div>
 
@@ -68,7 +68,7 @@ export default function CustomerWalletTransactionsPage() {
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                         tx.transaction_type === 'CREDIT'
-                          ? 'bg-emerald-100 text-emerald-700'
+                          ? 'bg-blue-100 text-blue-700'
                           : 'bg-rose-100 text-rose-700'
                       }`}
                     >
@@ -89,7 +89,7 @@ export default function CustomerWalletTransactionsPage() {
                   <span
                     className={`font-mono font-bold text-sm ${
                       tx.transaction_type === 'CREDIT'
-                        ? 'text-emerald-600'
+                        ? 'text-blue-600'
                         : 'text-slate-900'
                     }`}
                   >

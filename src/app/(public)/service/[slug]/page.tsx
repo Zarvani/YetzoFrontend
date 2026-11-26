@@ -2,8 +2,13 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { apiClient } from '@/lib/apiClient';
-import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Star, Clock, ShieldCheck, Award, Check, Plus, 
+  ArrowRight, Tag, Zap, AlertCircle 
+} from 'lucide-react';
+import { useBookingStore } from '@/store/useBookingStore';
 
 function ServiceDetailContent() {
   const router = useRouter();
@@ -14,15 +19,36 @@ function ServiceDetailContent() {
   const [data, setData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
-  const [cartTotal, setCartTotal] = useState(0);
+  const [cartTotal, setCartTotal] = useState(299);
+  const [basePrice, setBasePrice] = useState(299);
+
+  const extractPrice = (item: any): number => {
+    if (!item) return 299;
+    if (item.starting_price && Number(item.starting_price) > 0) {
+      return Number(item.starting_price);
+    }
+    if (item.pricing_rules && item.pricing_rules.length > 0) {
+      const bp = item.pricing_rules[0].base_price;
+      if (bp) {
+        return bp > 1000 ? Math.round(bp / 100) : Number(bp);
+      }
+    }
+    if (item.base_price && Number(item.base_price) > 0) {
+      return Number(item.base_price);
+    }
+    return 299;
+  };
 
   useEffect(() => {
     const fetchRealData = async () => {
       if (!slug) return;
       try {
+        setIsLoading(true);
         const payload: any = await apiClient(`services/${slug}/`);
         setData(payload);
-        setCartTotal(payload.base_price || 499);
+        const price = extractPrice(payload);
+        setBasePrice(price);
+        setCartTotal(price);
       } catch (err: any) {
         setError(err.message || "Failed to load service details");
       } finally {
@@ -48,226 +74,300 @@ function ServiceDetailContent() {
 
   const toggleAddon = (addon: any) => {
     const newSet = new Set(selectedAddons);
+    const addonPrice = Number(addon.price || addon.starting_price || 99);
     if (newSet.has(addon.id)) {
       newSet.delete(addon.id);
-      setCartTotal(prev => prev - addon.price);
+      setCartTotal(prev => Math.max(basePrice, prev - addonPrice));
     } else {
       newSet.add(addon.id);
-      setCartTotal(prev => prev + addon.price);
+      setCartTotal(prev => prev + addonPrice);
     }
     setSelectedAddons(newSet);
   };
 
-  const proceedToCart = async () => {
-    try {
-      await apiClient('carts/add/', {
-        method: 'POST',
-        body: { 
-          service_id: data?.id, 
-          addons: Array.from(selectedAddons) 
-        }
-      });
-      router.push('/customer/cart');
-    } catch(e) {
-      // Proceed anyway for local dev if proxy isn't fully up
+  const proceedToBooking = () => {
+    if (data) {
+      const store = useBookingStore.getState();
+      store.setService({
+        id: data.id,
+        name: data.name,
+        description: data.description || '',
+        pricing_rules: [{ base_price: basePrice }],
+        category: { name: data.category?.name || 'Home Service' },
+      } as any);
+      if (selectedAddons.size > 0) {
+        store.setAddons(Array.from(selectedAddons));
+      }
+      store.setSchedule(true, new Date().toISOString().split('T')[0]);
       router.push('/customer/booking/schedule');
+    } else {
+      router.push('/customer/booking');
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-4">
-        <div className="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
-        <p className="text-slate-500 font-medium animate-pulse">Loading service details...</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center space-y-4 font-body">
+        <div className="w-10 h-10 border-3 border-slate-200 border-t-[#2563EB] rounded-full animate-spin"></div>
+        <p className="text-slate-500 text-xs font-heading">Loading service details and rate card...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans pb-24 md:pb-0">
-      
-      {/* Mobile Navbar - Transparent to Solid on scroll */}
-      <header className="md:hidden fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 py-4 flex items-center justify-between transition-all">
-        <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-700">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
-        </button>
-        <button className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-700">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-        </button>
-      </header>
-
-      {/* Desktop Header */}
-      <header className="hidden md:flex bg-white border-b border-slate-200 px-8 py-4 items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-blue-600 transition-colors">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-          </button>
-          <img src="/assets/images/logo.png" alt="Yetzo" className="h-6 opacity-80" />
-        </div>
-      </header>
-
-      <main className="flex-1 w-full max-w-7xl mx-auto md:px-8 md:py-8 grid md:grid-cols-12 gap-8 relative">
+    <div className="min-h-screen bg-[#FAFAFA] flex flex-col font-body pb-24 md:pb-12">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8 grid md:grid-cols-12 gap-8 items-start relative">
         
-        {/* Left Column: Media & Details */}
-        <div className="md:col-span-8">
+        {/* Left Column: Media, Headline & Full Specs */}
+        <div className="md:col-span-8 space-y-8">
           
-          {/* Cover Media */}
-          <div className="w-full h-[40vh] md:h-[500px] md:rounded-3xl overflow-hidden relative shadow-lg">
-            {data?.image_url || data?.image ? (
-              <img src={data.image_url || data.image} alt={data.name} className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full bg-slate-200 flex items-center justify-center"><span className="text-slate-400">No Image</span></div>
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-            
-            <div className="absolute bottom-0 left-0 w-full p-6 md:p-10">
-              <span className="bg-blue-600 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Yetzo Premium</span>
-              <motion.h1 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight"
-              >
-                {data?.name || 'Service Details'}
-              </motion.h1>
-              <motion.div 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center gap-4 mt-4 text-white/90 font-medium text-sm md:text-base"
-              >
-                <span className="flex items-center gap-1 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg">
-                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg> 
-                  {data?.rating || '4.82'} ({data?.reviews_count || '12.4k'} reviews)
-                </span>
-                <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg flex items-center gap-1">
-                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                   {data?.estimated_duration_minutes || data?.duration || '45 mins'}
-                </span>
-              </motion.div>
+          {/* Cover Media & Price Header Card */}
+          <div className="w-full rounded-sm overflow-hidden border border-slate-200 bg-slate-900 text-white relative shadow-sm">
+            <div className="h-64 sm:h-80 w-full relative">
+              {data?.image_url || data?.image ? (
+                <img 
+                  src={data.image_url || data.image} 
+                  alt={data.name} 
+                  className="w-full h-full object-cover opacity-60" 
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 opacity-80" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+              
+              <div className="absolute bottom-0 left-0 w-full p-6 sm:p-8 space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="bg-[#2563EB] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-sm uppercase tracking-wider font-heading">
+                    Yetzo Verified
+                  </span>
+                  <span className="text-[11px] text-sky-400 font-semibold flex items-center gap-1">
+                    <Zap className="w-3.5 h-3.5 fill-sky-400" />
+                    15-Minute Instant SLA
+                  </span>
+                </div>
+
+                <h1 className="text-2xl sm:text-4xl font-[300] font-heading text-white tracking-tight leading-tight">
+                  {data?.name || 'Service Details'}
+                </h1>
+
+                {/* Prominent Price Tag in Hero */}
+                <div className="flex flex-wrap items-baseline gap-3 pt-1">
+                  <div className="inline-flex items-baseline gap-1.5 bg-white text-slate-900 px-3 py-1 rounded-sm shadow-sm font-heading">
+                    <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Starts at</span>
+                    <span className="text-xl sm:text-2xl font-bold text-blue-700">₹{basePrice}</span>
+                  </div>
+                  <span className="text-slate-300 text-xs flex items-center gap-1 font-medium">
+                    <Clock className="w-3.5 h-3.5 text-sky-400" />
+                    ~{data?.estimated_duration_minutes || 30} mins visit
+                  </span>
+                  <span className="text-slate-300 text-xs flex items-center gap-1 font-medium">
+                    <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                    {data?.rating || '4.9'} ({data?.reviews_count || '1,420+'} visits)
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="p-6 md:p-0 md:mt-10 space-y-10">
-            {/* Trust Badges */}
-            <div className="grid grid-cols-3 gap-4 border-b border-slate-200 pb-8">
-              <div className="flex flex-col items-center text-center gap-2">
-                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg></div>
-                <span className="text-xs font-bold text-slate-700">Verified<br/>Professionals</span>
+          {/* Transparent Rate Card Banner */}
+          <div className="bg-blue-50/70 border border-blue-200 rounded-sm p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-[#2563EB]" />
+                <span className="text-xs font-bold font-heading uppercase tracking-wider text-blue-900">
+                  Transparent Rate Card
+                </span>
               </div>
-              <div className="flex flex-col items-center text-center gap-2">
-                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                <span className="text-xs font-bold text-slate-700">Transparent<br/>Pricing</span>
+              <div className="text-lg font-bold font-heading text-slate-900">
+                ₹{basePrice} Standard Base Rate
               </div>
-              <div className="flex flex-col items-center text-center gap-2">
-                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path></svg></div>
-                <span className="text-xs font-bold text-slate-700">Yetzo<br/>Guarantee</span>
+              <p className="text-xs text-slate-600 leading-relaxed font-body">
+                Includes full professional labor, safety gear, SOP cleaning checklist, and 15-minute express arrival.
+              </p>
+            </div>
+            <div className="shrink-0 flex items-center gap-2">
+              <span className="text-[11px] font-bold text-blue-800 bg-blue-100 px-2.5 py-1 rounded-sm font-heading">
+                Zero Hidden Charges
+              </span>
+            </div>
+          </div>
+
+          {/* Trust Guarantees */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-y border-slate-200 py-6">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-sm bg-blue-100 text-blue-800 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold font-heading text-slate-900 uppercase">100% Police Verified</h4>
+                <p className="text-[11px] text-slate-500">Aadhaar & biometric vetted fleet</p>
               </div>
             </div>
 
-            {/* About / Description */}
-            <section>
-              <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">About this service</h3>
-              <p className="text-slate-600 leading-relaxed font-medium text-lg">{data?.description || 'Experience premium service quality delivered by verified professionals at your doorstep.'}</p>
-            </section>
-            
-            {/* What's Included / Excluded (Urban Company Style) */}
-            <section className="grid md:grid-cols-2 gap-6 bg-white p-6 md:p-8 rounded-3xl border border-slate-200">
-               <div>
-                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                   <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg> What's Included
-                 </h4>
-                 <ul className="space-y-3 text-slate-600 font-medium text-sm">
-                   <li>• Thorough inspection & diagnosis</li>
-                   <li>• Standard cleaning of accessible parts</li>
-                   <li>• Post-service cleanup of the area</li>
-                   <li>• 30-Day service warranty</li>
-                 </ul>
-               </div>
-               <div>
-                 <h4 className="font-bold text-slate-900 mb-4 flex items-center gap-2">
-                   <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg> What's Excluded
-                 </h4>
-                 <ul className="space-y-3 text-slate-600 font-medium text-sm">
-                   <li>• Spare parts (billed separately)</li>
-                   <li>• Major masonry or civil work</li>
-                   <li>• Gas refilling (unless selected in addons)</li>
-                 </ul>
-               </div>
-            </section>
-            
-            {/* Addons Grid */}
-            <section>
-              <h3 className="text-2xl font-black text-slate-900 mb-6 tracking-tight">Frequently added together</h3>
-              <div className="space-y-4">
-                {data?.addons && data.addons.length > 0 ? (
-                  data.addons.map((addon: any) => {
-                    const isSelected = selectedAddons.has(addon.id);
-                    return (
-                      <div 
-                        key={addon.id} 
-                        onClick={() => toggleAddon(addon)}
-                        className={`flex items-center justify-between p-6 rounded-2xl border-2 transition-all cursor-pointer ${isSelected ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white hover:border-blue-300'}`}
-                      >
-                        <div className="flex-1">
-                          <h4 className={`font-bold text-lg mb-1 ${isSelected ? 'text-blue-900' : 'text-slate-900'}`}>{addon.name}</h4>
-                          <p className="text-sm text-slate-500 font-medium">Adds ~{addon.duration_minutes || 15} mins • Highly Recommended</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="font-extrabold text-slate-900">₹{addon.price}</span>
-                          <button className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-colors ${isSelected ? 'bg-blue-600 border-blue-600 text-white' : 'border-slate-300 text-slate-300'}`}>
-                            {isSelected ? (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                            ) : (
-                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
-                            )}
-                          </button>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-sm bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                <Award className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold font-heading text-slate-900 uppercase">₹10,000 Damage Cover</h4>
+                <p className="text-[11px] text-slate-500">Free warranty on every visit</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-sm bg-slate-900 text-white flex items-center justify-center shrink-0">
+                <Zap className="w-5 h-5 text-sky-400 fill-sky-400" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold font-heading text-slate-900 uppercase">15-Min Arrival SLA</h4>
+                <p className="text-[11px] text-slate-500">Automated dark-cluster dispatch</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Description & Scope */}
+          <div className="bg-white border border-slate-200 rounded-sm p-6 space-y-4 shadow-xs">
+            <h3 className="text-base font-semibold font-heading text-slate-900 uppercase tracking-wide">
+              Service Overview & Specifications
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-body">
+              {data?.description || 'Professional doorstep service delivered by verified Yetzo specialists equipped with standard supplies, uniform, and photo badge.'}
+            </p>
+          </div>
+          
+          {/* What's Included / Excluded */}
+          <div className="grid md:grid-cols-2 gap-4">
+             <div className="bg-white p-5 rounded-sm border border-slate-200 space-y-3">
+               <h4 className="text-xs font-bold font-heading text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                 <Check className="w-4 h-4 text-[#2563EB]" /> What's Included
+               </h4>
+               <ul className="space-y-2 text-xs text-slate-600 font-body">
+                 <li>• Complete chore execution as per Yetzo standard SOP</li>
+                 <li>• Microfiber scrubbing and surface sanitization</li>
+                 <li>• Waste disposal and post-service tidy up</li>
+                 <li>• Real-time GPS partner tracking and digital invoice</li>
+               </ul>
+             </div>
+
+             <div className="bg-white p-5 rounded-sm border border-slate-200 space-y-3">
+               <h4 className="text-xs font-bold font-heading text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                 <AlertCircle className="w-4 h-4 text-slate-400" /> Exclusions
+               </h4>
+               <ul className="space-y-2 text-xs text-slate-600 font-body">
+                 <li>• Industrial chemicals or masonry civil repair</li>
+                 <li>• Cleaning outside residential boundary</li>
+                 <li>• Heavy physical moving exceeding 25 kg</li>
+               </ul>
+             </div>
+          </div>
+          
+          {/* Optional Addons */}
+          {data?.addons && data.addons.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-sm p-6 space-y-4 shadow-xs">
+              <div className="border-b border-slate-100 pb-3">
+                <h3 className="text-sm font-semibold font-heading text-slate-900 uppercase tracking-wider">
+                  Available Add-Ons & Extras
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">Customize your visit with supplementary micro-tasks.</p>
+              </div>
+
+              <div className="space-y-2.5">
+                {data.addons.map((addon: any) => {
+                  const isSelected = selectedAddons.has(addon.id);
+                  const addonPrice = Number(addon.price || addon.starting_price || 99);
+                  return (
+                    <div 
+                      key={addon.id} 
+                      onClick={() => toggleAddon(addon)}
+                      className={`flex items-center justify-between p-4 rounded-sm border transition cursor-pointer ${
+                        isSelected 
+                          ? 'border-blue-600 bg-blue-50/40 shadow-xs' 
+                          : 'border-slate-200 hover:border-slate-300 bg-white'
+                      }`}
+                    >
+                      <div>
+                        <h4 className="text-xs font-semibold font-heading text-slate-900">{addon.name}</h4>
+                        <p className="text-[11px] text-slate-500 mt-0.5">+{addon.duration_minutes || 15} mins duration</p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold font-heading text-slate-900">₹{addonPrice}</span>
+                        <div className={`w-5 h-5 rounded-sm border flex items-center justify-center transition ${
+                          isSelected ? 'bg-[#2563EB] border-[#2563EB] text-white' : 'border-slate-300 bg-white'
+                        }`}>
+                          {isSelected ? <Check className="w-3 h-3 stroke-[3]" /> : <Plus className="w-3 h-3 text-slate-400" />}
                         </div>
                       </div>
-                    )
-                  })
-                ) : (
-                  <div className="p-8 bg-slate-100 rounded-3xl text-slate-500 font-medium text-center border-2 border-dashed border-slate-300">
-                    No extra addons available for this service.
-                  </div>
-                )}
+                    </div>
+                  );
+                })}
               </div>
-            </section>
+            </div>
+          )}
 
-          </div>
         </div>
 
         {/* Right Column: Desktop Sticky Checkout Card */}
-        <div className="hidden md:block md:col-span-4">
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-2xl shadow-slate-200/50 sticky top-[100px]">
-            <h3 className="text-4xl font-black text-slate-900 mb-2">₹{cartTotal}</h3>
-            <p className="text-sm text-slate-500 font-medium mb-6">Base price • Taxes calculated at checkout</p>
-            
-            <div className="bg-blue-50 text-blue-800 p-4 rounded-2xl mb-8 flex items-start gap-3 text-sm font-medium">
-              <svg className="w-5 h-5 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"></path></svg>
-              You're completely protected by the Yetzo Service Guarantee. Don't pay until the job is done right.
+        <div className="hidden md:block md:col-span-4 sticky top-24">
+          <div className="bg-white p-6 rounded-sm border border-slate-200 shadow-sm space-y-5">
+            <div className="border-b border-slate-100 pb-4">
+              <span className="text-[10px] uppercase tracking-wider text-blue-600 font-bold font-heading">
+                Booking Summary
+              </span>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-3xl font-bold font-heading text-slate-900">₹{cartTotal}</span>
+                <span className="text-xs text-slate-400">Total payable</span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-1">
+                Zero prepayment: Held in escrow until work completed
+              </p>
             </div>
-            
+
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between text-slate-600">
+                <span>Base Service</span>
+                <span className="font-heading font-medium text-slate-900">₹{basePrice}</span>
+              </div>
+              {selectedAddons.size > 0 && (
+                <div className="flex justify-between text-blue-700">
+                  <span>Selected Addons ({selectedAddons.size})</span>
+                  <span className="font-heading font-medium">₹{cartTotal - basePrice}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-slate-600">
+                <span>Platform Safety & Insurance</span>
+                <span className="font-heading font-medium text-slate-900">₹29</span>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-sm p-3 text-xs text-blue-900 flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 text-blue-700 shrink-0 mt-0.5" />
+              <span>Includes 15-Minute SLA express dispatch with ₹10,000 property protection warranty.</span>
+            </div>
+
             <button 
-              onClick={proceedToCart}
-              className="w-full bg-blue-600 text-white font-extrabold py-5 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-600/30 text-lg hover:scale-[1.02]"
+              onClick={proceedToBooking}
+              className="w-full py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium font-heading uppercase tracking-wider text-xs rounded-sm shadow-sm transition flex items-center justify-center gap-2"
             >
-              Continue to Cart
+              <span>Book Instant (15-Min SLA)</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </main>
 
-      {/* Mobile Sticky Bottom Booking Bar (Urban Company Style) */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 px-6 pb-safe flex items-center justify-between z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.08)]">
+      {/* Mobile Sticky Bottom Booking Bar */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3.5 px-4 pb-safe flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
         <div>
-           <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Price</p>
-           <h3 className="text-2xl font-black text-slate-900">₹{cartTotal}</h3>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-heading">Total Amount</p>
+           <h3 className="text-xl font-bold font-heading text-slate-900">₹{cartTotal}</h3>
         </div>
         <button 
-          onClick={proceedToCart}
-          className="bg-blue-600 text-white font-extrabold py-3.5 px-8 rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30"
+          onClick={proceedToBooking}
+          className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium font-heading text-xs uppercase tracking-wider py-2.5 px-6 rounded-sm shadow-sm transition flex items-center gap-1.5"
         >
-          Book Now
+          <span>Book Now</span>
+          <ArrowRight className="w-3 h-3" />
         </button>
       </div>
 
@@ -277,7 +377,7 @@ function ServiceDetailContent() {
 
 export default function ServiceDetailPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center font-body text-xs text-slate-500">Loading service specs...</div>}>
       <ServiceDetailContent />
     </Suspense>
   );

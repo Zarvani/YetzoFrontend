@@ -62,12 +62,16 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     }
 
     if (!response.ok) {
-      throw new Error(data.message || data.detail || `API Error: ${response.status}`);
+      const err: any = new Error(data.message || data.detail || `API Error: ${response.status}`);
+      err.status = response.status;
+      throw err;
     }
 
     return data as T;
-  } catch (error) {
-    console.error(`[ApiClient Error] ${url}:`, error);
+  } catch (error: any) {
+    if (error?.status !== 401) {
+      console.error(`[ApiClient Error] ${url}:`, error);
+    }
     throw error;
   }
 }

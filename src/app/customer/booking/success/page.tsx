@@ -65,7 +65,7 @@ function BookingSuccessPageContent() {
     return () => clearInterval(timer);
   }, [callActive]);
 
-  const displayRef = booking?.booking_reference || queryRef || (bookingId ? `YZ-${bookingId.slice(0, 8).toUpperCase()}` : 'YZ-PRONTO-9842');
+  const displayRef = booking?.booking_reference || queryRef || (bookingId ? `YZ-${bookingId.slice(0, 8).toUpperCase()}` : 'YZ-YETZO-9842');
   const displayOtp = booking?.start_otp || queryStartOtp || '4829';
 
   const copyOtp = () => {
@@ -142,12 +142,12 @@ function BookingSuccessPageContent() {
         {/* Assigned Partner Profile Card */}
         <div className="bg-slate-50 border border-slate-200 rounded-sm p-4 text-left flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-sm bg-emerald-700 text-white flex items-center justify-center font-heading font-medium text-lg shrink-0">
-              PS
+            <div className="w-12 h-12 rounded-sm bg-blue-700 text-white flex items-center justify-center font-heading font-medium text-lg shrink-0">
+              YP
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-heading font-medium text-sm text-slate-900">Pooja Sharma</h3>
+                <h3 className="font-heading font-medium text-sm text-slate-900">Verified Yetzo Pro</h3>
                 <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded-sm border border-amber-200">
                   <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
                   4.9 (1,420+ visits)
@@ -156,8 +156,8 @@ function BookingSuccessPageContent() {
               <p className="text-[11px] text-slate-500 mt-0.5">
                 Police Verified · Uniform & ID Badge · Bodycam Equipped
               </p>
-              <div className="flex items-center gap-2 mt-1 text-[11px] text-emerald-700 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping"></span>
+              <div className="flex items-center gap-2 mt-1 text-[11px] text-blue-700 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span>
                 <span>Arriving in approx 11 mins</span>
               </div>
             </div>
@@ -178,7 +178,7 @@ function BookingSuccessPageContent() {
         {/* Start OTP Card */}
         <div className="bg-[#0B0F19] text-white p-5 rounded-sm shadow-md space-y-3 max-w-md mx-auto text-left">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-emerald-400 font-heading">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-400 font-heading">
               Service Start Verification Code
             </span>
             <span className="text-[10px] bg-white/10 px-2 py-0.5 rounded-sm text-slate-300">
@@ -187,7 +187,7 @@ function BookingSuccessPageContent() {
           </div>
 
           <div className="flex items-center justify-between bg-black/40 p-3 rounded-sm border border-white/10">
-            <span className="text-3xl font-mono font-bold tracking-widest text-emerald-400">
+            <span className="text-3xl font-mono font-bold tracking-widest text-sky-400">
               {displayOtp}
             </span>
             <button
@@ -198,7 +198,7 @@ function BookingSuccessPageContent() {
             >
               {copied ? (
                 <>
-                  <Check className="w-3 h-3 text-emerald-400" />
+                  <Check className="w-3 h-3 text-sky-400" />
                   <span>Copied</span>
                 </>
               ) : (
@@ -231,7 +231,7 @@ function BookingSuccessPageContent() {
             )}
             <div className="flex justify-between items-center text-slate-700 pt-1.5 border-t border-slate-200">
               <span className="text-slate-500">Escrow Held Amount:</span>
-              <span className="font-semibold text-emerald-700 font-heading">₹{booking.total_amount}</span>
+              <span className="font-semibold text-blue-700 font-heading">₹{booking.total_amount}</span>
             </div>
           </div>
         )}
@@ -241,7 +241,7 @@ function BookingSuccessPageContent() {
           {bookingId && (
             <Link
               href={`/customer/bookings/${bookingId}/track`}
-              className="w-full sm:w-auto px-6 py-3 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium rounded-sm shadow-sm transition text-xs uppercase tracking-wider flex items-center justify-center gap-2 font-heading"
+              className="w-full sm:w-auto px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium rounded-sm shadow-sm transition text-xs uppercase tracking-wider flex items-center justify-center gap-2 font-heading"
             >
               <Navigation className="w-3.5 h-3.5 animate-pulse" />
               <span>Live Track Partner GPS</span>
@@ -263,8 +263,8 @@ function BookingSuccessPageContent() {
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-[#0B0F19] text-white border border-slate-800 rounded-sm max-w-sm w-full p-6 shadow-2xl text-center space-y-5 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-bold font-heading flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-[10px] uppercase tracking-wider text-sky-400 font-bold font-heading flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-sky-400" />
                 <span>Masked Telephony Proxy</span>
               </span>
               <button onClick={endMaskedCall} className="text-slate-400 hover:text-white">
@@ -273,16 +273,16 @@ function BookingSuccessPageContent() {
             </div>
 
             <div className="py-2 space-y-2">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto animate-pulse">
+              <div className="w-16 h-16 rounded-full bg-blue-500/20 text-sky-400 border border-blue-500/30 flex items-center justify-center mx-auto animate-pulse">
                 <PhoneCall className="w-7 h-7" />
               </div>
               <h4 className="text-base font-[300] font-heading text-white">
-                Pooja Sharma (Yetzo Pro)
+                Verified Yetzo Pro
               </h4>
               <p className="text-xs text-slate-400 font-mono">
                 Encrypted Relay: +91 80 4719 3820
               </p>
-              <p className="text-[11px] text-emerald-400 font-mono font-bold tracking-wider">
+              <p className="text-[11px] text-sky-400 font-mono font-bold tracking-wider">
                 {callActive ? `Active Call: ${formatCallTime(callDuration)}` : 'Connecting...'}
               </p>
             </div>

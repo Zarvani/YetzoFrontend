@@ -63,7 +63,7 @@ export default function ProfessionalSupportPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <LifeBuoy className="w-6 h-6" />
               </div>
               <div>
@@ -89,8 +89,8 @@ export default function ProfessionalSupportPage() {
           )}
 
           {ticketCreated ? (
-            <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-2">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
+            <div className="p-6 bg-blue-50 border border-blue-200 rounded-2xl text-center space-y-2">
+              <CheckCircle2 className="w-10 h-10 text-blue-600 mx-auto" />
               <h2 className="text-sm font-bold text-slate-900">
                 Ticket #{ticketCreated.ticket_number} Created
               </h2>
@@ -100,7 +100,7 @@ export default function ProfessionalSupportPage() {
               <div className="pt-2">
                 <button
                   onClick={() => router.push('/professional/pro/jobs')}
-                  className="px-4 py-2 bg-[#059669] text-white font-bold rounded-xl text-xs"
+                  className="px-4 py-2 bg-[#2563EB] text-white font-bold rounded-xl text-xs"
                 >
                   Return to Active Jobs
                 </button>
@@ -117,14 +117,14 @@ export default function ProfessionalSupportPage() {
                       onClick={() => setIssueType(i.id)}
                       className={`p-3 rounded-xl border-2 cursor-pointer transition flex items-center justify-between ${
                         issueType === i.id
-                          ? 'border-[#059669] bg-emerald-50/40 text-slate-900 font-bold'
+                          ? 'border-[#2563EB] bg-blue-50/40 text-slate-900 font-bold'
                           : 'border-slate-200 hover:border-slate-300 text-slate-700'
                       }`}
                     >
                       <span>{i.label}</span>
                       <div
                         className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                          issueType === i.id ? 'border-[#059669] bg-[#059669]' : 'border-slate-300'
+                          issueType === i.id ? 'border-[#2563EB] bg-[#2563EB]' : 'border-slate-300'
                         }`}
                       >
                         {issueType === i.id && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -143,7 +143,7 @@ export default function ProfessionalSupportPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Provide complete on-ground details so our ops team can intervene immediately..."
-                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+                  className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
                   required
                 />
               </div>
@@ -151,7 +151,7 @@ export default function ProfessionalSupportPage() {
               <button
                 type="submit"
                 disabled={loading || !description.trim()}
-                className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
                   <>

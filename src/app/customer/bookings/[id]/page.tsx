@@ -68,7 +68,7 @@ function BookingDetailPageContent() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans pb-24">
       {/* Header */}
-      <header className="bg-white px-4 py-5 sticky top-0 z-50 shadow-sm flex items-center justify-between">
+      <div className="flex items-center justify-between pb-4 border-b border-slate-200 mb-6">
         <div className="flex items-center gap-3">
           <button onClick={() => router.back()} className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-600">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/></svg>
@@ -76,7 +76,7 @@ function BookingDetailPageContent() {
           <h1 className="text-xl font-black text-slate-900">Booking Details</h1>
         </div>
         <button onClick={() => router.push('/customer/support')} className="text-blue-600 font-bold text-sm">Help</button>
-      </header>
+      </div>
 
       <main className="px-4 py-6 space-y-4">
         {/* Status Card */}
@@ -189,7 +189,7 @@ function BookingDetailPageContent() {
           {['ASSIGNED', 'ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS', 'CONFIRMED', 'SEARCHING'].includes(booking.status) && (
             <button
               onClick={() => router.push(`/customer/bookings/${booking.id}/track`)}
-              className="w-full py-3.5 px-4 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-2xl shadow-md transition text-sm flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-2xl shadow-md transition text-sm flex items-center justify-center gap-2"
             >
               <span>📡 Live Track Professional on Map</span>
             </button>
@@ -205,7 +205,7 @@ function BookingDetailPageContent() {
 
             <button
               onClick={() => router.push(`/customer/bookings/${booking.id}/warranty`)}
-              className="py-3 px-3 bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
+              className="py-3 px-3 bg-blue-50 border border-blue-300 hover:bg-blue-100 text-blue-800 font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
             >
               <span>🛡️ 30-Day Warranty</span>
             </button>

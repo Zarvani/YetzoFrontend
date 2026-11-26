@@ -90,7 +90,7 @@ export function BookingAddressSelector({
   if (loading) {
     return (
       <div className="p-8 text-center bg-white rounded-sm border border-slate-200 font-body">
-        <Loader2 className="w-5 h-5 animate-spin text-emerald-600 mx-auto mb-2" />
+        <Loader2 className="w-5 h-5 animate-spin text-blue-600 mx-auto mb-2" />
         <p className="text-xs text-slate-500 font-medium">Loading saved addresses...</p>
       </div>
     );
@@ -117,13 +117,13 @@ export function BookingAddressSelector({
               onClick={() => onSelectAddress(addr)}
               className={`p-4 rounded-sm border cursor-pointer transition flex items-start gap-3.5 ${
                 isSelected
-                  ? 'border-emerald-600 bg-emerald-50/40 shadow-sm'
+                  ? 'border-blue-600 bg-blue-50/40 shadow-sm'
                   : 'border-slate-200 hover:border-slate-300 bg-white'
               }`}
             >
               <div
                 className={`p-2 rounded-sm mt-0.5 shrink-0 ${
-                  isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
+                  isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'
                 }`}
               >
                 <TypeIcon className="w-4 h-4" />
@@ -136,7 +136,7 @@ export function BookingAddressSelector({
                   </span>
                   <div
                     className={`w-4 h-4 rounded-sm border flex items-center justify-center transition ${
-                      isSelected ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-300 bg-white'
+                      isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white'
                     }`}
                   >
                     {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
@@ -160,7 +160,7 @@ export function BookingAddressSelector({
       <button
         type="button"
         onClick={() => setShowAddModal(true)}
-        className="w-full py-3 px-4 rounded-sm border border-dashed border-slate-300 bg-white hover:border-emerald-600 hover:bg-emerald-50/20 text-slate-600 hover:text-emerald-700 font-medium text-xs transition flex items-center justify-center gap-2 font-heading uppercase tracking-wider"
+        className="w-full py-3 px-4 rounded-sm border border-dashed border-slate-300 bg-white hover:border-blue-600 hover:bg-blue-50/20 text-slate-600 hover:text-blue-700 font-medium text-xs transition flex items-center justify-center gap-2 font-heading uppercase tracking-wider"
       >
         <Plus className="w-3.5 h-3.5" />
         Add New Service Address
@@ -194,7 +194,7 @@ export function BookingAddressSelector({
                       onClick={() => setAddressType(type)}
                       className={`py-2 px-3 text-xs font-medium rounded-sm border transition ${
                         addressType === type
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-semibold'
+                          ? 'border-blue-600 bg-blue-50 text-blue-900 font-semibold'
                           : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
@@ -214,7 +214,7 @@ export function BookingAddressSelector({
                   value={addressLine}
                   onChange={(e) => setAddressLine(e.target.value)}
                   placeholder="e.g. Flat 402, Oakwood Towers, 5th Cross, Indiranagar"
-                  className="w-full text-xs font-medium p-2.5 border border-slate-300 rounded-sm focus:outline-none focus:border-emerald-600"
+                  className="w-full text-xs font-medium p-2.5 border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
                 />
               </div>
 
@@ -226,7 +226,7 @@ export function BookingAddressSelector({
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full text-xs font-medium p-2 border border-slate-300 rounded-sm focus:outline-none focus:border-emerald-600"
+                    className="w-full text-xs font-medium p-2 border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
                 <div>
@@ -236,7 +236,7 @@ export function BookingAddressSelector({
                     required
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
-                    className="w-full text-xs font-medium p-2 border border-slate-300 rounded-sm focus:outline-none focus:border-emerald-600"
+                    className="w-full text-xs font-medium p-2 border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
@@ -244,7 +244,7 @@ export function BookingAddressSelector({
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2 font-heading"
+                className="w-full py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition disabled:opacity-50 flex items-center justify-center gap-2 font-heading"
               >
                 {submitting ? (
                   <>

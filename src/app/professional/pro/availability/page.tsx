@@ -44,7 +44,7 @@ export default function ProfessionalAvailabilityPage() {
           <div className="flex items-center justify-center">
             <div
               className={`w-20 h-20 rounded-full flex items-center justify-center transition ${
-                isAvailable ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-400'
+                isAvailable ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-400'
               }`}
             >
               <Radio className={`w-10 h-10 ${isAvailable ? 'animate-pulse' : ''}`} />
@@ -70,7 +70,7 @@ export default function ProfessionalAvailabilityPage() {
               className={`w-full py-4 rounded-2xl font-black text-sm shadow-lg transition active:scale-[0.98] ${
                 isAvailable
                   ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-900/20'
-                  : 'bg-[#059669] hover:bg-[#047857] text-white shadow-emerald-900/20'
+                  : 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-emerald-900/20'
               }`}
             >
               {loading ? (

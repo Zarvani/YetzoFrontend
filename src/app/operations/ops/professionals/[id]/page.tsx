@@ -75,7 +75,7 @@ function OpsProfessionalDetailContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Loading partner profile & compliance records...
         </div>
       </div>
@@ -95,7 +95,7 @@ function OpsProfessionalDetailContent() {
       {/* Top Header Card */}
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-emerald-100 text-emerald-800 rounded-2xl flex items-center justify-center text-2xl font-black">
+          <div className="w-16 h-16 bg-blue-100 text-blue-800 rounded-2xl flex items-center justify-center text-2xl font-black">
             {pro?.user?.first_name ? pro.user.first_name[0] : 'P'}
           </div>
           <div>
@@ -106,7 +106,7 @@ function OpsProfessionalDetailContent() {
               <span
                 className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
                   pro?.kyc_status === 'VERIFIED'
-                    ? 'bg-emerald-100 text-emerald-800'
+                    ? 'bg-blue-100 text-blue-800'
                     : 'bg-amber-100 text-amber-800'
                 }`}
               >
@@ -126,7 +126,7 @@ function OpsProfessionalDetailContent() {
             className={`px-4 py-2.5 text-xs font-bold rounded-xl transition ${
               pro?.is_active
                 ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
-                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
+                : 'bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200'
             }`}
           >
             {pro?.is_active ? 'Suspend Partner' : 'Reactivate Partner'}
@@ -135,7 +135,7 @@ function OpsProfessionalDetailContent() {
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -167,13 +167,13 @@ function OpsProfessionalDetailContent() {
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
           <span className="text-[11px] font-bold text-slate-400 uppercase">Acceptance Rate</span>
-          <div className="text-2xl font-black text-emerald-600">
+          <div className="text-2xl font-black text-blue-600">
             96.4%
           </div>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <span className="text-[11px] font-bold text-slate-400 uppercase">Pronto Bodycam SLA</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase">Yetzo Bodycam SLA</span>
           <div className="text-2xl font-black text-purple-600">
             100%
           </div>
@@ -191,7 +191,7 @@ function OpsProfessionalDetailContent() {
             <button
               onClick={() => handleKycApproval('VERIFIED')}
               disabled={updating || pro?.kyc_status === 'VERIFIED'}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition disabled:opacity-50"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition disabled:opacity-50"
             >
               Approve Verified Badge
             </button>
@@ -209,10 +209,10 @@ function OpsProfessionalDetailContent() {
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-700">Aadhaar Card (UIDAI)</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
             </div>
             <p className="text-[11px] text-slate-500 font-mono">XXXX-XXXX-4912</p>
-            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">
               Verified Digitally
             </span>
           </div>
@@ -220,10 +220,10 @@ function OpsProfessionalDetailContent() {
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-700">Police Background Certificate</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
             </div>
             <p className="text-[11px] text-slate-500">Noida Police Clearance Ref #8491</p>
-            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">
               Clean Record (Zero FIR)
             </span>
           </div>
@@ -231,11 +231,11 @@ function OpsProfessionalDetailContent() {
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-700">Trade Skill Certification</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <CheckCircle2 className="w-4 h-4 text-blue-600" />
             </div>
             <p className="text-[11px] text-slate-500">Yetzo Master Technician Level 4</p>
-            <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded">
-              Pronto Bodycam Trained
+            <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded">
+              Yetzo Bodycam Trained
             </span>
           </div>
         </div>

@@ -35,7 +35,7 @@ export default function AdminPricingPage() {
       const dynamicRules: PricingRuleItem[] = [
         {
           id: 'pr-stacking',
-          name: 'Pronto Task Stacking Discount (Multi-Chore)',
+          name: 'Yetzo Task Stacking Discount (Multi-Chore)',
           rule_type: 'BUNDLE_DISCOUNT',
           discount_or_multiplier: '15% FLAT OFF',
           condition: 'Automatically applied when 2+ chores are booked in single session',
@@ -118,13 +118,13 @@ export default function AdminPricingPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-[#05AC5F]" />
+            <DollarSign className="w-5 h-5 text-[#2563EB]" />
             <h1 className="text-2xl font-[300] text-slate-900 tracking-tight font-['Montserrat',sans-serif]">
               Dynamic Pricing & Rate Card Engine
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1 font-[300]">
-            Pronto 15% Task Stacking discounts, statutory GST rules, and city cluster base rates.
+            Yetzo 15% Task Stacking discounts, statutory GST rules, and city cluster base rates.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export default function AdminPricingPage() {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-medium rounded transition flex items-center gap-1.5 shadow-sm"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Add Rate Rule</span>
@@ -168,7 +168,7 @@ export default function AdminPricingPage() {
                   <td className="py-3.5 px-4 font-mono font-normal text-slate-500 text-[11px]">
                     {r.rule_type}
                   </td>
-                  <td className="py-3.5 px-4 font-mono font-medium text-[#05AC5F]">
+                  <td className="py-3.5 px-4 font-mono font-medium text-[#2563EB]">
                     {r.discount_or_multiplier}
                   </td>
                   <td className="py-3.5 px-4 text-slate-600 font-[300]">
@@ -179,7 +179,7 @@ export default function AdminPricingPage() {
                       onClick={() => toggleRule(r.id)}
                       className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${
                         r.active
-                          ? 'bg-emerald-50 text-[#05AC5F] border border-emerald-200'
+                          ? 'bg-blue-50 text-[#2563EB] border border-blue-200'
                           : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                       }`}
                     >
@@ -213,7 +213,7 @@ export default function AdminPricingPage() {
                   placeholder="e.g. South Delhi Deep Cleaning Surge"
                   value={ruleName}
                   onChange={(e) => setRuleName(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs focus:outline-none focus:border-[#05AC5F]"
+                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs focus:outline-none focus:border-[#2563EB]"
                 />
               </div>
 
@@ -224,7 +224,7 @@ export default function AdminPricingPage() {
                   required
                   value={basePrice}
                   onChange={(e) => setBasePrice(e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#05AC5F]"
+                  className="w-full px-3 py-2 border border-slate-300 rounded text-xs font-mono focus:outline-none focus:border-[#2563EB]"
                 />
               </div>
 
@@ -239,7 +239,7 @@ export default function AdminPricingPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-5 py-2 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium rounded transition flex items-center gap-1.5"
+                  className="px-5 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium rounded transition flex items-center gap-1.5"
                 >
                   {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   <span>{saving ? 'Saving...' : 'Save Rule'}</span>

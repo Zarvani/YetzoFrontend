@@ -55,7 +55,7 @@ export default function AdminCustomersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Users className="w-6 h-6 text-[#059669]" />
+            <Users className="w-6 h-6 text-[#2563EB]" />
             <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">Customer Database & Accounts</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">Audit customer profiles, lifetime order history, and membership subscription status.</p>
@@ -77,14 +77,14 @@ export default function AdminCustomersPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter customers by name, phone number, or email..."
-          className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#059669]"
+          className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB]"
         />
       </div>
 
       <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading customer accounts...
           </div>
         ) : filtered.length === 0 ? (
@@ -125,7 +125,7 @@ export default function AdminCustomersPage() {
                       )}
                     </td>
                     <td className="py-3.5 px-4 text-right">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800">
                         Active
                       </span>
                     </td>

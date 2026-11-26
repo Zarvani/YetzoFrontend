@@ -80,7 +80,7 @@ function OpsBookingDetailContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Loading booking telemetry...
         </div>
       </div>
@@ -117,14 +117,14 @@ function OpsBookingDetailContent() {
           {booking?.is_verified_session && (
             <div className="px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-xl flex items-center gap-2 text-xs font-bold text-purple-700">
               <Video className="w-4 h-4" />
-              <span>Pronto Bodycam Active</span>
+              <span>Yetzo Bodycam Active</span>
             </div>
           )}
         </div>
       </div>
 
       {statusMessage && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{statusMessage}</span>
         </div>
@@ -187,7 +187,7 @@ function OpsBookingDetailContent() {
                 )}
                 <div className="p-3.5 bg-slate-50 font-bold flex justify-between items-center text-slate-900">
                   <span>Grand Total (Escrow)</span>
-                  <span className="text-sm text-[#059669]">₹{booking?.total_amount}</span>
+                  <span className="text-sm text-[#2563EB]">₹{booking?.total_amount}</span>
                 </div>
               </div>
             </div>
@@ -200,9 +200,9 @@ function OpsBookingDetailContent() {
                   {booking?.start_otp || '••••'}
                 </span>
               </div>
-              <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200">
-                <span className="text-[10px] font-black uppercase text-emerald-800 block">End Job OTP</span>
-                <span className="text-lg font-black font-mono text-emerald-900 tracking-wider">
+              <div className="p-3.5 bg-blue-50 rounded-2xl border border-blue-200">
+                <span className="text-[10px] font-black uppercase text-blue-800 block">End Job OTP</span>
+                <span className="text-lg font-black font-mono text-blue-900 tracking-wider">
                   {booking?.end_otp || '••••'}
                 </span>
               </div>
@@ -219,9 +219,9 @@ function OpsBookingDetailContent() {
             </h2>
 
             {booking?.assigned_professional?.user ? (
-              <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-xs space-y-2">
+              <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-xs space-y-2">
                 <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
-                  <UserCheck className="w-4 h-4 text-emerald-600" />
+                  <UserCheck className="w-4 h-4 text-blue-600" />
                   <span>
                     {booking.assigned_professional.user.first_name} {booking.assigned_professional.user.last_name || ''}
                   </span>
@@ -247,7 +247,7 @@ function OpsBookingDetailContent() {
               <select
                 value={selectedProId}
                 onChange={(e) => setSelectedProId(e.target.value)}
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#059669]"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB]"
               >
                 <option value="">Select verified technician...</option>
                 {pros.map((p) => (
@@ -282,7 +282,7 @@ function OpsBookingDetailContent() {
               <button
                 onClick={() => handleStatusUpdate('COMPLETED')}
                 disabled={actionLoading || booking?.status === 'COMPLETED'}
-                className="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl text-xs transition disabled:opacity-50"
+                className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold rounded-xl text-xs transition disabled:opacity-50"
               >
                 Force Complete & Release Escrow
               </button>

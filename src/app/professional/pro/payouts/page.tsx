@@ -84,7 +84,7 @@ export default function ProfessionalPayoutsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Landmark className="w-6 h-6" />
               </div>
               <div>
@@ -99,7 +99,7 @@ export default function ProfessionalPayoutsPage() {
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Withdrawable Wallet Balance
             </span>
-            <div className="text-3xl font-black text-emerald-400">
+            <div className="text-3xl font-black text-sky-400">
               ₹{balance.toLocaleString()}
             </div>
             <p className="text-[11px] text-slate-300">
@@ -108,7 +108,7 @@ export default function ProfessionalPayoutsPage() {
           </div>
 
           {successMsg && (
-            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMsg}</span>
             </div>
@@ -129,7 +129,7 @@ export default function ProfessionalPayoutsPage() {
                 value={upiId}
                 onChange={(e) => setUpiId(e.target.value)}
                 placeholder="yourname@okhdfcbank"
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900 font-mono"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900 font-mono"
                 required
               />
             </div>
@@ -142,7 +142,7 @@ export default function ProfessionalPayoutsPage() {
                 onChange={(e) => setWithdrawAmount(e.target.value)}
                 placeholder="Enter amount (e.g. 2000)"
                 max={balance}
-                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900 font-mono text-sm"
+                className="w-full p-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900 font-mono text-sm"
                 required
               />
             </div>
@@ -150,7 +150,7 @@ export default function ProfessionalPayoutsPage() {
             <button
               type="submit"
               disabled={withdrawing || !withdrawAmount || Number(withdrawAmount) > balance}
-              className="w-full py-3.5 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow transition text-xs flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {withdrawing ? (
                 <>

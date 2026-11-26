@@ -38,14 +38,14 @@ export default function BookingAddressPage() {
           <span>Back to Timing</span>
         </button>
 
-        <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-sm border border-emerald-200">
+        <span className="text-[11px] font-semibold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-sm border border-blue-200">
           Step 3 of 4 · Service Location
         </span>
       </div>
 
       <div className="bg-white border border-slate-200 rounded-md p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
         <div className="border-b border-slate-100 pb-4">
-          <span className="text-[10px] uppercase tracking-[0.16em] text-emerald-600 font-bold font-heading">
+          <span className="text-[10px] uppercase tracking-[0.16em] text-blue-600 font-bold font-heading">
             Step 03 · Doorstep Dispatch Location
           </span>
           <h1 className="text-2xl sm:text-3xl font-[300] font-heading text-slate-900 tracking-tight mt-1">
@@ -64,7 +64,7 @@ export default function BookingAddressPage() {
 
         <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <ShieldCheck className="w-4 h-4 text-blue-600" />
             <span>Encrypted GPS dispatch · Zero contact sharing</span>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function BookingAddressPage() {
           type="button"
           onClick={handleProceedToPayment}
           disabled={!address}
-          className="w-full py-3.5 bg-[#05AC5F] hover:bg-[#049652] disabled:opacity-50 text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading"
+          className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white font-medium text-xs uppercase tracking-wider rounded-sm shadow-sm transition flex items-center justify-center gap-2 font-heading"
         >
           <span>Continue to Review & Secure Payment</span>
           <ArrowRight className="w-3.5 h-3.5" />

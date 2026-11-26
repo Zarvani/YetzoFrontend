@@ -28,16 +28,7 @@ export default function AreasDetailPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="text-slate-500 hover:text-slate-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-slate-900">Areas Detail</h1>
-        </div>
-      </header>
+      
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-4xl w-full mx-auto p-6 md:p-8">

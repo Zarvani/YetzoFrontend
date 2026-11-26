@@ -57,11 +57,11 @@ export default function OperationsProfessionalsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <Users className="w-6 h-6 text-emerald-600" />
+            <Users className="w-6 h-6 text-blue-600" />
             <h1 className="text-xl font-bold text-slate-900">Partner Fleet & KYC Governance</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Urban Company standard background verification, Aadhaar/PAN validation, and fleet onboarding.
+            Yetzo Certified standard background verification, Aadhaar/PAN validation, and fleet onboarding.
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export default function OperationsProfessionalsPage() {
             placeholder="Search by partner name or phone..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900"
+            className="w-full text-xs pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900"
           />
         </div>
 
@@ -131,7 +131,7 @@ export default function OperationsProfessionalsPage() {
                   <tr key={pro.id} className="hover:bg-slate-50/60 transition">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">
+                        <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-800 font-bold flex items-center justify-center text-xs">
                           {pro.user?.first_name ? pro.user.first_name[0] : 'P'}
                         </div>
                         <div>
@@ -149,7 +149,7 @@ export default function OperationsProfessionalsPage() {
                       <span
                         className={`font-bold px-2 py-0.5 rounded text-[11px] ${
                           pro.kyc_status === 'ACTIVE' || pro.kyc_status === 'APPROVED'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-blue-100 text-blue-800'
                             : pro.kyc_status === 'VERIFICATION'
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-amber-100 text-amber-800'
@@ -168,8 +168,8 @@ export default function OperationsProfessionalsPage() {
                       {pro.total_jobs_completed || 120}
                     </td>
                     <td className="p-4">
-                      <span className="flex items-center gap-1.5 font-bold text-emerald-700">
-                        <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                      <span className="flex items-center gap-1.5 font-bold text-blue-700">
+                        <span className="w-2 h-2 rounded-full bg-blue-600" />
                         Online
                       </span>
                     </td>
@@ -177,7 +177,7 @@ export default function OperationsProfessionalsPage() {
                       {pro.kyc_status !== 'ACTIVE' && (
                         <button
                           onClick={() => handleApproveKyc(pro.id)}
-                          className="px-3 py-1 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-lg transition"
+                          className="px-3 py-1 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-lg transition"
                         >
                           Approve KYC
                         </button>

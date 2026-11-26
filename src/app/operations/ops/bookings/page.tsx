@@ -60,7 +60,7 @@ export default function OpsBookingsPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">COMPLETED</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800">COMPLETED</span>;
       case 'IN_PROGRESS':
         return <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 animate-pulse">IN PROGRESS</span>;
       case 'CONFIRMED':
@@ -103,7 +103,7 @@ export default function OpsBookingsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by order ID, customer phone, or partner name..."
-            className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#059669]"
+            className="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB]"
           />
         </div>
 
@@ -127,7 +127,7 @@ export default function OpsBookingsPage() {
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading live bookings data...
           </div>
         ) : filteredBookings.length === 0 ? (
@@ -160,7 +160,7 @@ export default function OpsBookingsPage() {
                           </span>
                         )}
                         {b.is_verified_session && (
-                          <span title="Pronto Bodycam Verified">
+                          <span title="Yetzo Bodycam Verified">
                             <Video className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                           </span>
                         )}

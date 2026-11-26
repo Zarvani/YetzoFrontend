@@ -49,8 +49,8 @@ export default function OperationsWarrantyClaimsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-emerald-600" />
-            <h1 className="text-xl font-bold text-slate-900">Urban Company 30-Day Warranty Claims</h1>
+            <ShieldCheck className="w-6 h-6 text-blue-600" />
+            <h1 className="text-xl font-bold text-slate-900">Yetzo Certified 30-Day Warranty Claims</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
             Review customer rework requests, inspect evidence photos, and authorize senior technician dispatch.
@@ -94,7 +94,7 @@ export default function OperationsWarrantyClaimsPage() {
                     <td className="p-4 font-mono font-bold text-slate-900">
                       #{claim.claim_id || (claim.id ? claim.id.slice(0, 8) : 'WC-001')}
                     </td>
-                    <td className="p-4 font-mono text-emerald-700 font-bold">
+                    <td className="p-4 font-mono text-blue-700 font-bold">
                       {claim.booking_reference || claim.booking_id?.slice(0, 8)}
                     </td>
                     <td className="p-4">
@@ -112,7 +112,7 @@ export default function OperationsWarrantyClaimsPage() {
                       <span
                         className={`font-bold px-2 py-0.5 rounded ${
                           claim.status === 'APPROVED'
-                            ? 'bg-emerald-100 text-emerald-800'
+                            ? 'bg-blue-100 text-blue-800'
                             : claim.status === 'REWORK_SCHEDULED'
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-amber-100 text-amber-800'
@@ -145,8 +145,8 @@ export default function OperationsWarrantyClaimsPage() {
               <h3 className="text-base font-bold text-slate-900">
                 Warranty Claim #{selectedClaim.claim_id || selectedClaim.id?.slice(0, 8)}
               </h3>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
-                Urban Company 30-Day Guarantee
+              <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">
+                Yetzo Certified 30-Day Guarantee
               </span>
             </div>
 
@@ -170,7 +170,7 @@ export default function OperationsWarrantyClaimsPage() {
                     href={selectedClaim.evidence_photo_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-emerald-600 font-bold hover:underline"
+                    className="inline-flex items-center gap-1 text-blue-600 font-bold hover:underline"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     View High-Resolution Evidence Photo
@@ -190,7 +190,7 @@ export default function OperationsWarrantyClaimsPage() {
               <button
                 type="button"
                 onClick={() => handleUpdateStatus(selectedClaim.id, 'APPROVED')}
-                className="px-5 py-2 bg-[#059669] text-white rounded-xl font-bold hover:bg-[#047857] shadow transition"
+                className="px-5 py-2 bg-[#2563EB] text-white rounded-xl font-bold hover:bg-[#1D4ED8] shadow transition"
               >
                 Approve Free Re-work & Dispatch Pro
               </button>

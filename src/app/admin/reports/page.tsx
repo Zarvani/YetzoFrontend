@@ -33,14 +33,14 @@ export default function AdminReportsPage() {
     },
     {
       id: 'dispatch_sla',
-      name: 'Snabbit 15-Min Instant Arrival & Cluster SLA Audit',
+      name: 'Yetzo Instant 15-Min Instant Arrival & Cluster SLA Audit',
       desc: 'Time from customer checkout to partner doorstep arrival, delay causes, and cancellations.',
       type: 'OPERATIONS',
       format: 'CSV / Excel',
     },
     {
       id: 'warranty_claims',
-      name: 'Urban Company 30-Day Warranty Re-work Claims',
+      name: 'Yetzo Certified 30-Day Warranty Re-work Claims',
       desc: 'Customer defect claims, free re-work appointments dispatched, and partner fault scoring.',
       type: 'QUALITY',
       format: 'CSV / Excel',
@@ -81,7 +81,7 @@ export default function AdminReportsPage() {
       </div>
 
       {downloadSuccess && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <Check className="w-4 h-4 shrink-0" />
           <span>Report "{downloadSuccess}" downloaded successfully.</span>
         </div>

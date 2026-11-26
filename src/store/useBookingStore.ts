@@ -7,7 +7,7 @@ export interface BookingState {
   additionalServices: ServiceItem[];
   address: AddressItem | null;
   isInstant: boolean;
-  isProntoVerified: boolean;
+  isYetzoVerified: boolean;
   scheduledDate: string;
   scheduledTime: string;
   scheduledSlotLabel: string;
@@ -22,7 +22,7 @@ export interface BookingState {
   toggleAdditionalService: (service: ServiceItem) => void;
   setAddress: (address: AddressItem) => void;
   setSchedule: (isInstant: boolean, date?: string, time?: string, slotLabel?: string) => void;
-  setProntoVerified: (verified: boolean) => void;
+  setYetzoVerified: (verified: boolean) => void;
   setCoupon: (coupon: CouponItem | null) => void;
   setAnswers: (answers: Record<string, any>) => void;
   setAddons: (addons: string[]) => void;
@@ -58,7 +58,7 @@ export const useBookingStore = create<BookingState>()(
       additionalServices: [],
       address: null,
       isInstant: true,
-      isProntoVerified: true,
+      isYetzoVerified: true,
       scheduledDate: '',
       scheduledTime: '10:00:00',
       scheduledSlotLabel: '15-Minute Ultra Fast Arrival',
@@ -90,7 +90,7 @@ export const useBookingStore = create<BookingState>()(
           scheduledSlotLabel: slotLabel || (isInstant ? '15-Minute Ultra Fast Arrival' : get().scheduledSlotLabel),
         }),
 
-      setProntoVerified: (isProntoVerified) => set({ isProntoVerified }),
+      setYetzoVerified: (isYetzoVerified) => set({ isYetzoVerified }),
 
       setCoupon: (appliedCoupon) => set({ appliedCoupon }),
 
@@ -108,7 +108,7 @@ export const useBookingStore = create<BookingState>()(
         const addPrices = additionalServices.reduce((sum, s) => sum + getBasePrice(s), 0);
         const subtotal = mainPrice + addPrices;
 
-        // Task Stacking discount: 15% off for 2+ chores/services (Pronto signature)
+        // Task Stacking discount: 15% off for 2+ chores/services (Yetzo signature)
         let discount = additionalServices.length > 0 ? Math.round(subtotal * 0.15) : 0;
 
         // Apply coupon if present
@@ -145,7 +145,7 @@ export const useBookingStore = create<BookingState>()(
           additionalServices: [],
           address: null,
           isInstant: true,
-          isProntoVerified: true,
+          isYetzoVerified: true,
           scheduledDate: '',
           scheduledTime: '10:00:00',
           scheduledSlotLabel: '15-Minute Ultra Fast Arrival',

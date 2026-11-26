@@ -90,7 +90,7 @@ export function LiveTrackingMap({ customerLocation, professionalLocation }: Live
             options={{
               suppressMarkers: true, // We will use our custom markers
               polylineOptions: {
-                strokeColor: "#05AC5F",
+                strokeColor: "#2563EB",
                 strokeWeight: 5,
                 strokeOpacity: 0.9,
               },

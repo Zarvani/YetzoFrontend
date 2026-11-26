@@ -62,7 +62,7 @@ function CustomerSearchPageContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search AC repair, bathroom cleaning, maid service..."
-              className="w-full text-xs pl-10 pr-4 py-3 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-[#059669] text-slate-900 bg-white shadow-sm"
+              className="w-full text-xs pl-10 pr-4 py-3 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-[#2563EB] text-slate-900 bg-white shadow-sm"
               autoFocus
             />
           </div>
@@ -74,7 +74,7 @@ function CustomerSearchPageContent() {
             onClick={() => setSelectedCat('ALL')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition ${
               selectedCat === 'ALL'
-                ? 'bg-[#059669] text-white shadow-sm'
+                ? 'bg-[#2563EB] text-white shadow-sm'
                 : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
             }`}
           >
@@ -86,7 +86,7 @@ function CustomerSearchPageContent() {
               onClick={() => setSelectedCat(cat.slug || cat.name)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition ${
                 selectedCat === (cat.slug || cat.name)
-                  ? 'bg-[#059669] text-white shadow-sm'
+                  ? 'bg-[#2563EB] text-white shadow-sm'
                   : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
@@ -99,7 +99,7 @@ function CustomerSearchPageContent() {
         <div className="space-y-3">
           <div className="flex items-center justify-between text-xs text-slate-500">
             <span>Showing {filteredServices.length} home services</span>
-            <span>Pronto & Urban Company Standards</span>
+            <span>Yetzo On-Demand Services Standards</span>
           </div>
 
           {loading ? (
@@ -116,11 +116,11 @@ function CustomerSearchPageContent() {
                 <Link
                   key={srv.id}
                   href={`/customer/booking?serviceId=${srv.id}`}
-                  className="bg-white border border-slate-200 hover:border-[#059669] p-4 rounded-2xl shadow-sm transition flex flex-col justify-between group"
+                  className="bg-white border border-slate-200 hover:border-[#2563EB] p-4 rounded-2xl shadow-sm transition flex flex-col justify-between group"
                 >
                   <div className="space-y-2">
                     <div className="flex items-start justify-between gap-2">
-                      <span className="font-extrabold text-sm text-slate-900 group-hover:text-[#059669] transition">
+                      <span className="font-extrabold text-sm text-slate-900 group-hover:text-[#2563EB] transition">
                         {srv.name}
                       </span>
                       <span className="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded shrink-0">
@@ -136,7 +136,7 @@ function CustomerSearchPageContent() {
                     <span className="text-[11px] text-slate-400 font-medium">
                       {srv.category?.name || 'Home Care'}
                     </span>
-                    <span className="font-bold text-[#059669] flex items-center gap-1 group-hover:translate-x-1 transition">
+                    <span className="font-bold text-[#2563EB] flex items-center gap-1 group-hover:translate-x-1 transition">
                       Book Now <ArrowRight className="w-3.5 h-3.5" />
                     </span>
                   </div>

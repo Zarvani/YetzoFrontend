@@ -112,7 +112,7 @@ export default function PrivacySettingsPage() {
         <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl">
+              <div className="p-3 bg-blue-50 text-blue-800 rounded-xl">
                 <Shield className="w-6 h-6" />
               </div>
               <div>
@@ -122,7 +122,7 @@ export default function PrivacySettingsPage() {
             </div>
 
             {saved && (
-              <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1">
+              <span className="text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-1">
                 <Check className="w-3.5 h-3.5" /> Saved
               </span>
             )}
@@ -132,7 +132,7 @@ export default function PrivacySettingsPage() {
             {/* Phone Number Masking */}
             <div className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-slate-200">
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg shrink-0 mt-0.5">
+                <div className="p-2 bg-blue-50 text-blue-800 rounded-lg shrink-0 mt-0.5">
                   <PhoneCall className="w-4 h-4" />
                 </div>
                 <div>
@@ -150,18 +150,18 @@ export default function PrivacySettingsPage() {
                   onChange={(e) => setNumberMasking(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
 
-            {/* Pronto Bodycam Retention */}
+            {/* Yetzo Bodycam Retention */}
             <div className="flex items-start justify-between gap-4 p-4 rounded-2xl border border-slate-200">
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-purple-50 text-purple-700 rounded-lg shrink-0 mt-0.5">
                   <Video className="w-4 h-4" />
                 </div>
                 <div>
-                  <span className="text-xs font-bold text-slate-900 block">Pronto Verified 48H Footage Purge</span>
+                  <span className="text-xs font-bold text-slate-900 block">Yetzo Verified 48H Footage Purge</span>
                   <p className="text-[11px] text-slate-500 mt-0.5">
                     Automatically shred encrypted bodycam video feeds after 48 hours unless a dispute is logged.
                   </p>
@@ -175,7 +175,7 @@ export default function PrivacySettingsPage() {
                   onChange={(e) => setBodycamOptIn(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
 
@@ -200,7 +200,7 @@ export default function PrivacySettingsPage() {
                   onChange={(e) => setGeoFencedAddress(e.target.checked)}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#059669]"></div>
+                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2563EB]"></div>
               </label>
             </div>
           </div>
@@ -209,7 +209,7 @@ export default function PrivacySettingsPage() {
             <button
               onClick={handleSave}
               disabled={loading}
-              className="w-full py-3 bg-[#05AC5F] hover:bg-[#049652] text-white font-medium uppercase tracking-wider rounded-sm shadow-sm transition text-xs flex items-center justify-center gap-2 disabled:opacity-50 font-heading"
+              className="w-full py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-medium uppercase tracking-wider rounded-sm shadow-sm transition text-xs flex items-center justify-center gap-2 disabled:opacity-50 font-heading"
             >
               <Save className="w-4 h-4" />
               <span>{loading ? 'Saving Changes...' : 'Save Privacy Controls'}</span>
@@ -223,7 +223,7 @@ export default function PrivacySettingsPage() {
             </h2>
 
             {exportSuccess && (
-              <div className="p-3 bg-emerald-50 text-emerald-800 text-xs rounded-sm flex items-center gap-2 border border-emerald-200">
+              <div className="p-3 bg-blue-50 text-blue-800 text-xs rounded-sm flex items-center gap-2 border border-blue-200">
                 <Check className="w-4 h-4 shrink-0" />
                 <span>Your personal account archive has been downloaded successfully.</span>
               </div>
@@ -265,7 +265,7 @@ export default function PrivacySettingsPage() {
             </div>
 
             {deleteSubmitted ? (
-              <div className="p-4 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm text-xs space-y-1">
+              <div className="p-4 bg-blue-50 text-blue-800 border border-blue-200 rounded-sm text-xs space-y-1">
                 <p className="font-semibold">Erasure Request Logged</p>
                 <p className="text-slate-600 text-[11px]">
                   Your request has been routed to our Data Protection Officer under DPDP Act 2023. A 30-day grace period is active before permanent deletion.

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldCheck, User, Phone, Mail, Lock, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -70,9 +71,11 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <header className="px-6 py-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur-md z-50">
-        <Link href="/" className="cursor-pointer flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#059669] rounded-lg flex items-center justify-center text-white font-black">Y</div>
-          <span className="font-black text-xl tracking-tight text-slate-900">Yetzo</span>
+        <Link href="/" className="cursor-pointer flex items-center gap-2.5">
+          <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-sm border border-slate-200 flex-shrink-0">
+            <Image src="/logo.jpg" alt="Yetzo" fill className="object-cover" priority />
+          </div>
+          <span className="font-heading font-[300] tracking-[0.16em] text-xl text-slate-900 uppercase">Yetzo</span>
         </Link>
         <Link
           href="/auth/login"
@@ -109,7 +112,7 @@ export default function RegisterPage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Aditya"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#059669] focus:bg-white transition"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                     required
                   />
                 </div>
@@ -122,7 +125,7 @@ export default function RegisterPage() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Sharma"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#059669] focus:bg-white transition"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                 />
               </div>
             </div>
@@ -137,7 +140,7 @@ export default function RegisterPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="9876543210"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#059669] focus:bg-white transition"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                   required
                 />
               </div>
@@ -152,7 +155,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="aditya@example.com"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#059669] focus:bg-white transition"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                 />
               </div>
             </div>
@@ -166,7 +169,7 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="At least 8 characters"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#059669] focus:bg-white transition"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-3 text-slate-900 font-semibold focus:outline-none focus:border-[#2563EB] focus:bg-white transition"
                   required
                 />
               </div>
@@ -175,7 +178,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold py-3.5 rounded-xl transition shadow shadow-emerald-900/10 active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2 text-xs"
+              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 rounded-xl transition shadow shadow-emerald-900/10 active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2 text-xs"
             >
               {loading ? (
                 <>
@@ -193,7 +196,7 @@ export default function RegisterPage() {
 
           <div className="mt-6 text-center text-xs font-medium text-slate-500">
             Already have an account?{' '}
-            <Link href="/auth/login" className="text-[#059669] font-bold hover:underline">
+            <Link href="/auth/login" className="text-[#2563EB] font-bold hover:underline">
               Sign In
             </Link>
           </div>

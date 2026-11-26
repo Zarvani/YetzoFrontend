@@ -84,8 +84,8 @@ function BookingAddonsPageContent() {
           Back to Booking
         </button>
 
-        <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-          Urban Company Rate-Card Transparency
+        <span className="text-xs font-bold text-blue-800 bg-blue-50 px-3 py-1 rounded-full border border-blue-200">
+          Yetzo Certified Rate-Card Transparency
         </span>
       </div>
 
@@ -107,7 +107,7 @@ function BookingAddonsPageContent() {
             </p>
             <button
               onClick={() => router.push('/customer/booking')}
-              className="px-5 py-2 bg-[#059669] text-white text-xs font-bold rounded-xl hover:bg-[#047857] shadow transition"
+              className="px-5 py-2 bg-[#2563EB] text-white text-xs font-bold rounded-xl hover:bg-[#1D4ED8] shadow transition"
             >
               Continue with Standard Service
             </button>
@@ -122,7 +122,7 @@ function BookingAddonsPageContent() {
                   onClick={() => toggleAddon(item.id)}
                   className={`p-4 rounded-xl border-2 cursor-pointer transition flex items-start justify-between ${
                     isSelected
-                      ? 'border-[#059669] bg-emerald-50/30'
+                      ? 'border-[#2563EB] bg-blue-50/30'
                       : 'border-slate-200 hover:border-slate-300 bg-white'
                   }`}
                 >
@@ -130,7 +130,7 @@ function BookingAddonsPageContent() {
                     <div
                       className={`w-5 h-5 rounded-md flex items-center justify-center border mt-0.5 transition ${
                         isSelected
-                          ? 'bg-[#059669] border-[#059669] text-white'
+                          ? 'bg-[#2563EB] border-[#2563EB] text-white'
                           : 'border-slate-300 bg-white'
                       }`}
                     >
@@ -165,7 +165,7 @@ function BookingAddonsPageContent() {
 
           <button
             onClick={handleContinue}
-            className="px-6 py-3 bg-[#059669] hover:bg-[#047857] text-white font-bold rounded-xl shadow-md transition text-xs flex items-center gap-2"
+            className="px-6 py-3 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold rounded-xl shadow-md transition text-xs flex items-center gap-2"
           >
             <span>Continue to Booking</span>
             <ArrowRight className="w-4 h-4" />

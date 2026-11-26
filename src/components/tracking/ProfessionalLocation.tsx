@@ -6,12 +6,12 @@ export function ProfessionalLocation() {
     <div className="bg-white rounded-[16px] border border-[#E2E8F0] shadow-[0_2px_12px_rgba(15,23,42,0.06)] overflow-hidden">
       <div className="p-5 flex items-center gap-4 border-b border-[#E2E8F0]">
         <div className="h-14 w-14 rounded-full overflow-hidden shrink-0 border-2 border-white shadow-sm relative">
-          <img src="/assets/images/ac-service.jpg" alt="Rahul Kumar" className="h-full w-full object-cover" />
-          <div className="absolute bottom-0 right-0 h-3.5 w-3.5 bg-[#16A34A] border-2 border-white rounded-full"></div>
+          <img src="/logo.jpg" alt="Verified Doorstep Pro" className="h-full w-full object-cover" />
+          <div className="absolute bottom-0 right-0 h-3.5 w-3.5 bg-[#2563EB] border-2 border-white rounded-full"></div>
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-0.5">
-            <h3 className="text-[16px] font-bold text-[#0F172A]">Rahul Kumar</h3>
+            <h3 className="text-[16px] font-bold text-[#0F172A]">Verified Doorstep Pro</h3>
             <ShieldCheck className="h-4 w-4 text-[#2563EB]" />
           </div>
           <div className="flex items-center gap-3 text-[13px] text-[#64748B]">
@@ -20,7 +20,7 @@ export function ProfessionalLocation() {
               <strong className="text-[#0F172A]">4.9</strong> (1.2k)
             </span>
             <span>•</span>
-            <span>AC Technician</span>
+            <span>House Help Specialist</span>
           </div>
         </div>
         
@@ -28,7 +28,7 @@ export function ProfessionalLocation() {
           <button className="h-10 w-10 rounded-full border border-[#E2E8F0] flex items-center justify-center hover:bg-slate-50 transition-colors text-[#2563EB]">
             <MessageSquare className="h-4 w-4" />
           </button>
-          <button className="h-10 w-10 rounded-full bg-[#16A34A] flex items-center justify-center hover:bg-green-700 transition-colors text-white shadow-sm">
+          <button className="h-10 w-10 rounded-full bg-[#2563EB] flex items-center justify-center hover:bg-blue-700 transition-colors text-white shadow-sm">
             <Phone className="h-4 w-4 fill-white" />
           </button>
         </div>

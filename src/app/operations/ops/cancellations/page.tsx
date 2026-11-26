@@ -71,7 +71,7 @@ export default function OpsCancellationsPage() {
       </div>
 
       {actionSuccess && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{actionSuccess}</span>
         </div>
@@ -80,7 +80,7 @@ export default function OpsCancellationsPage() {
       <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-16 flex items-center justify-center gap-2 text-xs text-slate-400">
-            <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+            <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
             Loading cancelled bookings...
           </div>
         ) : cancellations.length === 0 ? (
@@ -135,7 +135,7 @@ export default function OpsCancellationsPage() {
                       <button
                         onClick={() => handleApproveWaiver(c.id)}
                         disabled={processingId === c.id}
-                        className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl transition text-[11px]"
+                        className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 font-bold rounded-xl transition text-[11px]"
                       >
                         {processingId === c.id ? 'Refunding...' : 'Waive & Refund'}
                       </button>

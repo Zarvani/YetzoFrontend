@@ -61,7 +61,7 @@ function OpsDispatchDetailContent() {
     return (
       <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-500 font-semibold text-sm">
-          <Loader2 className="w-5 h-5 animate-spin text-[#059669]" />
+          <Loader2 className="w-5 h-5 animate-spin text-[#2563EB]" />
           Loading live dispatch radar...
         </div>
       </div>
@@ -82,7 +82,7 @@ function OpsDispatchDetailContent() {
       <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 bg-emerald-50 text-emerald-800 rounded-xl">
+            <div className="p-2.5 bg-blue-50 text-blue-800 rounded-xl">
               <Zap className="w-5 h-5" />
             </div>
             <div>
@@ -106,7 +106,7 @@ function OpsDispatchDetailContent() {
       </div>
 
       {successMsg && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-center gap-2">
+        <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -127,7 +127,7 @@ function OpsDispatchDetailContent() {
           </h2>
           <div className="space-y-3 text-xs">
             <div className="flex items-start gap-2.5">
-              <MapPin className="w-4 h-4 text-[#059669] shrink-0 mt-0.5" />
+              <MapPin className="w-4 h-4 text-[#2563EB] shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-slate-900 block">
                   {booking?.address?.address_line_1 || 'Primary Residence'}
@@ -149,8 +149,8 @@ function OpsDispatchDetailContent() {
             <div className="pt-3 border-t border-slate-100">
               <span className="text-slate-400 block text-[11px] font-bold">Current Assigned Status</span>
               {booking?.assigned_professional?.user ? (
-                <div className="mt-1 p-2.5 bg-emerald-50 rounded-xl text-emerald-900 font-bold flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <div className="mt-1 p-2.5 bg-blue-50 rounded-xl text-blue-900 font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-600" />
                   <span>
                     {booking.assigned_professional.user.first_name} {booking.assigned_professional.user.last_name || ''}
                   </span>
@@ -186,7 +186,7 @@ function OpsDispatchDetailContent() {
                   <div
                     key={pro.id}
                     className={`p-4 rounded-2xl border transition flex items-center justify-between gap-4 ${
-                      isCurrent ? 'border-emerald-500 bg-emerald-50/40' : 'border-slate-200 bg-white hover:border-slate-300'
+                      isCurrent ? 'border-blue-500 bg-blue-50/40' : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -198,7 +198,7 @@ function OpsDispatchDetailContent() {
                           <span className="font-bold text-slate-900 text-xs">
                             {pro.user?.first_name ? `${pro.user.first_name} ${pro.user.last_name || ''}` : 'Specialist'}
                           </span>
-                          <span className="text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded">
+                          <span className="text-[10px] font-extrabold uppercase bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">
                             Verified
                           </span>
                         </div>
@@ -210,7 +210,7 @@ function OpsDispatchDetailContent() {
 
                     <div>
                       {isCurrent ? (
-                        <span className="px-3 py-1.5 bg-emerald-100 text-emerald-800 rounded-xl text-xs font-black">
+                        <span className="px-3 py-1.5 bg-blue-100 text-blue-800 rounded-xl text-xs font-black">
                           Currently Assigned
                         </span>
                       ) : (

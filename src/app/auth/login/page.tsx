@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,9 +44,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans">
       <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50">
-         <div onClick={() => router.push('/')} className="cursor-pointer flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black">Y</div>
-            <span className="font-black text-xl tracking-tight text-slate-900">Yetzo</span>
+         <div onClick={() => router.push('/')} className="cursor-pointer flex items-center gap-2.5">
+            <div className="relative w-9 h-9 rounded-full overflow-hidden shadow-sm border border-slate-200 flex-shrink-0">
+              <Image src="/logo.jpg" alt="Yetzo" fill className="object-cover" priority />
+            </div>
+            <span className="font-heading font-[300] tracking-[0.16em] text-xl text-slate-900 uppercase">Yetzo</span>
          </div>
       </header>
 
