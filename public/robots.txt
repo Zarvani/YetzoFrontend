@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /operations/
+Disallow: /customer/
+Disallow: /professional/pro/
+Disallow: /auth/
+
+# Sitemaps
+Sitemap: https://yetzo.com/sitemap.xml

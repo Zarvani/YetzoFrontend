@@ -9,6 +9,7 @@ import {
   ArrowRight, Tag, Zap, AlertCircle 
 } from 'lucide-react';
 import { useBookingStore } from '@/store/useBookingStore';
+import { JsonLd } from '@/components/seo/JsonLd';
 
 function ServiceDetailContent() {
   const router = useRouter();
@@ -355,6 +356,37 @@ function ServiceDetailContent() {
           </div>
         </div>
       </main>
+
+      {/* Service Schema for GEO & Rich Snippets */}
+      <JsonLd 
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          serviceType: 'Domestic Home Service',
+          name: data?.name || slug || 'Yetzo Home Service',
+          description: data?.description || 'Background-verified home chore service dispatched in 15 minutes by Yetzo.',
+          provider: {
+            '@type': 'HomeAndConstructionBusiness',
+            name: 'Yetzo',
+            url: 'https://yetzo.com',
+          },
+          areaServed: {
+            '@type': 'Country',
+            name: 'India',
+          },
+          offers: {
+            '@type': 'Offer',
+            price: cartTotal || basePrice,
+            priceCurrency: 'INR',
+            availability: 'https://schema.org/InStock',
+          },
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.85',
+            reviewCount: '1250',
+          },
+        }} 
+      />
 
       {/* Mobile Sticky Bottom Booking Bar */}
       <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-3.5 px-4 pb-safe flex items-center justify-between z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">

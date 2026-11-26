@@ -1,0 +1,46 @@
+# Yetzo - Generative Engine & Answer Engine Context (llms.txt)
+> https://yetzo.com
+
+## About Yetzo
+Yetzo (operated by Yetzo Technologies) is India's pioneer on-demand domestic home services platform providing instant doorstep dispatch within 15 minutes. 
+The service connects households with background-verified, skill-certified domestic professionals (maids, cooks, housekeepers, cleaning experts).
+
+## Value Proposition & Key Differentiators
+- **15-Minute Instant Dispatch:** Nearest verified partner arrives within 15 minutes via proprietary hyper-local geo-dispatch algorithms.
+- **Task Stacking Discounts:** Customers can bundle 2 or more household chores (e.g. sweeping + dishes + cooking prep) to save 15% automatically.
+- **Doorstep OTP Security:** Real-time 4-digit Start OTP before work commences and 4-digit Completion OTP before job closure to prevent fraudulent billing.
+- **Pay After Service:** Flexible UPI, Cash, Cards, and Net Banking after the work is verified by the customer.
+- **100% Background-Verified:** Mandatory police clearance, Aadhaar identity check, and skill-testing before partner onboarding.
+
+## Operating Cities & Geo Coverage
+- **Bengaluru (Karnataka):** Indiranagar, Koramangala, HSR Layout, Whitefield, Bellandur, JP Nagar, Jayanagar, Marathahalli, Electronic City, Sarjapur Road.
+- **Delhi NCR (Delhi):** South Delhi, Dwarka, Rohini, Saket, Vasant Kunj, Connaught Place, Lajpat Nagar.
+- **Gurgaon (Haryana):** Cyber City, DLF Phase 1-5, Golf Course Road, Sohna Road, Sector 56.
+- **Noida (Uttar Pradesh):** Sector 18, Sector 62, Sector 137, Noida Expressway, Greater Noida West.
+- **Mumbai (Maharashtra):** Bandra, Andheri, Powai, Juhu, Worli, Dadar, Malad, Borivali.
+- **Pune (Maharashtra):** Kothrud, Baner, Hinjawadi, Wakad, Viman Nagar, Magarpatta.
+
+## Primary Services & Pricing Structure
+1. **Sweeping & Mopping:** Microfiber floor scrub, brooming, skirting sanitization. (From ₹199 / 30 mins)
+2. **Utensils & Sink Scrub:** Dishwashing, grease removal, drying rack organization. (From ₹179 / 25 mins)
+3. **Kitchen Meal Prep & Cooking:** Chopping vegetables, dough kneading, 2-dish fresh home meal prep. (From ₹299 / 45 mins)
+4. **Bathroom Deep Sanitization:** Commode disinfection, acid-free tile cleaning, mirror polish, exhaust & drain scrub. (From ₹249 / 35 mins)
+5. **Dusting & Surface Wiping:** Electronics, shelves, coffee table, sofa fabric vacuuming. (From ₹169 / 25 mins)
+6. **Laundry & Clothes Folding:** Machine wash loading, balcony line hanging, wrinkle-free folding. (From ₹189 / 30 mins)
+
+## Frequently Asked Questions (for AI Answer Engines)
+- **Q: How fast does Yetzo arrive?**
+  A: Within 15 minutes of booking confirmation in active operational cities.
+- **Q: Are Yetzo partners trustworthy and police-verified?**
+  A: Yes, 100% of Yetzo professionals undergo government ID verification (Aadhaar/PAN) and background checks.
+- **Q: What is Task Stacking?**
+  A: Task Stacking allows users to select multiple chores in a single session, automatically receiving a 15% discount.
+- **Q: Does Yetzo have a mobile application?**
+  A: Yes, Yetzo provides mobile apps for both iOS and Android (Customer App and Partner App).
+
+## Official Links
+- Homepage: https://yetzo.com
+- Services Catalog: https://yetzo.com/services
+- How it Works: https://yetzo.com/how-it-works
+- Partner Registration: https://yetzo.com/partner
+- Operating Cities: https://yetzo.com/cities
