@@ -11,14 +11,16 @@ import { AddressItem } from '@/types/booking';
 export default function BookingAddressPage() {
   const router = useRouter();
   const { address, setAddress } = useBookingStore();
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
   const handleSelectAddress = (addr: AddressItem) => {
     setAddress(addr);
+    setErrorMsg(null);
   };
 
   const handleProceedToPayment = () => {
     if (!address) {
-      alert('Please select or add a service address to proceed.');
+      setErrorMsg('Please select or add a verified service address to proceed.');
       return;
     }
     router.push('/customer/booking/payment');
@@ -57,6 +59,11 @@ export default function BookingAddressPage() {
         </div>
 
         {/* Live Address Selector Component */}
+        {errorMsg && (
+          <div className="bg-red-50 text-red-600 p-3 rounded-sm text-xs font-medium border border-red-200">
+            {errorMsg}
+          </div>
+        )}
         <BookingAddressSelector
           selectedAddressId={address?.id}
           onSelectAddress={handleSelectAddress}
