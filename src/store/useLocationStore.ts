@@ -1,56 +1,61 @@
 'use client';
 
 import { create } from 'zustand';
+import { apiClient } from '@/lib/apiClient';
 
 export interface CityInfo {
+  id: string;
   name: string;
-  slug: string;
-  isOperational: boolean;
   state: string;
+  country?: string;
+  is_active?: boolean;
 }
-
-export const CITIES_DATA: CityInfo[] = [
-  { name: 'Delhi NCR', slug: 'delhi-ncr', isOperational: true, state: 'Delhi' },
-  { name: 'Bengaluru', slug: 'bengaluru', isOperational: true, state: 'Karnataka' },
-  { name: 'Mumbai', slug: 'mumbai', isOperational: true, state: 'Maharashtra' },
-  { name: 'Gurgaon', slug: 'gurgaon', isOperational: true, state: 'Haryana' },
-  { name: 'Noida', slug: 'noida', isOperational: true, state: 'Uttar Pradesh' },
-  { name: 'Pune', slug: 'pune', isOperational: true, state: 'Maharashtra' },
-  { name: 'Hyderabad', slug: 'hyderabad', isOperational: false, state: 'Telangana' },
-  { name: 'Faridabad', slug: 'faridabad', isOperational: false, state: 'Haryana' },
-  { name: 'Ghaziabad', slug: 'ghaziabad', isOperational: false, state: 'Uttar Pradesh' },
-  { name: 'Navi Mumbai', slug: 'navi-mumbai', isOperational: false, state: 'Maharashtra' },
-  { name: 'Thane', slug: 'thane', isOperational: false, state: 'Maharashtra' },
-  { name: 'Chennai', slug: 'chennai', isOperational: false, state: 'Tamil Nadu' },
-  { name: 'Kolkata', slug: 'kolkata', isOperational: false, state: 'West Bengal' },
-  { name: 'Jaipur', slug: 'jaipur', isOperational: false, state: 'Rajasthan' },
-  { name: 'Ahmedabad', slug: 'ahmedabad', isOperational: false, state: 'Gujarat' },
-];
 
 interface LocationStore {
   selectedCity: string;
+  selectedCityId: string | null;
+  cities: CityInfo[];
   userCoords: { lat: number; lng: number } | null;
   hasLocationPermission: boolean;
   isLocationModalOpen: boolean;
-  setSelectedCity: (city: string) => void;
+  fetchCities: () => Promise<CityInfo[]>;
+  setSelectedCity: (city: string, cityId?: string) => void;
   setUserCoords: (coords: { lat: number; lng: number }) => void;
   setHasLocationPermission: (val: boolean) => void;
   openLocationModal: () => void;
   closeLocationModal: () => void;
 }
 
-export const useLocationStore = create<LocationStore>((set) => ({
+export const useLocationStore = create<LocationStore>((set, get) => ({
   selectedCity: typeof window !== 'undefined' ? localStorage.getItem('yetzo_selected_city') || '' : '',
+  selectedCityId: typeof window !== 'undefined' ? localStorage.getItem('yetzo_selected_city_id') || null : null,
+  cities: [],
   userCoords: null,
   hasLocationPermission: typeof window !== 'undefined' ? localStorage.getItem('yetzo_location_permission') === 'granted' : false,
   isLocationModalOpen: false,
-  setSelectedCity: (city: string) => {
+
+  fetchCities: async () => {
+    try {
+      const res: any = await apiClient('locations/cities/');
+      const list: CityInfo[] = res?.results || (Array.isArray(res) ? res : []);
+      set({ cities: list });
+      return list;
+    } catch {
+      return get().cities;
+    }
+  },
+
+  setSelectedCity: (city: string, cityId?: string) => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('yetzo_selected_city', city);
-      window.dispatchEvent(new CustomEvent('yetzo-city-changed', { detail: city }));
+      if (cityId) {
+        localStorage.setItem('yetzo_selected_city_id', cityId);
+      }
+      window.dispatchEvent(new CustomEvent('yetzo-city-changed', { detail: { city, cityId } }));
     }
-    set({ selectedCity: city });
+    set({ selectedCity: city, ...(cityId ? { selectedCityId: cityId } : {}) });
   },
+
   setUserCoords: (coords) => set({ userCoords: coords }),
   setHasLocationPermission: (val) => {
     if (typeof window !== 'undefined') {

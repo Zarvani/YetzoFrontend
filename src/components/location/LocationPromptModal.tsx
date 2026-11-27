@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { MapPin, Navigation, X, Check, Loader2, AlertCircle } from 'lucide-react';
-import { useLocationStore, CITIES_DATA } from '@/store/useLocationStore';
+import { useLocationStore } from '@/store/useLocationStore';
 
 export function LocationPromptModal() {
   const {
     selectedCity,
     setSelectedCity,
+    cities,
+    fetchCities,
     setUserCoords,
     setHasLocationPermission,
     isLocationModalOpen,
@@ -19,26 +21,26 @@ export function LocationPromptModal() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showManualCities, setShowManualCities] = useState(false);
 
-  // Industry Standard: Check permission on initial website visit
+  useEffect(() => {
+    fetchCities();
+  }, [fetchCities]);
+
+  // Check permission on initial website visit
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const savedCity = localStorage.getItem('yetzo_selected_city');
     const permStatus = localStorage.getItem('yetzo_location_permission');
 
-    // If user already granted location or selected their city, don't interrupt them
     if (savedCity && permStatus === 'granted') {
       return;
     }
 
-    // Check navigator permissions API silently
     if (navigator.permissions && navigator.permissions.query) {
       navigator.permissions.query({ name: 'geolocation' as PermissionName }).then((result) => {
         if (result.state === 'granted') {
-          // Already granted -> silently resolve location without showing annoying popups
           detectLiveGpsLocation(true);
         } else if (result.state === 'prompt') {
-          // First visit -> Show professional marketplace permission banner
           if (!savedCity) {
             openLocationModal();
           }
@@ -81,29 +83,34 @@ export function LocationPromptModal() {
               addr.state_district ||
               addr.county ||
               addr.state ||
-              'Delhi NCR';
+              '';
 
-            // Match against operational cities or fallback cleanly
-            const matched = CITIES_DATA.find((c) =>
+            // Match against active operational cities loaded from PostgreSQL
+            const matched = cities.find((c) =>
               c.name.toLowerCase().includes(detectedCity.toLowerCase()) ||
               detectedCity.toLowerCase().includes(c.name.toLowerCase())
             );
 
-            const finalCity = matched ? matched.name : detectedCity;
-            setSelectedCity(finalCity);
+            if (matched) {
+              setSelectedCity(matched.name, matched.id);
+            } else if (detectedCity) {
+              setSelectedCity(detectedCity);
+            } else if (cities.length > 0) {
+              setSelectedCity(cities[0].name, cities[0].id);
+            }
             closeLocationModal();
           } else {
-            setSelectedCity('Delhi NCR');
+            if (cities.length > 0) setSelectedCity(cities[0].name, cities[0].id);
             closeLocationModal();
           }
         } catch {
-          setSelectedCity('Delhi NCR');
+          if (cities.length > 0) setSelectedCity(cities[0].name, cities[0].id);
           closeLocationModal();
         } finally {
           setLocating(false);
         }
       },
-      (err) => {
+      () => {
         setLocating(false);
         setHasLocationPermission(false);
         if (!isSilent) {
@@ -115,8 +122,8 @@ export function LocationPromptModal() {
     );
   };
 
-  const handleSelectCity = (cityName: string) => {
-    setSelectedCity(cityName);
+  const handleSelectCity = (cityName: string, cityId?: string) => {
+    setSelectedCity(cityName, cityId);
     closeLocationModal();
   };
 
@@ -142,10 +149,10 @@ export function LocationPromptModal() {
         </div>
 
         <h3 className="text-xl font-bold font-heading text-slate-900 tracking-tight">
-          Where would you like your chores done?
+          Where would you like your services done?
         </h3>
         <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
-          Yetzo dispatches verified domestic helpers and maids in 15 minutes. Enable live GPS location to find professionals near your doorstep.
+          Yetzo dispatches verified domestic helpers and technicians in 15 minutes. Enable live GPS location to find professionals near your doorstep.
         </p>
 
         {errorMsg && (
@@ -185,13 +192,13 @@ export function LocationPromptModal() {
           ) : (
             <div className="pt-2">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-                Available Coverage Cities:
+                Available Coverage Cities (Live from Database):
               </p>
               <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                {CITIES_DATA.map((c) => (
+                {cities.filter(c => c.is_active !== false).map((c) => (
                   <button
-                    key={c.slug}
-                    onClick={() => handleSelectCity(c.name)}
+                    key={c.id || c.name}
+                    onClick={() => handleSelectCity(c.name, c.id)}
                     className={`py-2 px-3 text-xs text-left rounded-lg border transition flex items-center justify-between ${
                       selectedCity === c.name
                         ? 'border-blue-600 bg-blue-50 text-blue-900 font-bold'
@@ -199,11 +206,7 @@ export function LocationPromptModal() {
                     }`}
                   >
                     <span>{c.name}</span>
-                    {c.isOperational ? (
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    ) : (
-                      <span className="text-[9px] text-slate-400">Soon</span>
-                    )}
+                    <span className="text-[9px] text-slate-400 font-medium">{c.state}</span>
                   </button>
                 ))}
               </div>

@@ -4,29 +4,16 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { MapPin, ChevronDown, ShieldCheck, Zap, User, LogOut } from "lucide-react"
-import { useLocationStore, CITIES_DATA } from "@/store/useLocationStore"
+import { useLocationStore } from "@/store/useLocationStore"
 
 export function Header() {
   const router = useRouter()
   const [isScrolled, setIsScrolled] = React.useState(false)
-  const { selectedCity, setSelectedCity, openLocationModal } = useLocationStore()
+  const { selectedCity, setSelectedCity, cities, fetchCities, openLocationModal } = useLocationStore()
   const [userLoggedIn, setUserLoggedIn] = React.useState(false)
 
-  const cities = [
-    "Bengaluru",
-    "Mumbai",
-    "Delhi NCR",
-    "Gurgaon",
-    "Noida",
-    "Pune",
-    "Hyderabad",
-    "Faridabad",
-    "Ghaziabad",
-    "Navi Mumbai",
-    "Thane",
-  ]
-
   React.useEffect(() => {
+    fetchCities()
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }

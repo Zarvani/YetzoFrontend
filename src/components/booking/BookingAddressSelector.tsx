@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { MapPin, Plus, Check, Home, Building2, MapPinned, AlertCircle, Loader2, Navigation } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 import { AddressItem } from '@/types/booking';
-import { useLocationStore, CITIES_DATA } from '@/store/useLocationStore';
+import { useLocationStore } from '@/store/useLocationStore';
 
 interface BookingAddressSelectorProps {
   selectedAddressId?: string;

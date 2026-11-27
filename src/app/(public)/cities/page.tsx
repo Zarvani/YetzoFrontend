@@ -1,78 +1,66 @@
-'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { MapPin, Building2 } from 'lucide-react';
+import React from 'react';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Building2, MapPin, ArrowRight } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 
-export default function CitiesPage() {
-  const router = useRouter();
-  const [cities, setCities] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export const metadata: Metadata = {
+  title: 'Cities We Serve | Yetzo',
+  description: 'Explore all operational cities served by Yetzo verified home service specialists.',
+};
 
-  useEffect(() => {
-    apiClient('locations/cities/').then((d: any) => {
-      setCities(d?.results || d || []);
-    }).catch(() => setCities([])).finally(() => setLoading(false));
-  }, []);
-
-  // Fallback cities if API returns empty
-  const fallbackCities = [
-    { name: 'Delhi NCR', state: 'Delhi', services_count: 200 },
-    { name: 'Mumbai', state: 'Maharashtra', services_count: 200 },
-    { name: 'Bengaluru', state: 'Karnataka', services_count: 200 },
-    { name: 'Hyderabad', state: 'Telangana', services_count: 200 },
-    { name: 'Chennai', state: 'Tamil Nadu', services_count: 180 },
-    { name: 'Kolkata', state: 'West Bengal', services_count: 180 },
-    { name: 'Pune', state: 'Maharashtra', services_count: 150 },
-    { name: 'Ahmedabad', state: 'Gujarat', services_count: 150 },
-    { name: 'Jaipur', state: 'Rajasthan', services_count: 120 },
-    { name: 'Surat', state: 'Gujarat', services_count: 100 },
-    { name: 'Lucknow', state: 'Uttar Pradesh', services_count: 100 },
-    { name: 'Chandigarh', state: 'Punjab', services_count: 80 },
-  ];
-  const displayCities = cities.length > 0 ? cities : fallbackCities;
+export default async function CitiesPage() {
+  let cities: any[] = [];
+  try {
+    const res: any = await apiClient('locations/cities/');
+    cities = res?.results || (Array.isArray(res) ? res : []);
+  } catch {
+    cities = [];
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans">
-      <title>Cities We Serve — Yetzo</title>
-      
-
+    <div className="min-h-screen bg-slate-50 font-body">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-slate-900 to-blue-950 py-16 px-4 text-center text-white">
-        <h1 className="text-5xl font-black mb-4">We're in Your City</h1>
-        <p className="text-slate-300 font-medium text-xl">Serving 30+ cities across India and expanding every month</p>
+      <section className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 py-16 px-4 text-center text-white">
+        <h1 className="text-4xl sm:text-5xl font-bold font-heading mb-4">Operational Cities</h1>
+        <p className="text-slate-300 font-medium text-base sm:text-lg max-w-xl mx-auto">
+          Delivering 15-minute house help and verified home services across active metro clusters.
+        </p>
       </section>
 
       <main className="max-w-5xl mx-auto px-4 py-12">
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array(12).fill(0).map((_,i) => <div key={i} className="bg-white h-28 rounded-2xl animate-pulse border border-slate-200"></div>)}
+        {cities.length === 0 ? (
+          <div className="text-center py-16 bg-white border border-slate-200 rounded-sm p-8">
+            <MapPin className="w-8 h-8 text-slate-400 mx-auto mb-2" />
+            <h3 className="text-base font-bold font-heading text-slate-800">Connecting to Service Network...</h3>
+            <p className="text-xs text-slate-500 mt-1">Operational hubs are updating in real-time.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {displayCities.map((city: any, i) => (
-              <button
-                key={i}
-                onClick={() => router.push(`/cities/${(city.name || city.slug || city.id).toLowerCase().replace(/\s+/g, '-')}`)}
-                className="bg-white p-5 rounded-2xl border border-slate-200 text-left hover:border-blue-400 hover:shadow-md transition-all shadow-sm group"
-              >
-                <div className="w-8 h-8 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center mb-3 text-[#2563EB]">
-                  <Building2 className="w-4 h-4" />
-                </div>
-                <h3 className="font-black text-slate-900 group-hover:text-blue-600 transition-colors">{city.name}</h3>
-                <p className="text-slate-500 font-medium text-sm">{city.state}</p>
-                <p className="text-blue-600 font-bold text-xs mt-2">{city.services_count || '100+'}+ services</p>
-              </button>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {cities.filter(c => c.is_active).map((city) => {
+              const slug = city.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              return (
+                <Link
+                  key={city.id}
+                  href={`/cities/${slug}`}
+                  className="bg-white p-5 rounded-sm border border-slate-200 hover:border-blue-400 hover:shadow-sm transition group"
+                >
+                  <div className="w-9 h-9 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center mb-3 text-[#2563EB]">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <h3 className="font-bold font-heading text-slate-900 group-hover:text-[#2563EB] transition">
+                    {city.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">{city.state}, {city.country}</p>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-[#2563EB] font-heading font-medium">
+                    <span>View Services</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
-
-        {/* Expansion note */}
-        <div className="mt-12 bg-blue-50 border border-blue-200 p-6 rounded-3xl text-center">
-          <h3 className="font-black text-slate-900 text-xl mb-2">Don't see your city?</h3>
-          <p className="text-slate-600 font-medium mb-4">We expand to new cities every month. Register your interest and be the first to know when Yetzo launches near you.</p>
-          <button onClick={() => router.push('/contact')} className="bg-blue-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors">Notify Me When Available</button>
-        </div>
       </main>
     </div>
   );

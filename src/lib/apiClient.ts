@@ -1,4 +1,4 @@
-const BASE_URL = "/api/proxy/v1";
+const BASE_URL = "https://sak.yetzo.com/api/v1"
 
 type RequestOptions = {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -11,12 +11,13 @@ type RequestOptions = {
 
 /**
  * A clean, standard fetch wrapper for Yetzo API calls.
+ * Works seamlessly in both Client (CSR via /api/proxy) and Server (SSR direct to Django).
  */
 export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   // Strip '/v1' prefix if it was passed manually to prevent '/v1/v1/' duplication
   const cleanEndpoint = endpoint.startsWith('/v1/') ? endpoint.replace('/v1/', '/') : endpoint;
   const url = `${BASE_URL}${cleanEndpoint.startsWith('/') ? cleanEndpoint : `/${cleanEndpoint}`}`;
-  
+
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...options.headers,
@@ -33,7 +34,6 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     }
   }
 
-  // Token is now injected securely by the Next.js /api/proxy route via HttpOnly cookies
   const fetchConfig: RequestInit = {
     method: options.method || "GET",
     headers,

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ShieldCheck, User, Phone, MapPin, Wrench, ArrowRight, AlertCircle, Loader2, Navigation, IndianRupee, Clock, Award } from 'lucide-react';
-import { CITIES_DATA } from '@/store/useLocationStore';
+import { useLocationStore } from '@/store/useLocationStore';
 
 export default function ProfessionalRegisterPage() {
   const router = useRouter();

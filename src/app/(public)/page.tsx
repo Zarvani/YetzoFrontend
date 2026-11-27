@@ -11,59 +11,52 @@ import {
   Wrench, Hammer, Wind, Bug, Paintbrush, Truck, Droplets
 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
-import { useLocationStore, CITIES_DATA } from '@/store/useLocationStore';
+import { useLocationStore } from '@/store/useLocationStore';
 import { useBookingStore } from '@/store/useBookingStore';
 
-// Yetzo-standard core chores with realistic durations & pricing
-const FEATURED_CHORES = [
-  { id: 'chore-sweep-mop', name: 'Sweeping & Mopping', duration: 30, price: 199, iconType: 'sweep', desc: 'Brooming, microfiber floor scrub & skirting sanitization', eta: '12m' },
-  { id: 'chore-utensils', name: 'Utensils & Sink Scrub', duration: 25, price: 179, iconType: 'utensils', desc: 'Wash dishes, sink degrease & drying rack stacking', eta: '10m' },
-  { id: 'chore-cook-prep', name: 'Kitchen Meal Prep & Cooking', duration: 45, price: 299, iconType: 'cooking', desc: 'Veggie chopping, dough kneading & 2-dish fresh home cooking', eta: '15m' },
-  { id: 'chore-bathroom', name: 'Bathroom Deep Sanitization', duration: 35, price: 249, iconType: 'bath', desc: 'Tiles scrub, commode disinfection, mirror polish & drain cleaning', eta: '14m' },
-  { id: 'chore-dusting', name: 'Dusting & Surface Wiping', duration: 25, price: 169, iconType: 'dusting', desc: 'Shelves, electronics, sofa fabric, table wipedown', eta: '11m' },
-  { id: 'chore-laundry', name: 'Laundry & Clothes Folding', duration: 30, price: 189, iconType: 'laundry', desc: 'Washing machine load, balcony clothes hanging & crisp folding', eta: '12m' },
-];
-
-const renderChoreIcon = (type: string) => {
-  switch (type) {
-    case 'sweep': return <Sparkles className="w-4 h-4 text-[#2563EB]" />;
-    case 'utensils': return <Utensils className="w-4 h-4 text-[#2563EB]" />;
-    case 'cooking': return <ChefHat className="w-4 h-4 text-[#2563EB]" />;
-    case 'bath': return <Bath className="w-4 h-4 text-[#2563EB]" />;
-    case 'dusting': return <Layers className="w-4 h-4 text-[#2563EB]" />;
-    case 'laundry': return <Shirt className="w-4 h-4 text-[#2563EB]" />;
-    default: return <Sparkles className="w-4 h-4 text-[#2563EB]" />;
-  }
+const renderChoreIcon = (name: string = '') => {
+  const n = name.toLowerCase();
+  if (n.includes('cook') || n.includes('food') || n.includes('meal')) return <ChefHat className="w-4 h-4 text-[#2563EB]" />;
+  if (n.includes('dish') || n.includes('utensil')) return <Utensils className="w-4 h-4 text-[#2563EB]" />;
+  if (n.includes('bath') || n.includes('toilet') || n.includes('washroom')) return <Bath className="w-4 h-4 text-[#2563EB]" />;
+  if (n.includes('ac') || n.includes('cool')) return <Wind className="w-4 h-4 text-[#2563EB]" />;
+  if (n.includes('laundry') || n.includes('cloth')) return <Shirt className="w-4 h-4 text-[#2563EB]" />;
+  if (n.includes('plumb') || n.includes('pipe') || n.includes('tap')) return <Droplets className="w-4 h-4 text-[#2563EB]" />;
+  return <Sparkles className="w-4 h-4 text-[#2563EB]" />;
 };
 
 export default function Homepage() {
   const router = useRouter();
-  const { selectedCity, setSelectedCity } = useLocationStore();
-  const currentCityObj = CITIES_DATA.find((c) => c.name === selectedCity) || { name: selectedCity, isOperational: true };
-  const isCityOperational = currentCityObj.isOperational;
+  const { selectedCity, setSelectedCity, cities, fetchCities } = useLocationStore();
+  const currentCityObj = cities.find((c) => c.name.toLowerCase() === (selectedCity || '').toLowerCase());
+  const isCityOperational = currentCityObj ? (currentCityObj.is_active !== false) : true;
 
-  // Interactive Task Stacking state for live demo on homepage
-  const [selectedChores, setSelectedChores] = useState<string[]>(['chore-sweep-mop', 'chore-utensils']);
+  const [selectedChores, setSelectedChores] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'instant' | 'later' | 'recurring'>('instant');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [liveServices, setLiveServices] = useState<any[]>([]);
+  const [liveCategories, setLiveCategories] = useState<any[]>([]);
   const [loadingServices, setLoadingServices] = useState<boolean>(true);
 
   useEffect(() => {
-    // Fetch live services from PostgreSQL via apiClient
-    apiClient('services/')
-      .then((res: any) => {
-        const list = res?.data || (Array.isArray(res) ? res : res?.results || []);
-        setLiveServices(list);
-      })
-      .catch(() => {
-        // Fallback curated services if network or API not yet seeded
-        setLiveServices([]);
+    fetchCities();
+    Promise.all([
+      apiClient('services/').catch(() => ({ results: [] })),
+      apiClient('services/categories/').catch(() => ({ results: [] })),
+    ])
+      .then(([srvRes, catRes]: [any, any]) => {
+        const sList = srvRes?.results || (Array.isArray(srvRes) ? srvRes : []);
+        const cList = catRes?.results || (Array.isArray(catRes) ? catRes : []);
+        setLiveServices(sList);
+        setLiveCategories(cList);
+        if (sList.length > 0) {
+          setSelectedChores(sList.slice(0, 2).map((s: any) => s.id));
+        }
       })
       .finally(() => {
         setLoadingServices(false);
       });
-  }, []);
+  }, [fetchCities]);
 
   const toggleStackChore = (id: string) => {
     if (selectedChores.includes(id)) {
@@ -74,9 +67,10 @@ export default function Homepage() {
     }
   };
 
-  const stackedItems = FEATURED_CHORES.filter((c) => selectedChores.includes(c.id));
-  const demoDuration = stackedItems.reduce((acc, c) => acc + c.duration, 0);
-  const demoSubtotal = stackedItems.reduce((acc, c) => acc + c.price, 0);
+  const stackableServices = liveServices.slice(0, 6);
+  const stackedItems = stackableServices.filter((s: any) => selectedChores.includes(s.id));
+  const demoDuration = stackedItems.reduce((acc: number, c: any) => acc + (c.estimated_duration_minutes || 30), 0);
+  const demoSubtotal = stackedItems.reduce((acc: number, c: any) => acc + (c.starting_price || c.pricing_rules?.[0]?.base_price || 199), 0);
   const demoDiscount = stackedItems.length >= 2 ? Math.round(demoSubtotal * 0.15) : 0;
   const demoTotal = demoSubtotal - demoDiscount + 29;
 
@@ -280,19 +274,20 @@ export default function Homepage() {
             </Link>
           </div>
 
-          {/* Interactive Category Filter Pills */}
+          {/* Dynamic Interactive Category Filter Pills from Database */}
           <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none mb-8">
-            {[
-              { id: 'all', name: 'All Services', icon: Sparkles },
-              { id: 'maid', name: 'Maid & Chores', icon: Utensils },
-              { id: 'cleaning', name: 'Deep Cleaning', icon: Bath },
-              { id: 'ac', name: 'AC & Cooling', icon: Wind },
-              { id: 'plumbing', name: 'Plumbing', icon: Droplets },
-              { id: 'electrical', name: 'Electrical', icon: Zap },
-              { id: 'carpentry', name: 'Carpentry', icon: Hammer },
-              { id: 'appliance', name: 'Appliance Repair', icon: Wrench },
-            ].map((cat) => {
-              const Icon = cat.icon;
+            <button
+              onClick={() => setActiveCategory('all')}
+              className={`px-4 py-2 rounded-full text-xs font-medium transition flex items-center gap-2 shrink-0 ${
+                activeCategory === 'all'
+                  ? 'bg-[#2563EB] text-white shadow-sm'
+                  : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+              }`}
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${activeCategory === 'all' ? 'text-white' : 'text-[#2563EB]'}`} />
+              <span>All Services</span>
+            </button>
+            {liveCategories.map((cat: any) => {
               const isActive = activeCategory === cat.id;
               return (
                 <button
@@ -304,7 +299,6 @@ export default function Homepage() {
                       : 'bg-white border border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-[#2563EB]'}`} />
                   <span>{cat.name}</span>
                 </button>
               );
@@ -350,200 +344,99 @@ export default function Homepage() {
               </div>
             </div>
           ) : (
-            /* Service Cards Grid for Operational Cities */
+            /* Service Cards Grid loaded live from PostgreSQL */
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              {
-                id: 'srv-sweep-mop',
-                name: 'Express Sweeping & Mopping',
-                category: 'maid',
-                categoryLabel: 'Maid & Chores',
-                price: 199,
-                duration: '30 mins',
-                rating: '4.9',
-                reviews: '14,200',
-                desc: 'Microfiber dual scrubbing, edge dusting, and germicidal floor sanitization.',
-                badge: '15m SLA',
-                image: '/images/cleaning.jpg',
-                slug: 'sweeping-mopping'
-              },
-              {
-                id: 'srv-utensils',
-                name: 'Utensil Scrub & Degreasing',
-                category: 'maid',
-                categoryLabel: 'Maid & Chores',
-                price: 179,
-                duration: '25 mins',
-                rating: '4.8',
-                reviews: '11,800',
-                desc: 'Thorough stainless & glass scrubbing, sink trap clear, drying rack stacking.',
-                badge: '15m SLA',
-                image: '/images/cleaning.jpg',
-                slug: 'utensils-scrub'
-              },
-              {
-                id: 'srv-cook-prep',
-                name: 'Cook & Meal Preparation',
-                category: 'maid',
-                categoryLabel: 'Maid & Chores',
-                price: 299,
-                duration: '45 mins',
-                rating: '4.9',
-                reviews: '8,400',
-                desc: 'Dough kneading, vegetable chopping, and 2-dish fresh healthy home cooking.',
-                badge: 'Popular',
-                image: '/images/cleaning.jpg',
-                slug: 'cook-meal-prep'
-              },
-              {
-                id: 'srv-bath-deep',
-                name: 'Bathroom Tile & Acid Free Scrub',
-                category: 'cleaning',
-                categoryLabel: 'Deep Cleaning',
-                price: 249,
-                duration: '35 mins',
-                rating: '4.9',
-                reviews: '16,700',
-                desc: 'Hard water scale removal, commode descaling, mirror buff, and drain sanitization.',
-                badge: 'Top Rated',
-                image: '/images/cleaning.jpg',
-                slug: 'bathroom-deep-cleaning'
-              },
-              {
-                id: 'srv-ac-deep',
-                name: 'Split AC Power Jet Clean',
-                category: 'ac',
-                categoryLabel: 'AC & Cooling',
-                price: 499,
-                duration: '45 mins',
-                rating: '4.9',
-                reviews: '22,100',
-                desc: 'High-pressure foam jet wash, cooling coil scrub, tray wipe & airflow test.',
-                badge: 'Summer Special',
-                image: '/images/ac-service.jpg',
-                slug: 'split-ac-power-jet'
-              },
-              {
-                id: 'srv-plumb-tap',
-                name: 'Tap Leakage & Pipe Repair',
-                category: 'plumbing',
-                categoryLabel: 'Plumbing',
-                price: 149,
-                duration: '20 mins',
-                rating: '4.8',
-                reviews: '9,300',
-                desc: 'Washer replacement, cartridge fix, jet spray fitting & angle valve check.',
-                badge: '15m SLA',
-                image: '/images/plumbing.jpg',
-                slug: 'tap-leakage-pipe-repair'
-              },
-              {
-                id: 'srv-elec-switch',
-                name: 'Switchboard & Fan Repair',
-                category: 'electrical',
-                categoryLabel: 'Electrical',
-                price: 129,
-                duration: '20 mins',
-                rating: '4.8',
-                reviews: '7,900',
-                desc: 'Short-circuit diagnosis, regulator replacement, and modular switch fixing.',
-                badge: '15m SLA',
-                image: '/images/electrical.jpg',
-                slug: 'switchboard-fan-repair'
-              },
-              {
-                id: 'srv-carp-bed',
-                name: 'Bed, Table & Hinge Fixing',
-                category: 'carpentry',
-                categoryLabel: 'Carpentry',
-                price: 249,
-                duration: '40 mins',
-                rating: '4.8',
-                reviews: '6,400',
-                desc: 'Joint tightening, hydraulic shock pump alignment & channel replacement.',
-                badge: 'Quick Fix',
-                image: '/images/mechanic.jpg',
-                slug: 'bed-table-hinge-fixing'
-              },
-            ]
-              .filter((s) => activeCategory === 'all' || s.category === activeCategory)
-              .map((service) => (
-                <div
-                  key={service.id}
-                  onClick={() => router.push(`/service/${service.slug}`)}
-                  className="bg-white border border-slate-200 rounded-sm overflow-hidden hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between group cursor-pointer"
-                >
-                  {/* Service Image Header */}
-                  <div className="relative h-36 w-full bg-slate-100 overflow-hidden">
-                    <img
-                      src={service.image}
-                      alt={service.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-2.5 left-2.5">
-                      <span className="text-[10px] font-semibold text-white bg-blue-600/90 backdrop-blur-xs px-2 py-0.5 rounded-sm uppercase tracking-wider font-heading">
-                        {service.badge}
-                      </span>
-                    </div>
-                    <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-sm flex items-center gap-1 text-[11px] font-semibold text-slate-800 shadow-xs">
-                      <span className="text-amber-500">★</span>
-                      <span>{service.rating}</span>
-                    </div>
-                  </div>
-
-                  <div className="p-4 space-y-2.5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-sm font-semibold font-heading text-slate-900 group-hover:text-[#2563EB] transition leading-snug">
-                        {service.name}
-                      </h3>
-                      <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-relaxed">
-                        {service.desc}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-400" />
-                        <span>{service.duration}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3 text-[#2563EB]" />
-                        <span>Verified Pro</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-heading">Starts at</span>
-                        <span className="text-base font-bold font-heading text-slate-900">
-                          ₹{service.price}
-                        </span>
+              {liveServices
+                .filter((s: any) => activeCategory === 'all' || s.category?.id === activeCategory || s.category?.slug === activeCategory || s.category === activeCategory)
+                .map((service: any) => {
+                  const price = service.starting_price || service.pricing_rules?.[0]?.base_price || 299;
+                  return (
+                    <div
+                      key={service.id}
+                      onClick={() => router.push(`/service/${service.slug}`)}
+                      className="bg-white border border-slate-200 rounded-sm overflow-hidden hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between group cursor-pointer"
+                    >
+                      <div className="relative h-36 w-full bg-slate-100 overflow-hidden">
+                        {service.image_url ? (
+                          <img
+                            src={service.image_url}
+                            alt={service.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400">
+                            <Sparkles className="w-6 h-6 text-sky-400" />
+                          </div>
+                        )}
+                        <div className="absolute top-2.5 left-2.5">
+                          <span className="text-[10px] font-semibold text-white bg-blue-600/90 backdrop-blur-xs px-2 py-0.5 rounded-sm uppercase tracking-wider font-heading">
+                            {service.supports_instant ? '15m SLA' : 'Verified'}
+                          </span>
+                        </div>
+                        {service.rating && (
+                          <div className="absolute top-2.5 right-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-sm flex items-center gap-1 text-[11px] font-semibold text-slate-800 shadow-xs">
+                            <span className="text-amber-500">★</span>
+                            <span>{service.rating}</span>
+                          </div>
+                        )}
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const store = useBookingStore.getState();
-                          store.setService({
-                            id: service.id,
-                            name: service.name,
-                            description: service.desc,
-                            pricing_rules: [{ base_price: service.price }],
-                            category: { name: service.categoryLabel || 'Home Service' },
-                          } as any);
-                          store.setSchedule(true, new Date().toISOString().split('T')[0]);
-                          router.push('/customer/booking/schedule');
-                        }}
-                        className="px-3.5 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold rounded-sm tracking-wide transition flex items-center gap-1 font-heading"
-                      >
-                        <span>Book</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </button>
+                      <div className="p-4 space-y-2.5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <h3 className="text-sm font-semibold font-heading text-slate-900 group-hover:text-[#2563EB] transition leading-snug">
+                            {service.name}
+                          </h3>
+                          <p className="text-[11px] text-slate-500 line-clamp-2 mt-1 leading-relaxed">
+                            {service.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-[11px] text-slate-500 pt-1">
+                          {service.estimated_duration_minutes > 0 && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3 h-3 text-slate-400" />
+                              <span>{service.estimated_duration_minutes} mins</span>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3 text-[#2563EB]" />
+                            <span>Verified Pro</span>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-heading">Starts at</span>
+                            <span className="text-base font-bold font-heading text-slate-900">
+                              ₹{price}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const store = useBookingStore.getState();
+                              store.setService({
+                                id: service.id,
+                                name: service.name,
+                                description: service.description,
+                                pricing_rules: [{ base_price: price }],
+                                category: { name: service.category?.name || 'Home Service' },
+                              } as any);
+                              store.setSchedule(true, new Date().toISOString().split('T')[0]);
+                              router.push('/customer/booking/schedule');
+                            }}
+                            className="px-3.5 py-1.5 bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold rounded-sm tracking-wide transition flex items-center gap-1 font-heading"
+                          >
+                            <span>Book</span>
+                            <ArrowRight className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  );
+                })}
             </div>
           )}
 
@@ -569,47 +462,52 @@ export default function Homepage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
-            {/* Chores Grid (Left 8 cols) */}
+            {/* Chores Grid (Left 8 cols) loaded live from PostgreSQL */}
             <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {FEATURED_CHORES.map((chore) => {
-                const isSelected = selectedChores.includes(chore.id);
+              {stackableServices.map((service: any) => {
+                const isSelected = selectedChores.includes(service.id);
+                const price = service.starting_price || service.pricing_rules?.[0]?.base_price || 199;
                 return (
                   <div
-                    key={chore.id}
-                    onClick={() => toggleStackChore(chore.id)}
-                    className={`p-4 rounded-sm border cursor-pointer transition flex items-start justify-between ${isSelected
-                      ? 'border-blue-600 bg-blue-50/40 shadow-sm'
-                      : 'border-slate-200 hover:border-slate-300 bg-white'
-                      }`}
+                    key={service.id}
+                    onClick={() => toggleStackChore(service.id)}
+                    className={`p-4 rounded-sm border cursor-pointer transition flex items-start justify-between ${
+                      isSelected
+                        ? 'border-blue-600 bg-blue-50/40 shadow-sm'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                    }`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`w-4 h-4 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
-                        }`}>
+                      <div
+                        className={`w-4 h-4 rounded-sm border flex items-center justify-center shrink-0 mt-0.5 ${
+                          isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300'
+                        }`}
+                      >
                         {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-sm bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-                            {renderChoreIcon(chore.iconType)}
+                            {renderChoreIcon(service.name)}
                           </div>
                           <h3 className="text-xs font-semibold font-heading text-slate-900">
-                            {chore.name}
+                            {service.name}
                           </h3>
                         </div>
-                        <p className="text-[11px] text-slate-500 mt-1 leading-snug">
-                          {chore.desc}
+                        <p className="text-[11px] text-slate-500 mt-1 leading-snug line-clamp-2">
+                          {service.description}
                         </p>
                         <div className="flex items-center gap-2 mt-2 text-[10px] text-slate-400">
-                          <span>~{chore.duration} mins</span>
+                          <span>~{service.estimated_duration_minutes || 30} mins</span>
                           <span>•</span>
-                          <span className="text-blue-700 font-medium">ETA {chore.eta}</span>
+                          <span className="text-blue-700 font-medium">15m Arrival SLA</span>
                         </div>
                       </div>
                     </div>
 
                     <div className="text-right shrink-0 pl-2">
                       <span className="text-xs font-semibold font-heading text-slate-900">
-                        ₹{chore.price}
+                        ₹{price}
                       </span>
                     </div>
                   </div>
