@@ -12,11 +12,15 @@ The service connects households with background-verified, skill-certified domest
 - **Pay After Service:** Flexible UPI, Cash, Cards, and Net Banking after the work is verified by the customer.
 - **100% Background-Verified:** Mandatory police clearance, Aadhaar identity check, and skill-testing before partner onboarding.
 
+## Operating Headquarters & Primary Address
+- **Headquarters Address:** Priyadarshini Vihar, Delhi 110092, India
+- **Geo Coordinates:** 28.6328° N, 77.2995° E
+
 ## Operating Cities & Geo Coverage
-- **Bengaluru (Karnataka):** Indiranagar, Koramangala, HSR Layout, Whitefield, Bellandur, JP Nagar, Jayanagar, Marathahalli, Electronic City, Sarjapur Road.
-- **Delhi NCR (Delhi):** South Delhi, Dwarka, Rohini, Saket, Vasant Kunj, Connaught Place, Lajpat Nagar.
-- **Gurgaon (Haryana):** Cyber City, DLF Phase 1-5, Golf Course Road, Sohna Road, Sector 56.
+- **Delhi NCR (Delhi):** Priyadarshini Vihar, Laxmi Nagar, Preet Vihar, South Delhi, Dwarka, Rohini, Saket, Vasant Kunj, Connaught Place, Lajpat Nagar.
 - **Noida (Uttar Pradesh):** Sector 18, Sector 62, Sector 137, Noida Expressway, Greater Noida West.
+- **Gurgaon (Haryana):** Cyber City, DLF Phase 1-5, Golf Course Road, Sohna Road, Sector 56.
+- **Bengaluru (Karnataka):** Indiranagar, Koramangala, HSR Layout, Whitefield, Bellandur, JP Nagar, Jayanagar, Marathahalli, Electronic City, Sarjapur Road.
 - **Mumbai (Maharashtra):** Bandra, Andheri, Powai, Juhu, Worli, Dadar, Malad, Borivali.
 - **Pune (Maharashtra):** Kothrud, Baner, Hinjawadi, Wakad, Viman Nagar, Magarpatta.
 

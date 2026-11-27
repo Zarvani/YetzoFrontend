@@ -283,7 +283,7 @@ export default function AdminZonesPage() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Indiranagar & Domlur Central"
+                  placeholder="e.g. Priyadarshini Vihar & Preet Vihar Cluster"
                   value={newZone.name}
                   onChange={(e) => setNewZone({ ...newZone, name: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-sm focus:outline-none focus:border-blue-600"

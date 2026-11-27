@@ -9,8 +9,7 @@ import { useLocationStore, CITIES_DATA } from "@/store/useLocationStore"
 export function Header() {
   const router = useRouter()
   const [isScrolled, setIsScrolled] = React.useState(false)
-  const { selectedCity, setSelectedCity } = useLocationStore()
-  const [cityOpen, setCityOpen] = React.useState(false)
+  const { selectedCity, setSelectedCity, openLocationModal } = useLocationStore()
   const [userLoggedIn, setUserLoggedIn] = React.useState(false)
 
   const cities = [
@@ -82,46 +81,27 @@ export function Header() {
             </div>
           </Link>
 
-          {/* City Selector */}
+          {/* Market Benchmark: Quick-Commerce 15-Min & Address Pill */}
           <div className="relative">
             <button
-              onClick={() => setCityOpen(!cityOpen)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm border border-slate-200 hover:border-slate-300 bg-slate-50 text-xs font-medium text-slate-800 transition"
+              onClick={() => openLocationModal()}
+              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100/70 text-left transition group shadow-sm"
             >
-              <MapPin className="w-3.5 h-3.5 text-[#2563EB]" />
-              <span>{selectedCity}</span>
-              <ChevronDown className="w-3 h-3 text-slate-400" />
-            </button>
-
-            {cityOpen && (
-              <div className="absolute top-full left-0 mt-1 w-52 bg-white border border-slate-200 rounded-sm shadow-xl py-1 z-50 max-h-80 overflow-y-auto">
-                <div className="px-3 py-1.5 text-[10px] uppercase font-bold text-slate-400 tracking-wider border-b border-slate-100 font-heading">
-                  Select Coverage City
-                </div>
-                {CITIES_DATA.map((c) => (
-                  <button
-                    key={c.name}
-                    onClick={() => {
-                      setSelectedCity(c.name);
-                      setCityOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs transition flex items-center justify-between ${
-                      selectedCity === c.name ? 'bg-blue-50 text-blue-800 font-bold' : 'text-slate-700 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <span>{c.name}</span>
-                      {!c.isOperational && (
-                        <span className="text-[9px] font-semibold text-amber-700 bg-amber-50 border border-amber-200/60 px-1.5 py-0.2 rounded">
-                          Soon
-                        </span>
-                      )}
-                    </div>
-                    {selectedCity === c.name && <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span>}
-                  </button>
-                ))}
+              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[11px] shrink-0 font-heading">
+                15m
               </div>
-            )}
+              <div className="flex flex-col min-w-0 pr-1">
+                <div className="flex items-center gap-1">
+                  <span className="text-[11px] font-black text-slate-900 tracking-tight flex items-center gap-1 font-heading">
+                    Instant Dispatch in 15 Mins
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-slate-600 transition" />
+                </div>
+                <p className="text-[10px] text-slate-500 font-medium truncate max-w-[150px] sm:max-w-[200px]">
+                  {selectedCity ? `${selectedCity}, India` : 'Set your location'}
+                </p>
+              </div>
+            </button>
           </div>
 
           {/* Desktop Navigation */}

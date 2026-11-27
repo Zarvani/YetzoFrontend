@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { MapPin, Plus, Check, Home, Building2, MapPinned, AlertCircle, Loader2 } from 'lucide-react';
+import { MapPin, Plus, Check, Home, Building2, MapPinned, AlertCircle, Loader2, Navigation } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
 import { AddressItem } from '@/types/booking';
+import { useLocationStore, CITIES_DATA } from '@/store/useLocationStore';
 
 interface BookingAddressSelectorProps {
   selectedAddressId?: string;
@@ -15,17 +16,80 @@ export function BookingAddressSelector({
   selectedAddressId,
   onSelectAddress,
 }: BookingAddressSelectorProps) {
+  const { selectedCity } = useLocationStore();
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Form State
+  // Form State: starts with customer selectedCity context or blank, then auto-populated by GPS
   const [addressLine, setAddressLine] = useState('');
-  const [city, setCity] = useState('Bengaluru');
-  const [pincode, setPincode] = useState('560038');
+  const [city, setCity] = useState(selectedCity || '');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [addressType, setAddressType] = useState<'HOME' | 'WORK' | 'OTHER'>('HOME');
+
+  // Trigger GPS detection when opening modal if fields are empty
+  const detectLiveLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      setLocationStatus('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setLocating(true);
+    setLocationStatus('Requesting current GPS coordinates...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setCoords({ lat, lng });
+        setLocationStatus('Resolving street and pincode...');
+
+        try {
+          // Reverse geocoding via OpenStreetMap Nominatim
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data.address || {};
+            const detectedCity = addr.city || addr.town || addr.village || addr.state_district || addr.county || selectedCity;
+            const detectedState = addr.state || '';
+            const detectedPostcode = addr.postcode || '';
+            const road = addr.road || addr.suburb || addr.neighbourhood || '';
+            const house = addr.house_number || '';
+            const detectedLine = [house, road, addr.suburb].filter(Boolean).join(', ');
+
+            if (detectedCity) setCity(detectedCity);
+            if (detectedState) setState(detectedState);
+            if (detectedPostcode) setPincode(detectedPostcode);
+            if (detectedLine && !addressLine) setAddressLine(detectedLine);
+            setLocationStatus('Current location detected successfully.');
+          } else {
+            setLocationStatus('Location detected from GPS coordinates.');
+          }
+        } catch (err) {
+          setLocationStatus('GPS coordinates captured.');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (geoErr) => {
+        setLocating(false);
+        if (geoErr.code === geoErr.PERMISSION_DENIED) {
+          setLocationStatus('Location permission not granted. Please enter manually.');
+        } else {
+          setLocationStatus('Unable to determine location. Please enter manually.');
+        }
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   const fetchAddresses = async () => {
     try {
@@ -60,12 +124,12 @@ export function BookingAddressSelector({
 
       const payload = {
         address_line_1: addressLine.trim(),
-        city: city.trim(),
-        state: 'Karnataka',
+        city: city.trim() || selectedCity,
+        state: state.trim() || 'Delhi',
         pincode: pincode.trim(),
         address_type: addressType,
-        latitude: '12.9716',
-        longitude: '77.5946',
+        latitude: coords ? coords.lat.toString() : '28.6328',
+        longitude: coords ? coords.lng.toString() : '77.2995',
       };
 
       const res = await apiClient<any>('locations/addresses/', {
@@ -181,6 +245,37 @@ export function BookingAddressSelector({
               </button>
             </div>
 
+            {/* Live Location / GPS Detection Button */}
+            <div className="bg-blue-50/60 border border-blue-100 rounded-sm p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2">
+                <Navigation className="w-4 h-4 text-blue-600 shrink-0" />
+                <div>
+                  <p className="text-xs font-semibold text-slate-800">Use Current GPS Location</p>
+                  <p className="text-[11px] text-slate-500">
+                    {locationStatus || 'Detect your live city, street and pincode automatically'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={detectLiveLocation}
+                disabled={locating}
+                className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-sm text-[11px] font-medium font-heading uppercase tracking-wider flex items-center gap-1.5 shrink-0 disabled:opacity-50 transition"
+              >
+                {locating ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Detecting...</span>
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="w-3 h-3" />
+                    <span>Detect Location</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             <form onSubmit={handleCreateAddress} className="space-y-4">
               <div>
                 <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
@@ -213,7 +308,7 @@ export function BookingAddressSelector({
                   required
                   value={addressLine}
                   onChange={(e) => setAddressLine(e.target.value)}
-                  placeholder="e.g. Flat 402, Oakwood Towers, 5th Cross, Indiranagar"
+                  placeholder="e.g. Flat / House number, Apartment or Building name"
                   className="w-full text-xs font-medium p-2.5 border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
                 />
               </div>

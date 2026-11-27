@@ -3,18 +3,79 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Save, AlertCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Save, AlertCircle, Navigation, Loader2 } from 'lucide-react';
 import { apiClient } from '@/lib/apiClient';
+import { useLocationStore } from '@/store/useLocationStore';
 
 export default function NewAddressPage() {
   const router = useRouter();
+  const { selectedCity } = useLocationStore();
   const [addressLine, setAddressLine] = useState('');
-  const [city, setCity] = useState('Delhi NCR');
-  const [state, setState] = useState('Delhi');
-  const [pincode, setPincode] = useState('110001');
+  const [city, setCity] = useState(selectedCity || '');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
   const [addressType, setAddressType] = useState('HOME');
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [locating, setLocating] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const detectLiveLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      setLocationStatus('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setLocating(true);
+    setLocationStatus('Requesting current GPS coordinates...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        setCoords({ lat, lng });
+        setLocationStatus('Resolving location details...');
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data.address || {};
+            const detectedCity = addr.city || addr.town || addr.village || addr.state_district || addr.county || selectedCity;
+            const detectedState = addr.state || '';
+            const detectedPostcode = addr.postcode || '';
+            const road = addr.road || addr.suburb || addr.neighbourhood || '';
+            const house = addr.house_number || '';
+            const detectedLine = [house, road, addr.suburb].filter(Boolean).join(', ');
+
+            if (detectedCity) setCity(detectedCity);
+            if (detectedState) setState(detectedState);
+            if (detectedPostcode) setPincode(detectedPostcode);
+            if (detectedLine && !addressLine) setAddressLine(detectedLine);
+            setLocationStatus('Current location detected successfully.');
+          } else {
+            setLocationStatus('Coordinates captured from GPS.');
+          }
+        } catch (err) {
+          setLocationStatus('Coordinates captured from GPS.');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (geoErr) => {
+        setLocating(false);
+        if (geoErr.code === geoErr.PERMISSION_DENIED) {
+          setLocationStatus('Location permission denied. Please enter manually.');
+        } else {
+          setLocationStatus('Unable to detect location. Please enter manually.');
+        }
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,12 +89,12 @@ export default function NewAddressPage() {
         method: 'POST',
         body: {
           address_line_1: addressLine.trim(),
-          city: city.trim(),
-          state: state.trim(),
+          city: city.trim() || selectedCity,
+          state: state.trim() || 'Delhi',
           pincode: pincode.trim(),
           address_type: addressType,
-          latitude: '28.5355',
-          longitude: '77.3910',
+          latitude: coords ? coords.lat.toString() : '28.6328',
+          longitude: coords ? coords.lng.toString() : '77.2995',
         },
       });
 
@@ -73,6 +134,39 @@ export default function NewAddressPage() {
               <span>{error}</span>
             </div>
           )}
+
+          {/* Live GPS Detection Banner */}
+          <div className="bg-blue-50/70 border border-blue-100 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 text-blue-700 rounded-xl">
+                <Navigation className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-800">Use Current GPS Location</p>
+                <p className="text-[11px] text-slate-500">
+                  {locationStatus || 'Detect your live city, street and pincode automatically'}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={detectLiveLocation}
+              disabled={locating}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-2 shrink-0 disabled:opacity-50 transition shadow-sm"
+            >
+              {locating ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Detecting...</span>
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>Detect Location</span>
+                </>
+              )}
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>

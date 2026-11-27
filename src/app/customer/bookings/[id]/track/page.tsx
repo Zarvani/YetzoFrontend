@@ -38,8 +38,8 @@ function BookingLiveTrackContent() {
       
       if (data?.address) {
         setPartnerLocation({
-          lat: (data.address.latitude ? Number(data.address.latitude) : 12.9716) + 0.008,
-          lng: (data.address.longitude ? Number(data.address.longitude) : 77.5946) + 0.006,
+          lat: (data.address.latitude ? Number(data.address.latitude) : 28.6328) + 0.008,
+          lng: (data.address.longitude ? Number(data.address.longitude) : 77.2995) + 0.006,
         });
       }
     } catch (err: any) {
@@ -133,8 +133,8 @@ function BookingLiveTrackContent() {
   const pro = booking.assigned_professional;
   const isYetzoVerified = booking.is_verified_session;
   const customerLoc = {
-    lat: booking.address?.latitude ? Number(booking.address.latitude) : 12.9716,
-    lng: booking.address?.longitude ? Number(booking.address.longitude) : 77.5946,
+    lat: booking.address?.latitude ? Number(booking.address.latitude) : 28.6328,
+    lng: booking.address?.longitude ? Number(booking.address.longitude) : 77.2995,
   };
 
   return (

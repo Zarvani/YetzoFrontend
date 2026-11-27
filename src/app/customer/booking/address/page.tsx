@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, ArrowRight, ShieldCheck, MapPin } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ShieldCheck, MapPin, User, Phone, CheckCircle2, Building, HeartHandshake } from 'lucide-react';
 import { BookingStepper } from '@/components/booking/BookingStepper';
 import { BookingAddressSelector } from '@/components/booking/BookingAddressSelector';
 import { useBookingStore } from '@/store/useBookingStore';
@@ -11,7 +11,13 @@ import { AddressItem } from '@/types/booking';
 export default function BookingAddressPage() {
   const router = useRouter();
   const { address, setAddress } = useBookingStore();
-  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Market Standard Feature: Booking for Yourself vs Booking for Someone Else / Another Place
+  const [bookingForWhom, setBookingForWhom] = useState<'self' | 'other'>('self');
+  const [recipientName, setRecipientName] = useState('');
+  const [recipientPhone, setRecipientPhone] = useState('');
+  const [gateEntryNotes, setGateEntryNotes] = useState('');
 
   const handleSelectAddress = (addr: AddressItem) => {
     setAddress(addr);
@@ -21,6 +27,10 @@ export default function BookingAddressPage() {
   const handleProceedToPayment = () => {
     if (!address) {
       setErrorMsg('Please select or add a verified service address to proceed.');
+      return;
+    }
+    if (bookingForWhom === 'other' && (!recipientName.trim() || recipientPhone.length < 10)) {
+      setErrorMsg('Please enter the recipient name and 10-digit mobile number so our professional can reach them.');
       return;
     }
     router.push('/customer/booking/payment');
@@ -54,8 +64,86 @@ export default function BookingAddressPage() {
             Where should our partner arrive?
           </h1>
           <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-            Ensure your flat number and gate entry notes are accurate for our 15-minute express arrival SLA.
+            Choose your address or schedule service for parents, friends, tenants or another place.
           </p>
+        </div>
+
+        {/* Market Benchmark: "Who is this booking for?" Toggle */}
+        <div className="bg-slate-50 border border-slate-200 rounded-md p-4 space-y-3">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 font-heading">
+            Booking For
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setBookingForWhom('self')}
+              className={`p-3 rounded-md border text-left transition flex items-center gap-3 ${
+                bookingForWhom === 'self'
+                  ? 'border-blue-600 bg-white text-blue-900 shadow-sm'
+                  : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
+              }`}
+            >
+              <div className={`p-2 rounded-md ${bookingForWhom === 'self' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
+                <User className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-bold">For Myself</p>
+                <p className="text-[10px] text-slate-500">My registered number & address</p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setBookingForWhom('other')}
+              className={`p-3 rounded-md border text-left transition flex items-center gap-3 ${
+                bookingForWhom === 'other'
+                  ? 'border-blue-600 bg-white text-blue-900 shadow-sm'
+                  : 'border-slate-200 bg-white/60 text-slate-600 hover:border-slate-300'
+              }`}
+            >
+              <div className={`p-2 rounded-md ${bookingForWhom === 'other' ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-400'}`}>
+                <HeartHandshake className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="text-xs font-bold">Someone Else / Other Place</p>
+                <p className="text-[10px] text-slate-500">Parents, tenants, friends</p>
+              </div>
+            </button>
+          </div>
+
+          {/* Recipient Details if Booking for Other Place / Person */}
+          {bookingForWhom === 'other' && (
+            <div className="pt-3 border-t border-slate-200/80 space-y-3 animate-in fade-in duration-200">
+              <p className="text-[11px] font-semibold text-blue-700">
+                Service partner will call this person upon arrival and share the 4-digit start OTP:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-600 mb-1">Recipient Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ramesh Kumar"
+                    value={recipientName}
+                    onChange={(e) => setRecipientName(e.target.value)}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-600 mb-1">Recipient Phone *</label>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    required
+                    placeholder="e.g. 9876543210"
+                    value={recipientPhone}
+                    onChange={(e) => setRecipientPhone(e.target.value.replace(/\D/g, ''))}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-300 rounded-sm focus:outline-none focus:border-blue-600"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Live Address Selector Component */}
@@ -69,10 +157,24 @@ export default function BookingAddressPage() {
           onSelectAddress={handleSelectAddress}
         />
 
+        {/* Delivery / Gate Entry Instructions */}
+        <div className="space-y-1.5">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-700 font-heading">
+            Gate / Entry Instructions (Optional)
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. Tower B, Ring the bell twice, Leave shoes outside"
+            value={gateEntryNotes}
+            onChange={(e) => setGateEntryNotes(e.target.value)}
+            className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-sm focus:bg-white focus:outline-none focus:border-blue-600"
+          />
+        </div>
+
         <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-blue-600" />
-            <span>Encrypted GPS dispatch · Zero contact sharing</span>
+            <span>Encrypted GPS dispatch · Verified 4-digit doorstep OTP</span>
           </div>
         </div>
 

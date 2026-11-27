@@ -1,21 +1,67 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ShieldCheck, User, Phone, MapPin, Wrench, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import Image from 'next/image';
+import { ShieldCheck, User, Phone, MapPin, Wrench, ArrowRight, AlertCircle, Loader2, Navigation, IndianRupee, Clock, Award } from 'lucide-react';
+import { CITIES_DATA } from '@/store/useLocationStore';
 
 export default function ProfessionalRegisterPage() {
   const router = useRouter();
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('Delhi NCR');
-  const [trade, setTrade] = useState('AC & Appliance Repair');
-  const [experience, setExperience] = useState('3-5 Years');
+  const [city, setCity] = useState('');
+  const [locating, setLocating] = useState(false);
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
+  const [trade, setTrade] = useState('Deep Home Cleaning & Housekeeping');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Auto-detect partner city on load or click
+  const detectLiveLocation = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      setLocationStatus('GPS not supported');
+      return;
+    }
+
+    setLocating(true);
+    setLocationStatus('Detecting GPS location...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+          if (res.ok) {
+            const data = await res.json();
+            const detected = data.address?.city || data.address?.town || data.address?.state_district || data.address?.state || '';
+            if (detected) {
+              setCity(detected);
+              setLocationStatus(`Detected: ${detected}`);
+            } else {
+              setLocationStatus('Location captured');
+            }
+          }
+        } catch {
+          setLocationStatus('GPS coordinates captured');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setLocating(false);
+        setLocationStatus('Permission not granted. Please select city manually.');
+      },
+      { timeout: 8000 }
+    );
+  };
+
+  useEffect(() => {
+    detectLiveLocation();
+  }, []);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,10 +79,13 @@ export default function ProfessionalRegisterPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: firstName.trim(),
-          last_name: lastName.trim(),
+          first_name: fullName.trim() || 'Partner',
+          last_name: '',
           phone: formattedPhone,
           password: 'PartnerDefaultSecurePass123!',
+          role: 'PROFESSIONAL',
+          city: city.trim(),
+          trade: trade,
         }),
       });
 
@@ -59,152 +108,165 @@ export default function ProfessionalRegisterPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col font-sans">
+      {/* Partner Header */}
       <header className="px-6 py-4 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur-md z-50">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center text-white font-black">Y</div>
-          <span className="font-black text-xl tracking-tight text-white">Yetzo Partner Network</span>
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm border border-slate-700 flex-shrink-0">
+            <Image src="/logo.jpg" alt="Yetzo" fill className="object-cover" priority />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-heading font-black text-lg tracking-tight text-white uppercase">Yetzo Partner</span>
+            <span className="text-[9px] text-blue-400 font-bold uppercase tracking-wider">Service Fleet Network</span>
+          </div>
         </Link>
         <Link
           href="/professional/pro/login"
-          className="text-xs font-bold text-slate-400 hover:text-white"
+          className="text-xs font-bold text-slate-300 hover:text-white transition"
         >
-          Sign In
+          Existing Partner? <span className="text-blue-400 underline">Sign In</span>
         </Link>
       </header>
 
-      <main className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-lg bg-slate-800/80 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm">
-          <div className="mb-6">
-            <span className="px-3 py-1 bg-blue-500/20 text-sky-400 border border-blue-500/30 rounded-full text-[10px] font-black uppercase tracking-wider inline-block mb-3">
-              Join Our Verified Fleet
-            </span>
-            <h1 className="text-2xl font-black text-white mb-1">Partner Onboarding Application</h1>
-            <p className="text-xs text-slate-400 font-medium">
-              Join 5,000+ top technicians earning high daily payouts with transparent Yetzo Certified & Yetzo rate cards.
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 py-10">
+        <div className="w-full max-w-xl bg-slate-800/90 border border-slate-700/80 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-sm space-y-6">
+          
+          {/* Headline & Earnings Highlight */}
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-sky-400 border border-blue-500/20 rounded-full text-[11px] font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Join India's Highest-Earning Household Service Fleet</span>
+            </div>
+            
+            <h1 className="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+              Register as a Yetzo Partner
+            </h1>
+            <p className="text-xs text-slate-400 leading-relaxed font-body">
+              Get guaranteed daily doorstep job dispatches within 15 minutes of your location. Earn weekly UPI payouts with transparent customer billing.
             </p>
+
+            {/* Quick Benefits Banner (Urban Company style) */}
+            <div className="grid grid-cols-3 gap-2.5 pt-2">
+              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Monthly Earning</p>
+                <p className="text-sm font-black text-emerald-400 mt-0.5">₹35,000+</p>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Payout Cycle</p>
+                <p className="text-sm font-black text-sky-400 mt-0.5">Weekly UPI</p>
+              </div>
+              <div className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 text-center">
+                <p className="text-[10px] uppercase font-bold text-slate-400">Insurance</p>
+                <p className="text-sm font-black text-amber-400 mt-0.5">₹5 Lakh</p>
+              </div>
+            </div>
           </div>
 
           {error && (
-            <div className="bg-rose-500/10 text-rose-300 p-3.5 rounded-2xl mb-5 text-xs font-semibold flex items-center gap-2 border border-rose-500/20">
+            <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4 text-xs">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block font-bold text-slate-300 mb-1">First Name *</label>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="Ramesh"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-300 mb-1">Last Name</label>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Kumar"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
-                />
-              </div>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                Full Name (As per Aadhaar Card) *
+              </label>
+              <input
+                type="text"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="e.g. Suresh Kumar"
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-white font-medium text-xs focus:outline-none focus:border-[#2563EB] transition"
+              />
             </div>
 
             <div>
-              <label className="block font-bold text-slate-300 mb-1">Mobile Number (For Job Dispatches) *</label>
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                Mobile Number (For Job Dispatches) *
+              </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">+91</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">+91</span>
                 <input
                   type="tel"
+                  required
                   maxLength={10}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                   placeholder="9876543210"
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
-                  required
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3.5 py-3 text-white font-bold text-xs focus:outline-none focus:border-[#2563EB] transition"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block font-bold text-slate-300 mb-1">Operational City *</label>
-                <select
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-300">Operational City *</label>
+                  <button
+                    type="button"
+                    onClick={detectLiveLocation}
+                    className="text-[10px] text-blue-400 hover:text-blue-300 flex items-center gap-1 font-semibold"
+                  >
+                    <Navigation className="w-2.5 h-2.5" />
+                    <span>{locating ? 'Detecting...' : 'Auto-Detect'}</span>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Delhi NCR, Bangalore..."
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
-                >
-                  <option value="Delhi NCR">Delhi NCR</option>
-                  <option value="Bangalore">Bangalore</option>
-                  <option value="Pune">Pune</option>
-                  <option value="Mumbai">Mumbai</option>
-                  <option value="Hyderabad">Hyderabad</option>
-                </select>
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-white font-medium text-xs focus:outline-none focus:border-[#2563EB] transition"
+                />
+                {locationStatus && (
+                  <p className="text-[10px] text-slate-400 mt-1">{locationStatus}</p>
+                )}
               </div>
 
               <div>
-                <label className="block font-bold text-slate-300 mb-1">Primary Skill / Trade *</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Primary Skill / Chore *</label>
                 <select
                   value={trade}
                   onChange={(e) => setTrade(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-3 text-white font-medium text-xs focus:outline-none focus:border-[#2563EB] transition"
                 >
-                  <option value="AC & Appliance Repair">AC & Appliance Repair</option>
-                  <option value="Deep Home Cleaning">Deep Home Cleaning</option>
-                  <option value="Electrician">Electrician</option>
-                  <option value="Plumber">Plumber</option>
-                  <option value="Carpenter">Carpenter</option>
-                  <option value="Home Painting">Home Painting</option>
+                  <option value="Deep Home Cleaning & Housekeeping">Deep Home Cleaning & Housekeeping</option>
+                  <option value="Daily Maid & Utensil Scrub">Daily Maid & Utensil Scrub</option>
+                  <option value="Home Cooking & Kitchen Meal Prep">Home Cooking & Kitchen Meal Prep</option>
+                  <option value="Bathroom Sanitization Expert">Bathroom Sanitization Expert</option>
+                  <option value="AC & Appliance Service">AC & Appliance Service</option>
+                  <option value="Electrician & Minor Repairs">Electrician & Minor Repairs</option>
                 </select>
               </div>
-            </div>
-
-            <div>
-              <label className="block font-bold text-slate-300 mb-1">Hands-on Trade Experience</label>
-              <select
-                value={experience}
-                onChange={(e) => setExperience(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-3 text-white font-semibold focus:outline-none focus:border-[#2563EB] transition"
-              >
-                <option value="1-2 Years">1-2 Years</option>
-                <option value="3-5 Years">3-5 Years (Recommended)</option>
-                <option value="5-10 Years">5-10 Years (Senior Master)</option>
-                <option value="10+ Years">10+ Years (Master Certified)</option>
-              </select>
             </div>
 
             <button
               type="submit"
               disabled={loading || phone.length < 10}
-              className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-3.5 rounded-xl transition shadow-lg shadow-emerald-900/30 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-2 text-xs"
+              className="w-full py-3.5 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-50 text-white rounded-xl font-bold font-heading text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 mt-2"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Submitting Application...</span>
+                  <span>Submitting Registration...</span>
                 </>
               ) : (
                 <>
-                  <span>Submit & Start Verification</span>
+                  <span>Continue to KYC & Document Upload</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs font-medium text-slate-400">
-            Already registered?{' '}
-            <Link href="/professional/pro/login" className="text-sky-400 font-bold hover:underline">
-              Partner Sign In
-            </Link>
-          </div>
+          <p className="text-[10px] text-slate-500 text-center leading-normal">
+            By registering, you agree to undergo mandatory government identity verification (Aadhaar UIDAI) and police record clearance.
+          </p>
+
         </div>
       </main>
     </div>

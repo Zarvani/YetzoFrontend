@@ -59,10 +59,10 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   other: {
-    "geo.region": "IN-KA",
-    "geo.placename": "Bengaluru",
-    "geo.position": "12.9716;77.5946",
-    "ICBM": "12.9716, 77.5946",
+    "geo.region": "IN-DL",
+    "geo.placename": "Priyadarshini Vihar, Delhi",
+    "geo.position": "28.6328;77.2995",
+    "ICBM": "28.6328, 77.2995",
   },
   openGraph: {
     title: "Yetzo | Instant House Help in 15 Minutes",

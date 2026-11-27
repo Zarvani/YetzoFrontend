@@ -10,8 +10,8 @@ export interface CityInfo {
 }
 
 export const CITIES_DATA: CityInfo[] = [
-  { name: 'Bengaluru', slug: 'bengaluru', isOperational: true, state: 'Karnataka' },
   { name: 'Delhi NCR', slug: 'delhi-ncr', isOperational: true, state: 'Delhi' },
+  { name: 'Bengaluru', slug: 'bengaluru', isOperational: true, state: 'Karnataka' },
   { name: 'Mumbai', slug: 'mumbai', isOperational: true, state: 'Maharashtra' },
   { name: 'Gurgaon', slug: 'gurgaon', isOperational: true, state: 'Haryana' },
   { name: 'Noida', slug: 'noida', isOperational: true, state: 'Uttar Pradesh' },
@@ -29,14 +29,20 @@ export const CITIES_DATA: CityInfo[] = [
 
 interface LocationStore {
   selectedCity: string;
+  userCoords: { lat: number; lng: number } | null;
+  hasLocationPermission: boolean;
   isLocationModalOpen: boolean;
   setSelectedCity: (city: string) => void;
+  setUserCoords: (coords: { lat: number; lng: number }) => void;
+  setHasLocationPermission: (val: boolean) => void;
   openLocationModal: () => void;
   closeLocationModal: () => void;
 }
 
 export const useLocationStore = create<LocationStore>((set) => ({
-  selectedCity: typeof window !== 'undefined' ? localStorage.getItem('yetzo_selected_city') || 'Bengaluru' : 'Bengaluru',
+  selectedCity: typeof window !== 'undefined' ? localStorage.getItem('yetzo_selected_city') || '' : '',
+  userCoords: null,
+  hasLocationPermission: typeof window !== 'undefined' ? localStorage.getItem('yetzo_location_permission') === 'granted' : false,
   isLocationModalOpen: false,
   setSelectedCity: (city: string) => {
     if (typeof window !== 'undefined') {
@@ -44,6 +50,13 @@ export const useLocationStore = create<LocationStore>((set) => ({
       window.dispatchEvent(new CustomEvent('yetzo-city-changed', { detail: city }));
     }
     set({ selectedCity: city });
+  },
+  setUserCoords: (coords) => set({ userCoords: coords }),
+  setHasLocationPermission: (val) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('yetzo_location_permission', val ? 'granted' : 'denied');
+    }
+    set({ hasLocationPermission: val });
   },
   openLocationModal: () => set({ isLocationModalOpen: true }),
   closeLocationModal: () => set({ isLocationModalOpen: false }),
